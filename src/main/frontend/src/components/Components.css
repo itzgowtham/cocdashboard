@@ -1,0 +1,166 @@
+/*Spinner.jsx  - starts here*/
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 10px solid #f3f3f3; /* Light grey */
+  border-top: 10px solid #383636; /* Black */
+  border-radius: 50%;
+  animation: spinner 1.5s linear infinite;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+/*Spinner.jsx - ends here*/
+
+/* TabComponent.jsx - starts here*/
+.tabComponent {
+  .tab-header {
+    display: flex;
+  }
+
+  .tab {
+    padding: 12px 40px;
+    cursor: pointer;
+  }
+
+  .tab.active {
+    border-bottom: 3px solid #007680;
+    font-weight: 600;
+    color: #007680;
+  }
+
+  .summary-details-tab.active{
+    text-align: center;
+    min-width: 50%;
+    background-color: #007680;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+  }
+  
+  .tab.inactive {
+    color: #75787b;
+  }
+
+  .summary-details-tab.inactive{
+    text-align: center;
+    min-width: 50%;
+    background-color: #EDFFF8;
+    border: none;
+    color: #53565A;
+  }
+
+  .last-tab{
+    border-radius: 0px 8px 8px 0px;
+   
+  }
+  .first-tab{
+    border-radius: 8px 0px 0px 8px;
+  }
+}
+/* TabComponent.jsx - ends here*/
+
+/*Banner.jsx  - starts here*/
+.coc-tealbg {
+  background-color: #004f59;
+}
+/*Banner.jsx - ends here**/
+
+/*Card.jsx  - starts here*/
+.coc-cardImg {
+  height: 56px;
+  width: 56px;
+}
+/*Card.jsx - ends here**/
+
+/*HoriZontalBarChart.jsx  - starts here*/
+.coc-barChartHeight {
+  height: 90px;
+}
+/*HoriZontalBarChart.jsx - ends here**/
+
+/*Filters.jsx  - starts here*/
+.coc-filterbg {
+  background-color: #f5f5f8;
+}
+
+.coc-active {
+  background-color: #ddefe8 !important;
+  border-color: #007680 !important;
+  border-style: solid !important; /* Added border-style */
+  border-width: 1.5px !important;
+}
+
+.coc-btn:hover {
+  background-color: #ddefe8 !important;
+  border-color: #007680 !important;
+  border-style: solid !important; /* Added border-style */
+  border-width: 1.5px !important;
+}
+
+
+/*Filters.jsx - ends here**/
+
+
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+  
+}
+

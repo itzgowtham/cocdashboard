@@ -1,0 +1,30 @@
+.column {
+  transition: flex 0.3s ease;
+  height: 100vh;
+}
+
+.third-column {
+  flex: 0 0 17%;
+  overflow-y: hidden;
+  height: 100%;
+  background-color: #f5f5f8;
+}
+.first-column {
+  flex: 0 0 14%;
+  overflow-y: hidden;
+  height: 100%;
+  background-color: #f5f5f8;
+}
+
+.second-column {
+  height: 100vh;
+  overflow-y: auto;
+  flex: 1;
+  background-color: white;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.collapsed {
+  flex: 0.03 0 0;
+}

@@ -1,0 +1,54 @@
+.coc-font {
+  color: #4c5459;
+  font-weight: 0px;
+  font-size: 24px;
+}
+
+.coc-img {
+  height: 20px;
+  width: 20px;
+}
+
+.coc-expanded-img {
+  height: 31x;
+  width: 100px;
+}
+
+.coc-container {
+  color: #007680;
+}
+.coc-container:hover .navbar-svg path {
+  fill: white;
+  margin: 0;
+}
+.selected .navbar-svg path {
+  fill: white;
+  margin: 0;
+}
+.selected {
+  background-color: #004f59;
+  color: white;
+}
+
+.coc-container:hover {
+  background-color: #004f59;
+  color: white;
+}
+
+.coc-cursor {
+  cursor: pointer;
+}
+.coc-navbarbg{
+  background-color: #f5f5f8;
+
+}
+.coc-username{
+  position: absolute;
+  bottom: 0;
+  background-color: #EAEBE9;
+  width: 100%;
+  color: #007680;
+  justify-content: space-between;
+
+
+}

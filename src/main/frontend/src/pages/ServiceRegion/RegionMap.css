@@ -1,0 +1,22 @@
+.expense-color-palette{
+    background: linear-gradient(to right,#E6F4F1,#007680);
+    height: 30px;
+}
+.member-color-palette{
+    background: linear-gradient(to right,#E6F4F1,#6FC2B4);
+    height: 30px;
+}
+.label{
+    color: #63666A;
+    font-size: 12px;
+}
+.label-color{
+    height: 10px;
+    width: 13px;
+    display: inline-block;
+    margin-right: 4px;
+}
+.value{
+    color: #63666A; 
+    font-size: 10px
+}

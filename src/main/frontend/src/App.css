@@ -1,0 +1,33 @@
+body{
+  font-family: 'Open Sans', sans-serif;}
+.coc-cursor {
+  cursor: pointer;
+}
+
+.coc-hr {
+  background-color: #57a0d2;
+  height: 2px;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.coc-teal6 {
+  color: #007680;
+}
+.coc-primaryTeal {
+  color: #0d8390;
+}
+.coc-teal3 {
+  color: #6fc2b4;
+}
+.coc-teal7 {
+  color: #004f59;
+}
+.coc-teal7BackGround {
+  background-color: #004f59;
+}
+
+.ag-icon-none,
+.ag-icon-asc,
+.ag-icon-desc {
+  color: black !important;
+}
