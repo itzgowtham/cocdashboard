@@ -50,7 +50,7 @@ function CareCategorySummary(props) {
         <div className="column second-column overflow-auto p-0">
           <div className="col-12 p-0">
             <div className="d-flex justify-content-between m-0 p-0">
-              <strong>PPMD Data</strong>
+              <strong>PMPM</strong>
               <span className="d-flex">
                 {showGraph ? (
                   <div className="me-4">

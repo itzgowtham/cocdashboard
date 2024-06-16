@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Entity
@@ -40,5 +41,8 @@ public class Forecast_PMPM {
 
     @Column(name = "model")
     private String model;
+    
+    @Transient
+    private Double confidenceInterval;
     
 }

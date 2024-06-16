@@ -64,7 +64,8 @@ const ProviderSpecialty = () => {
             startMonth: startMonth,
           });
         } else {
-          const startMonth = inputValues.endMonth;
+          const startMonth =
+            options.endMonth[options.endMonth.length - 1].value;
           setInputValues({
             ...inputValues,
             startMonth: startMonth,

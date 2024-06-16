@@ -4,16 +4,28 @@ import TabComponent from "../../components/TabComponent";
 import CareCategoryInOutPatient from "./CareCategoryInOutPatient";
 import { graphSVG } from "../../assets/images/svg/SVGIcons";
 function CareCategorySummary(props) {
-  const { InpatientDataArray, OutpatientDataArray } = props;
+  const { InpatientDataArray, OutpatientDataArray, datatype } = props;
   const [showGraph, setShowGraph] = useState(false);
   const [tabs, setTabs] = useState([
     {
       label: "In Patient",
-      content: <CareCategoryInOutPatient showGraph={showGraph} rowdata={""} />,
+      content: (
+        <CareCategoryInOutPatient
+          showGraph={showGraph}
+          rowdata={""}
+          datatype={datatype}
+        />
+      ),
     },
     {
       label: "Out Patient",
-      content: <CareCategoryInOutPatient showGraph={showGraph} rowdata={""} />,
+      content: (
+        <CareCategoryInOutPatient
+          showGraph={showGraph}
+          rowdata={""}
+          datatype={datatype}
+        />
+      ),
     },
   ]);
 
@@ -29,6 +41,7 @@ function CareCategorySummary(props) {
           <CareCategoryInOutPatient
             showGraph={showGraph}
             rowdata={InpatientDataArray}
+            datatype={datatype}
           />
         ),
       },
@@ -38,6 +51,7 @@ function CareCategorySummary(props) {
           <CareCategoryInOutPatient
             showGraph={showGraph}
             rowdata={OutpatientDataArray}
+            datatype={datatype}
           />
         ),
       },
@@ -50,7 +64,7 @@ function CareCategorySummary(props) {
         <div className="column second-column overflow-auto p-0">
           <div className="col-12 p-0">
             <div className="d-flex justify-content-between p-0">
-              <strong>PPMD Data</strong>
+              <strong>PMPM</strong>
               <span className="d-flex">
                 {showGraph ? (
                   <span className="me-4">

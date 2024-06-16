@@ -18,9 +18,4 @@ public class CalculationUtils {
 		DecimalFormat df = new DecimalFormat("#.##");
 		return Double.parseDouble(df.format(value));
 	}
-
-	public Double roundToFourDecimals(Double value) {
-		DecimalFormat df = new DecimalFormat("#.####");
-		return Double.parseDouble(df.format(value));
-	}
 }

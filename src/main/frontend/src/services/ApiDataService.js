@@ -74,3 +74,12 @@ export const pcpGroupFetch = (payload) => {
     headers,
   });
 };
+
+export const forecastFetch = (payload) => {
+  return axios({
+    method: "post",
+    url: `${BASE_URL}${API_PARAMS.FORECAST}`,
+    data: payload,
+    headers,
+  });
+};

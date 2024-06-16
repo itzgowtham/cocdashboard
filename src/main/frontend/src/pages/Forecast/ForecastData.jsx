@@ -1,43 +1,23 @@
-import React, { useState } from "react";
 import { AgGridReact } from "ag-grid-react"; // React Grid Logic
 import "ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
-import HorizontalBarChart from "../../components/HorizontalBarChart";
-import {
-  handleDifferenceinPercentage,
-  handleValueinDollar,
-} from "../../utilities/FormatUtilities";
 import LineChart from "../../components/LineChart";
 
 const ForecastData = (props) => {
   const { rowData, showGraph, selectedOption } = props;
 
-  //once api is ready, replace dummy data with api data
-
-  //once api is ready, replace dummy data with api data
-  const handleGraph = () => {
-    return (
-      <div>
-        <HorizontalBarChart
-          actualvalue={12000}
-          targetvalue={140000}
-          type={"number"}
-          graphtype={{ type1: "Target", type2: "Actual" }}
-          aspectRatio={5}
-          graphLength={2}
-        />
-      </div>
-    );
-  };
-
   const colDefs = [
     {
-      field: "period",
+      field: "months",
       headerName: "Period",
       flex: 1,
     },
     {
-      field: "forecast_value",
+      field: `${
+        selectedOption === "Cost"
+          ? "pmpm_forecast"
+          : "activemembership_forecast"
+      }`,
       headerName: `Forecasted Value (${
         selectedOption === "Cost" ? "PMPM" : "Members"
       })`,
@@ -45,83 +25,90 @@ const ForecastData = (props) => {
       //   hide: showGraph,
       cellRenderer: (params) => {
         return selectedOption === "Cost"
-          ? handleValueinDollar(params)
-          : params.value;
+          ? `$ ${params.data.pmpm_forecast}`
+          : params.data.activemembership_forecast;
       },
     },
     {
-      field: "confidence_interval",
+      // field: "confidence_interval",
       headerName: `Confidence Interval (${
         selectedOption === "Cost" ? "PMPM" : "Members"
       })`,
       flex: 1,
       //   hide: showGraph,
       cellRenderer: (params) => {
+        const differenceCost =
+          params.data.pmpm_forecast_upper - params.data.pmpm_forecast_lower;
+        const differenceMember =
+          params.data.activemembership_forecast_upper -
+          params.data.activemembership_forecast_lower;
         return selectedOption === "Cost"
-          ? `+/- ${handleValueinDollar(params)}`
-          : `+/- ${params.value}`;
+          ? `+/- $ ${differenceCost.toFixed(2)}`
+          : `+/- ${differenceMember}`;
       },
     },
   ];
-
+  
   const data = {
-    labels: rowData.map((data) => data.period),
+    labels: rowData.map((data) => data.months?.substring(0,3)),
     datasets: [
       {
         type: "scatter",
-        label: "Test Data Points",
-        data: [
-          {
-            x: "Jul 2023",
-            y: 130,
-          },
-
-          { x: "Aug 2023", y: 710 },
-          { x: "Sep 2023", y: 280 },
-          { x: "Oct 2023", y: 80 },
-        ],
-        backgroundColor: "#F39000",
-      },
-      {
-        type: "scatter",
         label: "Observed Data Points",
-        data: [
-          {
-            x: "Jan 2023",
-            y: 120,
-          },
+        data:
+          selectedOption === "Cost"
+            ? rowData.map((data) => ({ x: data.months?.substring(0,3), y: data.pmpm }))
+            : rowData.map((data) => ({
+                x: data.months?.substring(0,3),
+                y: data.activemembership,
+              })),
 
-          { x: "Feb 2023", y: 580 },
-          { x: "Apr 2023", y: 220 },
-          { x: "Mar 2023", y: 130 },
-          { x: "May 2023", y: 875 },
-          { x: "Jun 2023", y: 140 },
-        ],
         backgroundColor: "#004F59",
       },
       {
         label: "Forecast",
-        data: rowData.map((data) => data.forecast_value),
+        data: rowData.map((data) =>
+          selectedOption === "Cost"
+            ? data.pmpm_forecast
+            : data.activemembership_forecast
+        ),
         fill: false,
         pointRadius: 0,
         borderWidth: 2,
         tension: 0.2,
-        //backgroundColor: "rgba(75,192,192,0.2)",
         borderColor: "#00ABAB",
+      },
+
+      {
+        label: "Uncertainty Interval",
+        backgroundColor: "rgba(0, 171, 171, 0.2)",
+        borderColor: "transparent",
+        pointRadius: 0,
+        tension: 0.2,
+        fill: false, //no fill here
+        data: rowData.map((data) =>
+          selectedOption === "Cost"
+            ? data.pmpm_forecast_lower
+            : data.activemembership_forecast_lower
+        ),
       },
       {
         label: "Uncertainty Interval",
-        data: rowData.map((data) => data.forecast_value),
-        borderWidth: 15,
-        fill: false,
+        backgroundColor: "rgba(0, 171, 171, 0.2)",
+        borderColor: "transparent",
         pointRadius: 0,
         tension: 0.2,
-        borderColor: "rgba(0, 171, 171, 0.2)",
+        fill: "-1", //fill until previous dataset
+        data: rowData.map((data) =>
+          selectedOption === "Cost"
+            ? data.pmpm_forecast_upper
+            : data.activemembership_forecast_upper
+        ),
       },
     ],
   };
 
-  const graphType = data.datasets.map((items) => items.label);
+  // const graphType = data.datasets.map((items) => items.label);
   return (
     <>
       {showGraph ? (
@@ -147,7 +134,7 @@ const ForecastData = (props) => {
               columnDefs={colDefs}
               rowHeight={46}
               pagination={true}
-          paginationPageSize={7}
+              paginationPageSize={7}
             />
           )}
         </div>

@@ -69,15 +69,18 @@ public class DataTransformationService {
 				.map(val -> {
 					val.setSpeciality(val.getSpeciality() != null ? val.getSpeciality() : "Others");
 					Double totalPricepm = (val.getTotalPricepm() == null) ? 0.0 : val.getTotalPricepm();
-					Long memberCount = val.getMemberCount();
-					double pm = (memberCount != null && memberCount != 0) ? totalPricepm / memberCount : 0.0;
 					if (ObjectUtils.isNotEmpty(targetPercentageMap)) {
 						Long targetPercentageValue = targetPercentageMap.getOrDefault(val.getMonths(), 0L);
-						pm += pm * targetPercentageValue / 100;
+						totalPricepm += totalPricepm * targetPercentageValue / 100;
 					}
-					val.setPmpm(pm);
+					val.setTotalPricepm(totalPricepm);
 					return val;
-				}).collect(Collectors.toMap(keyExtractor, PMPMDTO::getPmpm, (prev, cur) -> prev + cur));
+				}).collect(Collectors.toMap(keyExtractor, val -> val, (prev, cur) -> {
+					prev.setTotalPricepm(prev.getTotalPricepm() + cur.getTotalPricepm());
+					prev.setMemberCount(prev.getMemberCount() + cur.getMemberCount());
+					return prev;
+				})).values().stream()
+				.collect(Collectors.toMap(keyExtractor, val -> val.getTotalPricepm() / val.getMemberCount()));
 	}
 
 	private Map<String, MetricData> finalMetric(Map<String, Double> currentCareCategory,
@@ -117,6 +120,7 @@ public class DataTransformationService {
 			}).collect(Collectors.groupingBy(val -> val.getMonths() + "_" + val.getState(),
 					Collectors.collectingAndThen(Collectors.reducing((p1, p2) -> {
 						p1.setTotalPricepm(p1.getTotalPricepm() + p2.getTotalPricepm());
+						p1.setMemberCount(p1.getMemberCount() + p2.getMemberCount());
 						p1.setPatientType(null);
 						return p1;
 					}), result -> result.orElse(new PMPMDTO())))).values().stream().collect(Collectors.toList());
@@ -125,8 +129,9 @@ public class DataTransformationService {
 		return finalPmpm.stream().collect(Collectors.toMap(PMPMDTO::getState, val -> {
 			long activeMembers = memberViewMap.getOrDefault(val.getState(), 0L);
 			double pricepm = (val.getTotalPricepm() != null) ? val.getTotalPricepm() : 0.0;
-			Long memberCount = val.getMemberCount();
-			double pm = (memberCount != null && memberCount != 0) ? pricepm / memberCount : 0.0;
+			double pm = (activeMembers == 0) ? 0 : pricepm / activeMembers;
+//			Long memberCount = val.getMemberCount();
+//			double pm = (memberCount != null && memberCount != 0) ? pricepm / memberCount : 0.0;
 			if (ObjectUtils.isNotEmpty(targetPercentageMap)) {
 				long targetPercentage = targetPercentageMap.getOrDefault(val.getMonths(), 0L);
 				pm += pm * targetPercentage / 100;
@@ -173,6 +178,7 @@ public class DataTransformationService {
 						: val.getMonths().compareTo(endMonth) == 0)
 				.map(val -> {
 					val.setPmpm(val.getPmpm() == null ? 0.0 : val.getPmpm());
+					val.setConfidenceInterval((val.getPmpm_forecast_upper() - val.getPmpm_forecast_lower()) / 2);
 					return val;
 				}).collect(Collectors.groupingBy(Forecast_PMPM::getMonths,
 						Collectors.collectingAndThen(Collectors.reducing((p1, p2) -> {
@@ -181,10 +187,17 @@ public class DataTransformationService {
 							p1.setPmpm_forecast_lower(p1.getPmpm_forecast_lower() + p2.getPmpm_forecast_lower());
 							p1.setPmpm_forecast_upper(p1.getPmpm_forecast_upper() + p2.getPmpm_forecast_upper());
 							p1.setPmpm_forecast_mae(p1.getPmpm_forecast_mae() + p2.getPmpm_forecast_mae());
+							p1.setConfidenceInterval(p1.getConfidenceInterval() + p2.getConfidenceInterval());
 							return p1;
 						}), result -> result.orElse(new Forecast_PMPM()))))
-				.values().stream().sorted(Comparator.comparing(Forecast_PMPM::getMonths).reversed()).map(val -> {
+				.values().stream().sorted(Comparator.comparing(Forecast_PMPM::getMonths)).map(val -> {
 					val.setMonths(dateFormat.convertIntegertoStringDateFormat(val.getMonths()));
+					val.setPmpm(calculationUtils.roundToTwoDecimals(val.getPmpm()));
+					val.setPmpm_forecast(calculationUtils.roundToTwoDecimals(val.getPmpm_forecast()));
+					val.setPmpm_forecast_lower(calculationUtils.roundToTwoDecimals(val.getPmpm_forecast_lower()));
+					val.setPmpm_forecast_upper(calculationUtils.roundToTwoDecimals(val.getPmpm_forecast_upper()));
+					val.setPmpm_forecast_mae(calculationUtils.roundToTwoDecimals(val.getPmpm_forecast_mae()));
+					val.setConfidenceInterval(calculationUtils.roundToTwoDecimals(val.getConfidenceInterval()));
 					return val;
 				}).collect(Collectors.toList());
 	}
@@ -197,6 +210,9 @@ public class DataTransformationService {
 						: val.getMonths().compareTo(endMonth) == 0)
 				.map(val -> {
 					val.setActivemembership(val.getActivemembership() == null ? 0L : val.getActivemembership());
+					val.setConfidenceInterval(
+							calculationUtils.roundToTwoDecimals((double) (val.getActivemembership_forecast_upper()
+									- val.getActivemembership_forecast_lower()) / 2));
 					return val;
 				}).collect(Collectors.groupingBy(Forecast_ActiveMembership::getMonths,
 						Collectors.collectingAndThen(Collectors.reducing((p1, p2) -> {
@@ -209,10 +225,10 @@ public class DataTransformationService {
 									p1.getActivemembership_forecast_upper() + p2.getActivemembership_forecast_upper());
 							p1.setActivemembership_forecast_mae(
 									p1.getActivemembership_forecast_mae() + p2.getActivemembership_forecast_mae());
+							p1.setConfidenceInterval(p1.getConfidenceInterval() + p2.getConfidenceInterval());
 							return p1;
 						}), result -> result.orElse(new Forecast_ActiveMembership()))))
-				.values().stream().sorted(Comparator.comparing(Forecast_ActiveMembership::getMonths).reversed())
-				.map(val -> {
+				.values().stream().sorted(Comparator.comparing(Forecast_ActiveMembership::getMonths)).map(val -> {
 					val.setMonths(dateFormat.convertIntegertoStringDateFormat(val.getMonths()));
 					return val;
 				}).collect(Collectors.toList());

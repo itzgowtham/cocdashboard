@@ -43,7 +43,7 @@ const LineChart = (props) => {
         ticks: {
           //   maxTicksLimit: 3,
           callback: function (value, index, values) {
-            console.log(value);
+            // console.log("Line graph ticks",value);
             return props.selectedOption === "Cost" ? "$ " + value : value;
           },
         },
@@ -61,12 +61,17 @@ const LineChart = (props) => {
               label += ": ";
             }
             var value = context.dataset.data[context.dataIndex];
-            console.log("Tooltip value", value, typeof value);
+            // console.log("Tooltip value", value, typeof value);
             if (value !== null) {
-              label += new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(value);
+              label +=
+                props.selectedOption === "Cost"
+                  ? new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    }).format(typeof value === "number" ? value : value.y)
+                  : typeof value === "number"
+                  ? value
+                  : value.y;
             }
             return label;
           },
@@ -113,14 +118,6 @@ const LineChart = (props) => {
           ></i>
           <span className="w-300 " style={{ fontSize: "11px" }}>
             Uncertainty Interval &nbsp;
-          </span>
-          <i
-            className="fa fa-circle ms-2 me-1 small"
-            style={{ color: "#F39000" }}
-            aria-hidden="true"
-          ></i>
-          <span className="w-300 " style={{ fontSize: "11px" }}>
-            Test Data Points &nbsp;
           </span>
         </span>
       </div>

@@ -76,7 +76,7 @@ const PcpGroupSummary = (props) => {
   return (
     <>
       <div className="d-flex justify-content-between p-0 mt-3">
-        <strong>PMPM Data</strong>
+        <strong>PMPM</strong>
         <span className="d-flex">
           {showGraph ? (
             <div className="me-4">

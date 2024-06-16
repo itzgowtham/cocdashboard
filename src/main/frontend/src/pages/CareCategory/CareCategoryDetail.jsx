@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { AgGridReact } from "ag-grid-react";
 import InputSelectField from "../../components/InputSelectFiled";
 import { graphSVG } from "../../assets/images/svg/SVGIcons";
 import { vector } from "../../assets/images/svg/SVGIcons";
@@ -9,66 +8,6 @@ import { formatNumberColour } from "../../utilities/FormatUtilities";
 const CareCategoryDetail = () => {
   const [showGraph, setShowGraph] = useState(false);
   const data = [1, 2, 3, 4, 5, 6, 7, 8];
-
-  const handleGraph = () => {
-    return (
-      <div className="">
-        <HorizontalBarChart
-          actualvalue={5}
-          type={"number"}
-          aspectRatio={5}
-          graphLength={1}
-          height={"40px"}
-          responsive={false}
-        />
-      </div>
-    );
-  };
-  const rowData = [
-    {
-      noofProviders: "13k",
-      providers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    },
-  ];
-  const HtmlCellRenderer = ({ value }) => {
-    return (
-      <table>
-        <tbody>
-          {value.map((item, index) => (
-            <tr key={index}>
-              <td>{item}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  };
-
-  const colDefs = [
-    {
-      field: "noofProviders",
-      headerName: "No of Providers",
-      flex: 1,
-      cellRenderer: (params) => {
-        return params.value;
-      },
-    },
-    {
-      field: "providers",
-      headerName: "Top Providers",
-      flex: 1,
-      hide: showGraph,
-      cellRenderer: HtmlCellRenderer,
-    },
-    {
-      field: "providersGraph",
-      headerName: "Top Providers",
-      flex: 1,
-      hide: !showGraph,
-      cellRenderer: handleGraph,
-    },
-  ];
-
   const handleTableView = () => {
     setShowGraph(!showGraph);
   };
@@ -117,7 +56,7 @@ const CareCategoryDetail = () => {
                       )}
                       {!showGraph ? (
                         <td>
-                          <span className="d-flex">
+                          <span className="d-flex p-2">
                             Sample provider name - {formatNumberColour(item)}
                           </span>
                         </td>
@@ -165,7 +104,7 @@ const CareCategoryDetail = () => {
                       )}
                       {!showGraph ? (
                         <td>
-                          <span className="d-flex">
+                          <span className="d-flex p-2">
                             Sample provider name - {formatNumberColour(item)}
                           </span>
                         </td>

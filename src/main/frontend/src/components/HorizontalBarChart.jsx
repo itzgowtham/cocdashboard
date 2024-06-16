@@ -21,6 +21,16 @@ ChartJS.register(
 );
 
 function HorizontalBarChart(props) {
+  const {
+    actualvalue,
+    label,
+    targetvalue,
+    type,
+    graphtype,
+    aspectRatio,
+    graphLength,
+    height,
+  } = props;
   const options = {
     indexAxis: "y",
     elements: {
@@ -50,7 +60,7 @@ function HorizontalBarChart(props) {
             var value = context.dataset.data[context.dataIndex];
 
             if (value !== null) {
-              if (props.type === "number") {
+              if (type === "number") {
                 label += formatNumber(value);
               } else {
                 if (value !== null) {
@@ -70,8 +80,8 @@ function HorizontalBarChart(props) {
         display: false,
       },
       title: {
-        display: props.label,
-        text: props.label,
+        display: label,
+        text: label,
         align: "start",
       },
     },
@@ -95,9 +105,8 @@ function HorizontalBarChart(props) {
         },
       },
     },
-    aspectRatio: props.aspectRatio,
+    aspectRatio: aspectRatio,
   };
-  const graphLength = props.graphLength;
   const labels = [""];
   const data = {
     labels,
@@ -105,16 +114,16 @@ function HorizontalBarChart(props) {
       graphLength === 2
         ? [
             {
-              label: props.graphtype.type1,
-              data: [props.targetvalue],
+              label: graphtype.type1,
+              data: [targetvalue],
               borderColor: ["#004F59", "#6FC2B4"],
               backgroundColor: ["#004F59", "#6FC2B4"],
               barPercentage: 0.7,
               categoryPercentage: 1,
             },
             {
-              label: props.graphtype.type2,
-              data: [props.actualvalue],
+              label: graphtype.type2,
+              data: [actualvalue],
               borderColor: ["#6FC2B4"],
               backgroundColor: ["#6FC2B4"],
               barPercentage: 0.7,
@@ -123,7 +132,7 @@ function HorizontalBarChart(props) {
           ]
         : [
             {
-              data: [props.actualvalue],
+              data: [actualvalue],
               borderColor: ["#6FC2B4"],
               backgroundColor: ["#6FC2B4"],
               barPercentage: 0.7,
@@ -133,7 +142,7 @@ function HorizontalBarChart(props) {
   };
 
   return (
-    <div style={{ height: props.height }}>
+    <div style={{ height: height }}>
       <Bar options={options} data={data} />
     </div>
   );

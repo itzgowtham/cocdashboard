@@ -20,6 +20,7 @@ const ServiceRegionSummary = (props) => {
   const [inPatientDataWithoutFormat, setInPatientDataWithoutFormat] = useState(
     []
   );
+  const [dataType, setDataType] = useState(["Target", "Actual"]);
 
   let tabs = [
     {
@@ -30,6 +31,7 @@ const ServiceRegionSummary = (props) => {
           data={summaryData}
           selectedViewType={selectedViewType}
           dataWithoutFormat={summaryDataWithoutFormat}
+          dataType={dataType}
         />
       ),
     },
@@ -41,6 +43,7 @@ const ServiceRegionSummary = (props) => {
           data={inPatientData}
           selectedViewType={selectedViewType}
           dataWithoutFormat={inPatientDataWithoutFormat}
+          dataType={dataType}
         />
       ),
     },
@@ -52,6 +55,7 @@ const ServiceRegionSummary = (props) => {
           data={outPatientData}
           selectedViewType={selectedViewType}
           dataWithoutFormat={outPatientDataWithoutFormat}
+          dataType={dataType}
         />
       ),
     },
@@ -79,6 +83,12 @@ const ServiceRegionSummary = (props) => {
         setSummaryDataWithoutFormat(all);
         setInPatientDataWithoutFormat(ip);
         setOutPatientDataWithoutFormat(op);
+        setDataType(
+          inputValues.graphType === "Target vs Actual" ||
+            inputValues.graphType === ""
+            ? ["Target", "Actual"]
+            : ["Current", "Prior"]
+        );
       } else {
         console.log("service region failed with status code " + res.status);
       }

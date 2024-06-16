@@ -1,5 +1,5 @@
 export const endPoint = {
-  BASE_URL: "http://localhost:9292",
+  BASE_URL: "http://localhost:8080",
 };
 
 export const API_PARAMS = {
@@ -11,4 +11,5 @@ export const API_PARAMS = {
   SERVICE_REGION: "/serviceRegion",
   CARE_PROVIDER: "/careProvider",
   PCP_GROUP: "/pcpGroup",
+  FORECAST: "/forecast",
 };

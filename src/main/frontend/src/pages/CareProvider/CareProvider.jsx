@@ -18,6 +18,7 @@ function CareProvider(props) {
   const [OutPatientrowdata, setOutPatientdata] = useState();
   const [toggle, setToggle] = useState(true);
   const { filterOptions, initialInputValues } = useContext(DataContext);
+  const [dataType, setDataType] = useState(["Target", "Actual"]);
   const [tabs, setTabs] = useState([
     {
       label: "Summary",
@@ -70,7 +71,8 @@ function CareProvider(props) {
             startMonth: startMonth,
           });
         } else {
-          const startMonth = inputValues.endMonth;
+          const startMonth =
+            options.endMonth[options.endMonth.length - 1].value;
           setInputValues({
             ...inputValues,
             startMonth: startMonth,

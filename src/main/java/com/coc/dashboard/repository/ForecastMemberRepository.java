@@ -11,6 +11,4 @@ import com.coc.dashboard.entity.Forecast_ActiveMembership;
 public interface ForecastMemberRepository extends JpaRepository<Forecast_ActiveMembership, Long> {
 
 	List<Forecast_ActiveMembership> findByLobAndStatecode(String lob, String statecode);
-	List<Forecast_ActiveMembership> findByLob(String lob);
-	List<Forecast_ActiveMembership> findByStatecode(String statecode);
 }

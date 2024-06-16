@@ -12,6 +12,7 @@ function Filters({
   RadioSelectedOption,
   isProviderDisabled,
   isSpecialityDisabled,
+  isTypeDisabled,
 }) {
   const initialCollapseState =
     localStorage.getItem("filterscollapsed") === "true" ? true : false;
@@ -73,7 +74,7 @@ function Filters({
                 </div>
                 <div className="mb-2">
                   <InputSelectField
-                    label="Service area state"
+                    label="Service Area State"
                     options={FormSelectOptions.state}
                     onChange={onChange}
                     name={"state"}
@@ -118,7 +119,7 @@ function Filters({
                 </div>
                 <div className="mb-2">
                   <InputSelectField
-                    label="Incurred ending month"
+                    label="Incurred Ending Month"
                     options={FormSelectOptions.endMonth}
                     onChange={onChange}
                     name="endMonth"
@@ -157,6 +158,7 @@ function Filters({
                     options={FormSelectOptions.graphType}
                     onChange={onChange}
                     name="graphType"
+                    isDisabled={isTypeDisabled?true:false}
                   />
                 </div>
                 <div className="d-flex mx-auto">

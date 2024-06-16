@@ -11,6 +11,4 @@ import com.coc.dashboard.entity.Forecast_PMPM;
 public interface ForecastPMPMRepository extends JpaRepository<Forecast_PMPM, Double> {
 
 	List<Forecast_PMPM> findByLobAndStatecode(String lob, String statecode);
-	List<Forecast_PMPM> findByLob(String lob);
-	List<Forecast_PMPM> findByStatecode(String statecode);
 }

@@ -1,24 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { geograpyJSON } from "../../constants/GeographyConstants.jsx";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import "./RegionMap.css";
-import { color } from "chart.js/helpers";
 import { handleValueinDollar } from "../../utilities/FormatUtilities";
+import { Tooltip } from "react-tooltip";
 
 const RegionMap = (props) => {
   const geoUrl = geograpyJSON;
-  const { selectedViewType, data } = props;
-  const minValue = "$0.00";
+  const { selectedViewType, data, dataType } = props;
+  let minValue = 0;
   let maxValue = 390;
   let insufficientData = Object.keys(data).length > 55 ? false : true;
 
   for (let item in data) {
-    if (data[item].difference > maxValue) {
-      maxValue = data[item].difference;
+    if (data[item].actual > maxValue && data[item].name != "others") {
+      maxValue = data[item].actual;
+    }
+    if (data[item].actual < minValue && data[item].name != "others") {
+      minValue = data[item].actual;
     }
   }
-
-  maxValue = handleValueinDollar({ value: maxValue });
 
   const colors =
     selectedViewType === "Expense PMPM"
@@ -29,10 +30,10 @@ const RegionMap = (props) => {
           0: "#E6F4F1",
         }
       : {
-          1: "#6FC2B4",
-          3: "#8bcec2",
+          2: "#86d7ca",
+          3: "#53C7B4",
           0: "#ebf7f5",
-          2: "#cfebe6",
+          1: "#a9e3d9",
         };
 
   const colorPalette =
@@ -160,6 +161,21 @@ const RegionMap = (props) => {
     "Rhode Island": "RI",
   };
 
+  const [name, setName] = useState("");
+  const [actual, setActual] = useState("");
+  const [target, setTarget] = useState("");
+  const top = maxValue * 0.7;
+  const mid = maxValue * 0.5;
+  const below = maxValue * 0.25;
+  maxValue =
+    selectedViewType === "Expense PMPM"
+      ? handleValueinDollar({ value: maxValue })
+      : maxValue;
+  minValue =
+    selectedViewType === "Expense PMPM"
+      ? handleValueinDollar({ value: minValue })
+      : minValue;
+
   return (
     <div className="p-3" style={{ width: "733px", height: "427px" }}>
       <ComposableMap projection="geoAlbers">
@@ -168,13 +184,15 @@ const RegionMap = (props) => {
             geographies.map((geo) => {
               const name = countryFormatting[geo.properties.name];
               const stateData = data[name];
+              let actualData = "";
               let colorCode;
               if (stateData) {
-                if (stateData.difference > 300) {
+                actualData = stateData.actual;
+                if (actualData > top) {
                   colorCode = colors[3];
-                } else if (stateData.difference > 100) {
+                } else if (actualData > mid) {
                   colorCode = colors[2];
-                } else if (stateData.difference > 0) {
+                } else if (actualData > below) {
                   colorCode = colors[1];
                 } else {
                   colorCode = colors[0];
@@ -184,12 +202,22 @@ const RegionMap = (props) => {
               }
 
               return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill={colorCode}
-                  stroke="#fff"
-                />
+                  <Geography
+                    className="my-anchor-element"
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={colorCode}
+                    stroke="#fff"
+                    onMouseOver={() => {
+                      setName(name);
+                      actualData !== ""
+                        ? setActual(actualData)
+                        : setActual("No Data");
+                      stateData?.target
+                        ? setTarget(stateData.target)
+                        : setTarget("No Data");
+                    }}
+                  ></Geography>
               );
             })
           }
@@ -219,6 +247,14 @@ const RegionMap = (props) => {
           <span className="value">{minValue}</span>
           <span className="value">{maxValue}</span>
         </div>
+        <Tooltip
+          anchorSelect=".my-anchor-element"
+          style={{ overflow: "visible" }}
+        >
+          <p className="m-0">{`Region : ${name}   `}</p>
+          <p className="m-0">{`${dataType[0]}: ${actual}`}</p>
+          <p className="m-0">{`${dataType[1]}: ${target}`}</p>
+        </Tooltip>
       </div>
     </div>
   );

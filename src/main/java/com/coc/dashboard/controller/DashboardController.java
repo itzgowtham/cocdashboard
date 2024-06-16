@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.coc.dashboard.dto.FinalResult;
 import com.coc.dashboard.dto.MetricData;
-import com.coc.dashboard.entity.Forecast_PMPM;
 import com.coc.dashboard.exception.MyCustomException;
 import com.coc.dashboard.model.PMPMObject;
+import com.coc.dashboard.service.DashboardDetailsService;
 import com.coc.dashboard.service.DashboardService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,9 @@ public class DashboardController {
 
 	@Autowired
 	private DashboardService dashboardService;
+	
+	@Autowired
+	private DashboardDetailsService dashboardDetailsService;
 
 	@PostMapping("/summary")
 	public ResponseEntity<Map<String, Object>> summary(@RequestBody PMPMObject pmpmObject) throws MyCustomException {
@@ -78,11 +81,46 @@ public class DashboardController {
 		log.info("POST request to /pcpGroup with PMPMObject: {}", pmpmObject);
 		return ResponseEntity.ok(dashboardService.pcpGroup(pmpmObject));
 	}
-	
+
 	@PostMapping("/forecast")
 	public ResponseEntity<Map<String, List<Object>>> forcast(@RequestBody PMPMObject pmpmObject)
 			throws MyCustomException {
 		log.info("POST request to /forecast with PMPMObject: {}", pmpmObject);
 		return ResponseEntity.ok(dashboardService.forecast(pmpmObject));
+	}
+
+	@PostMapping("/careCategoryDetails")
+	public ResponseEntity<Map<String, Object>> careCategoryDetails(@RequestBody PMPMObject pmpmObject)
+			throws MyCustomException {
+		log.info("POST request to /careCategoryDetails with PMPMObject: {}", pmpmObject);
+		return ResponseEntity.ok(dashboardDetailsService.careCategoryDetails(pmpmObject));
+	}
+
+	@PostMapping("/serviceRegionDetails")
+	public ResponseEntity<Map<String, Object>> serviceRegionDetails(@RequestBody PMPMObject pmpmObject)
+			throws MyCustomException {
+		log.info("POST request to /serviceRegionDetails with PMPMObject: {}", pmpmObject);
+		return ResponseEntity.ok(dashboardDetailsService.serviceRegionDetails(pmpmObject));
+	}
+
+	@PostMapping("/providerSpecialityDetails")
+	public ResponseEntity<Map<String, Object>> providerSpecialityDetails(
+			@RequestBody PMPMObject pmpmObject) throws MyCustomException {
+		log.info("POST request to /providerSpecialityDetails with PMPMObject: {}", pmpmObject);
+		return ResponseEntity.ok(dashboardDetailsService.providerSpecialityDetails(pmpmObject));
+	}
+
+	@PostMapping("/careProviderDetails")
+	public ResponseEntity<Map<String, Object>> careProviderDetails(@RequestBody PMPMObject pmpmObject)
+			throws MyCustomException {
+		log.info("POST request to /careProviderDetails with PMPMObject: {}", pmpmObject);
+		return ResponseEntity.ok(dashboardDetailsService.careProviderDetails(pmpmObject));
+	}
+
+	@PostMapping("/pcpGroupDetails")
+	public ResponseEntity<Map<String, Object>> pcpGroupDetails(@RequestBody PMPMObject pmpmObject)
+			throws MyCustomException {
+		log.info("POST request to /pcpGroupDetails with PMPMObject: {}", pmpmObject);
+		return ResponseEntity.ok(dashboardDetailsService.pcpGroupDetails(pmpmObject));
 	}
 }

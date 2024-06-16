@@ -20,6 +20,7 @@ function CareCategory() {
   const [graphType, setGraphType] = useState(
     FileConstants.targetVsActulaGraphtype
   );
+  const [dataType, setDataType] = useState(["Target", "Actual"]);
 
   const [tabs, setTabs] = useState([
     {
@@ -65,7 +66,8 @@ function CareCategory() {
             startMonth: startMonth,
           });
         } else {
-          const startMonth = inputValues.endMonth;
+          const startMonth =
+            options.endMonth[options.endMonth.length - 1].value;
           setInputValues({
             ...inputValues,
             startMonth: startMonth,
@@ -119,8 +121,10 @@ function CareCategory() {
           inputValues.graphType === ""
         ) {
           setGraphType({ type1: "Target", type2: "Actual" });
+          setDataType(["Target", "Actual"]);
         } else {
           setGraphType({ type1: "Prior", type2: "Current" });
+          setDataType(["Current", "Prior"]);
         }
         setInPatientdata(transformedData);
         setOutPatientdata(transformedData2);
@@ -152,6 +156,7 @@ function CareCategory() {
             InpatientDataArray={InPatientrowdata}
             OutpatientDataArray={OutPatientrowdata}
             graphType={graphType}
+            datatype={dataType}
           />
         ),
       },

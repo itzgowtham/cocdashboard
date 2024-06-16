@@ -11,7 +11,8 @@ import HorizontalBarChart from "../../components/HorizontalBarChart";
 import RegionMap from "./RegionMap";
 
 function SummaryInOutPatient(props) {
-  const { showGraph, data, dataWithoutFormat, selectedViewType } = props;
+  const { showGraph, data, dataWithoutFormat, selectedViewType, dataType } =
+    props;
   const rowData = [
     {
       service_area_state: "AL",
@@ -117,23 +118,28 @@ function SummaryInOutPatient(props) {
     },
     {
       field: "target",
-      headerName: "Target",
+      headerName: dataType[0],
       flex: 1,
       hide: showGraph,
-      cellRenderer: handleValueinDollar,
+      cellRenderer:
+        selectedViewType === "Expense PMPM" ? handleValueinDollar : "target",
     },
     {
       field: "actual",
-      headerName: "Actual",
+      headerName: dataType[1],
       flex: 1,
       hide: showGraph,
-      cellRenderer: handleValueinDollar,
+      cellRenderer:
+        selectedViewType === "Expense PMPM" ? handleValueinDollar : "actual",
     },
     {
       field: "difference",
       headerName: "Difference",
       flex: 1,
-      cellRenderer: handleValueinDollar,
+      cellRenderer:
+        selectedViewType === "Expense PMPM"
+          ? handleValueinDollar
+          : "difference",
     },
     {
       field: "differencePercentage",
@@ -159,6 +165,7 @@ function SummaryInOutPatient(props) {
           <RegionMap
             selectedViewType={props.selectedViewType}
             data={dataWithoutFormat}
+            dataType={dataType}
           />
           <div
             className={"ag-theme-quartz col-5"}
@@ -166,10 +173,7 @@ function SummaryInOutPatient(props) {
               height: "418px",
             }}
           >
-            <AgGridReact
-              rowData={data}
-              columnDefs={colDefs}
-            />
+            <AgGridReact rowData={data} columnDefs={colDefs} />
           </div>
         </div>
       )}

@@ -18,6 +18,7 @@ public class PMPMDTO implements Cloneable {
     private String provider;
     private Long activeMembers;
     private Double pmpm;
+    private Long providerCount;
     
 	public PMPMDTO(Double totalPricepm, String months) {
 		super();
@@ -25,11 +26,24 @@ public class PMPMDTO implements Cloneable {
 		this.months = months;
 	}
 	
+	public PMPMDTO(String state, Long providerCount) {
+		super();
+		this.state = state;
+		this.providerCount = providerCount;
+	}
+	
 	public PMPMDTO(Double totalPricepm, String months, String state) {
 		super();
 		this.totalPricepm = totalPricepm;
 		this.months = months;
 		this.state = state;
+	}
+	
+	public PMPMDTO(String months, Double totalPricepm, String provider) {
+		super();
+		this.months = months;
+		this.totalPricepm = totalPricepm;
+		this.provider = provider;
 	}
 	
 	public PMPMDTO(Double totalPricepm, Long memberCount, String months, String speciality, String patientType) {

@@ -51,7 +51,7 @@ const ProviderSpecialtySummary = (props) => {
   return (
     <>
       <div className="d-flex justify-content-between mt-3">
-        <strong>PMPM Data</strong>
+        <strong>PMPM</strong>
         <div onClick={handleTableView} className="coc-cursor">
           <strong>View:</strong> {showGraph ? graphSVG : "123"}
         </div>

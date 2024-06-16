@@ -10,7 +10,7 @@ import HorizontalBarChart from "../../components/HorizontalBarChart";
 import "../../App.css";
 
 function CareCategoryInOutPatient(props) {
-  const { showGraph } = props;
+  const { showGraph, datatype } = props;
   const rowData = props.rowdata;
   const handleGraph = (params) => {
     return (
@@ -19,7 +19,7 @@ function CareCategoryInOutPatient(props) {
           actualvalue={params.value[0]}
           targetvalue={params.value[1]}
           type={"number"}
-          graphtype={{ type1: "Target", type2: "Actual" }}
+          graphtype={{ type1: datatype[0], type2: datatype[1] }}
           aspectRatio={5}
           graphLength={2}
           height={"100px"}
@@ -36,21 +36,25 @@ function CareCategoryInOutPatient(props) {
     },
     {
       field: "target",
-      headerName: "Target",
+      headerName: datatype ? datatype[0] : "Target",
       flex: 1,
       hide: showGraph,
       cellRenderer: handleValueinDollar,
     },
     {
       field: "actual",
-      headerName: "Actual",
+      headerName: datatype ? datatype[1] : "Actual",
       flex: 1,
       hide: showGraph,
       cellRenderer: handleValueinDollar,
     },
     {
       field: "target_actual",
-      headerName: "Target & Actual",
+      headerName: datatype
+        ? datatype[0] === "Target"
+          ? "Target vs Actual"
+          : "Current vs Prior"
+        : "Target vs Actual",
       flex: 1,
       hide: !showGraph,
       cellRenderer: handleGraph,

@@ -6,7 +6,8 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 // import InputSelectField from "../../components/InputSelectFiled";
 import { graphSVG } from "../../assets/images/svg/SVGIcons";
 import HorizontalBarChart from "../../components/HorizontalBarChart";
-import { handleValue } from "../../utilities/FormatUtilities";import "./CareProvider.css";
+import { handleValue } from "../../utilities/FormatUtilities";
+import "./CareProvider.css";
 
 const CareProviderDetails = () => {
   const [showGraph, setShowGraph] = useState(true);
@@ -200,9 +201,9 @@ const CareProviderDetails = () => {
                         <HorizontalBarChart
                           actualvalue={item.cost}
                           type={"number"}
-                          aspectRatio={6}
+                          aspectRatio={5}
                           graphLength={1}
-                          height={"38px"}
+                          height={"35px"}
                         />
                       </div>
                     ) : (
@@ -245,9 +246,9 @@ const CareProviderDetails = () => {
                         <HorizontalBarChart
                           actualvalue={item.cost}
                           type={"number"}
-                          aspectRatio={6}
+                          aspectRatio={5}
                           graphLength={1}
-                          height={"38px"}
+                          height={"35px"}
                         />
                       </div>
                     ) : (

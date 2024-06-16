@@ -65,13 +65,13 @@ public class DataProcessingService {
 
 		Long activeMembers = currentYearResult.getTotalActiveMembers();
 		Long endingMembers = (currentYearMonths.size() > 0) ? currentYearMonths.get(0).getTotalActiveMembers() : 0;
-		Double pmpmData = currentYearResult.getTotalPricepm() / activeMembers;
+		Double pmpmData = calculationUtils.roundToTwoDecimals(currentYearResult.getTotalPricepm() / activeMembers);
 		Long prevActiveMembers = previousYearResult.getTotalActiveMembers();
 		Long prevEndingMembers = (previousYearMonths.size() > 0) ? previousYearMonths.get(0).getTotalActiveMembers()
 				: 0;
-		Double prevPmpm = graphType.equals(DataConstants.TARGET_VS_ACTUAL)
+		Double prevPmpm = calculationUtils.roundToTwoDecimals(graphType.equals(DataConstants.TARGET_VS_ACTUAL)
 				? previousYearResult.getTotalPricepm() / calculateResultData(previousYearMonths).getTotalActiveMembers()
-				: previousYearResult.getTotalPricepm() / prevActiveMembers;
+				: previousYearResult.getTotalPricepm() / prevActiveMembers);
 		Long prevEndingMembersPercentage = targetPercentageMap
 				.getOrDefault(dateFormat.convertIntegertoStringDateFormat(prevEndMonth), 0L);
 		prevEndingMembers = graphType.equals(DataConstants.TARGET_VS_ACTUAL)
@@ -166,7 +166,7 @@ public class DataProcessingService {
 				Long targetPercentage = targetPercentageMap.getOrDefault(entry.getMonths(), 0L);
 				pmpm += pmpm * targetPercentage / 100;
 			}
-			return pmpm;
+			return calculationUtils.roundToTwoDecimals(pmpm);
 		}, (v1, v2) -> v1, LinkedHashMap::new));
 		return mapData;
 	}
@@ -281,7 +281,7 @@ public class DataProcessingService {
 	}
 
 	public Map<String, List<Object>> forecast(List<Forecast_PMPM> pmpm, List<Forecast_ActiveMembership> member,
-			String startMonth, String endMonth) {
+			String endMonth) {
 		log.info("Inside DataProcessingService.forecast() method");
 		String prevEndMonth = dateFormat.getPreviousYearMonth(endMonth);
 		Map<String, List<Object>> finalMap = new HashMap<>();

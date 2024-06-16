@@ -7,6 +7,7 @@ import "./Forecast.css";
 import { graphSVG } from "../../assets/images/svg/SVGIcons.jsx";
 import ForecastData from "./ForecastData.jsx";
 import { DataContext } from "../../context/DataContext.jsx";
+import { forecastFetch } from "../../services/ApiDataService.js";
 
 const Forecast = () => {
   const [options, setOptions] = useState(FileConstants.formOptions);
@@ -22,6 +23,8 @@ const Forecast = () => {
   const [showGraph, setShowGraph] = useState(false);
   const monthMapping = FileConstants.monthMapping;
   const radioButtonoptions = FileConstants.radioButtonOptions;
+  const [forecastMemberData, setForecastMemberData] = useState([]);
+  const [forecastCostData, setForecastCostData] = useState([]);
 
   // const tabs = [
   //   {
@@ -82,6 +85,29 @@ const Forecast = () => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const response = await forecastFetch(inputValues);
+      if (response.status === 200) {
+        console.log("FORECAST DATA", response.data);
+        const forecastCostDataArray = Object.entries(response.data.pmpm).map(
+          ([forecast, data]) => ({ forecast, ...data })
+        );
+        const forecastMemberDataArray = Object.entries(
+          response.data.member
+        ).map(([forecast, data]) => ({ forecast, ...data }));
+        setForecastCostData(forecastCostDataArray);
+        setForecastMemberData(forecastMemberDataArray);
+      }
+    } catch (error) {
+      console.log("Could not fetch data: " + error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [toggle, options]);
+
   const useeffecttrigger = () => {
     setToggle((prevToggle) => !prevToggle);
   };
@@ -106,98 +132,6 @@ const Forecast = () => {
       setInputValues(initialInputValues);
     }
   }, [filterOptions, initialInputValues]);
-
-  const customerData = [
-    {
-      care_provider: "Provider 1",
-      target: 5,
-      actual: 1,
-      difference: 1,
-      difference_: 3,
-    },
-    {
-      care_provider: "Provider 2",
-      target: 5,
-      actual: 2,
-      difference: 2,
-      difference_: 2,
-    },
-    {
-      care_provider: "Provider 3",
-      target: 5,
-      actual: 3,
-      difference: 3,
-      difference_: 4,
-    },
-    {
-      care_provider: "Provider 4",
-      target: 5,
-      actual: 4,
-      difference: 4,
-      difference_: 8,
-    },
-    {
-      care_provider: "Provider 5",
-      target: 5,
-      actual: 4,
-      difference: 4,
-      difference_: 8,
-      target_actual: 4,
-    },
-  ];
-
-  const forecastData = [
-    {
-      period: "Jan 2023",
-      forecast_value: 123,
-      confidence_interval: 5,
-    },
-    {
-      period: "Feb 2023",
-      forecast_value: 567,
-      confidence_interval: 12,
-    },
-    {
-      period: "Mar 2023",
-      forecast_value: 234,
-      confidence_interval: 4,
-    },
-    {
-      period: "Apr 2023",
-      forecast_value: 123,
-      confidence_interval: 7,
-    },
-    {
-      period: "May 2023",
-      forecast_value: 876,
-      confidence_interval: 5,
-    },
-    {
-      period: "Jun 2023",
-      forecast_value: 142,
-      confidence_interval: 6,
-    },
-    {
-      period: "Jul 2023",
-      forecast_value: 123,
-      confidence_interval: 5,
-    },
-    {
-      period: "Aug 2023",
-      forecast_value: 512,
-      confidence_interval: 9,
-    },
-    {
-      period: "Sep 2023",
-      forecast_value: 170,
-      confidence_interval: 2,
-    },
-    {
-      period: "Oct 2023",
-      forecast_value: 340,
-      confidence_interval: 8,
-    },
-  ];
 
   const handleTableView = () =>
     showGraph === false ? setShowGraph(true) : setShowGraph(false);
@@ -233,7 +167,11 @@ const Forecast = () => {
           </div>
           <ForecastData
             showGraph={showGraph}
-            rowData={forecastData}
+            rowData={
+              selectedForecastOption === "Cost"
+                ? forecastCostData
+                : forecastMemberData
+            }
             selectedOption={selectedForecastOption}
           />
         </div>
@@ -245,6 +183,7 @@ const Forecast = () => {
           handleReset={handleReset}
           RadioButtonOptions={radioButtonoptions}
           RadioSelectedOption={selectedOption}
+          isTypeDisabled={true}
         />
       </div>
     </div>
