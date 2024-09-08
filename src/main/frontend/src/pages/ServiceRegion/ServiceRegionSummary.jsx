@@ -113,7 +113,7 @@ const ServiceRegionSummary = (props) => {
   return (
     <div className="row p-1 mt-3">
       <div className="d-flex justify-content-between">
-        <strong>{title}</strong>
+        <strong>PMPM</strong>
         <div className="d-flex">
           <RadioButtons
             options={viewTypes}

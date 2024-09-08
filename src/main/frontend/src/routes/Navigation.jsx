@@ -8,10 +8,22 @@ import PcpGroup from "../pages/PcpGroup/PcpGroup";
 import ServiceRegion from "../pages/ServiceRegion/ServiceRegion";
 import Forecast from "../pages/Forecast/Forecast";
 
+// import { Callback } from "@healthaisso/health-ai-sso";
+
+/* redirectURL to be changed to actual domain url after hosting and 
+registered with Deloitte as valid redirect url for sso */
+const redirectURL = "https://deloitte.coc.com";
+
 const Navigation = () => {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      {/* <Route
+        path="/callback"
+        element={
+          <Callback redirectURL={redirectURL} homeNavigateObject="/"></Callback>
+        }
+      /> */}
       <Route path="/summaryPage" element={<SummaryPage />} />
       <Route path="/careCategory" element={<CareCategory />} />
       <Route path="/serviceRegion" element={<ServiceRegion />} />

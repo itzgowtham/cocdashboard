@@ -2,6 +2,7 @@ import React from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
+
 import {
   handleDifferenceinPercentage,
   handleValueinDollar,
@@ -14,7 +15,7 @@ function CareCategoryInOutPatient(props) {
   const rowData = props.rowdata;
   const handleGraph = (params) => {
     return (
-      <div>
+      <span style={{ flex: "1" }}>
         <HorizontalBarChart
           actualvalue={params.value[0]}
           targetvalue={params.value[1]}
@@ -22,9 +23,9 @@ function CareCategoryInOutPatient(props) {
           graphtype={{ type1: datatype[0], type2: datatype[1] }}
           aspectRatio={5}
           graphLength={2}
-          height={"100px"}
+          height={"100%"}
         />
-      </div>
+      </span>
     );
   };
 
@@ -77,7 +78,7 @@ function CareCategoryInOutPatient(props) {
       <div
         className={"ag-theme-quartz"}
         style={{
-          height: "418px",
+          height: "420px",
         }}
       >
         <AgGridReact
@@ -85,7 +86,7 @@ function CareCategoryInOutPatient(props) {
           columnDefs={colDefs}
           rowHeight={46}
           pagination={true}
-          paginationPageSize={7}
+          paginationPageSize={20}
         />
       </div>
     </>

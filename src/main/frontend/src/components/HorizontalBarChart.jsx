@@ -9,7 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { formatNumber } from "../utilities/FormatUtilities";
+import { formatNumberforChart } from "../utilities/FormatUtilities";
 
 ChartJS.register(
   CategoryScale,
@@ -30,6 +30,7 @@ function HorizontalBarChart(props) {
     aspectRatio,
     graphLength,
     height,
+    maxValue,
   } = props;
   const options = {
     indexAxis: "y",
@@ -61,7 +62,7 @@ function HorizontalBarChart(props) {
 
             if (value !== null) {
               if (type === "number") {
-                label += formatNumber(value);
+                label += formatNumberforChart(value);
               } else {
                 if (value !== null) {
                   label += new Intl.NumberFormat("en-US", {
@@ -89,6 +90,9 @@ function HorizontalBarChart(props) {
       x: {
         categoryPercentage: 0.1,
         categorySpacing: 0.1,
+        beginAtZero: true,
+        max: maxValue,
+        min: 0,
         display: false,
         grid: {
           display: false,
@@ -100,6 +104,7 @@ function HorizontalBarChart(props) {
       y: {
         categorySpacing: 0.1,
         display: true,
+        beginAtZero: true,
         grid: {
           display: false,
         },

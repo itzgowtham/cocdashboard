@@ -4,16 +4,28 @@ import TabComponent from "../../components/TabComponent";
 import CareProviderInOutPatient from "./CareProviderInOutPatient";
 import { graphSVG } from "../../assets/images/svg/SVGIcons";
 function CareCategorySummary(props) {
-  const { InpatientDataArray, OutpatientDataArray } = props;
+  const { InpatientDataArray, OutpatientDataArray, dataType } = props;
   const [showGraph, setShowGraph] = useState(false);
   const [tabs, setTabs] = useState([
     {
       label: "In Patient",
-      content: <CareProviderInOutPatient showGraph={showGraph} rowdata={""} />,
+      content: (
+        <CareProviderInOutPatient
+          showGraph={showGraph}
+          rowdata={""}
+          dataType={dataType}
+        />
+      ),
     },
     {
       label: "Out Patient",
-      content: <CareProviderInOutPatient showGraph={showGraph} rowdata={""} />,
+      content: (
+        <CareProviderInOutPatient
+          showGraph={showGraph}
+          rowdata={""}
+          dataType={dataType}
+        />
+      ),
     },
   ]);
 
@@ -29,6 +41,7 @@ function CareCategorySummary(props) {
           <CareProviderInOutPatient
             showGraph={showGraph}
             rowdata={InpatientDataArray}
+            dataType={dataType}
           />
         ),
       },
@@ -38,6 +51,7 @@ function CareCategorySummary(props) {
           <CareProviderInOutPatient
             showGraph={showGraph}
             rowdata={OutpatientDataArray}
+            dataType={dataType}
           />
         ),
       },
@@ -59,14 +73,14 @@ function CareCategorySummary(props) {
                       style={{ color: "#004F59" }}
                       aria-hidden="true"
                     >
-                      Target
+                      {dataType ? dataType[0] : "Target"}
                     </i>
                     <i
                       className="fa fa-circle ms-2"
                       style={{ color: "#6FC2B4" }}
                       aria-hidden="true"
                     >
-                      Actual
+                      {dataType ? dataType[1] : "Actual"}
                     </i>
                   </div>
                 ) : (

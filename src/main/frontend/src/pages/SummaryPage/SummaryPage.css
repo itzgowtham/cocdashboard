@@ -22,9 +22,26 @@
   flex: 1;
   background-color: white;
   scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-}
 
+  /* removed this - To add scrollbar in AgGrid table */
+  /* scrollbar-color: transparent transparent; */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.second-column::-webkit-scrollbar {
+  display: none;
+}
 .collapsed {
   flex: 0.03 0 0;
+}
+
+.coc-percentage {
+  flex: 1;
+}
+
+.chatbot-container {
+  position: fixed;
+  right: 60px;
+  bottom: 20px;
+  z-index: 1000;
 }

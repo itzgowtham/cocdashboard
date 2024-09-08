@@ -157,7 +157,7 @@ function SummaryInOutPatient(props) {
             height: "418px",
           }}
         >
-          <AgGridReact rowData={data} columnDefs={colDefs} />
+          <AgGridReact rowData={data} columnDefs={colDefs} pagination={true} paginationPageSize={20} />
         </div>
       )}
       {showGraph && (

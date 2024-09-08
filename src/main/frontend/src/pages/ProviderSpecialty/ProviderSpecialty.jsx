@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
-import TabComponent from "../../components/TabComponent.jsx";
-import * as FileConstants from "../../constants/FileConstants";
-import Navbar from "../../components/Navbar/Navbar.jsx";
-import { providerSpecialtyFetch } from "../../services/ApiDataService.js";
-import Filters from "../../components/Filters";
 import ProviderSpecialtySummary from "./ProviderSpecialtySummary.jsx";
 import ProviderSpecialtyDetails from "./ProviderSpecialtyDetails.jsx";
+import TabComponent from "../../components/TabComponent.jsx";
+import Filters from "../../components/Filters";
+import * as FileConstants from "../../constants/FileConstants";
+import Navbar from "../../components/Navbar/Navbar.jsx";
+import {
+  providerSpecialtyDetailsFetch,
+  providerSpecialtyFetch,
+} from "../../services/ApiDataService.js";
 import { DataContext } from "../../context/DataContext";
-
+import { formatOptions } from "../../utilities/FormatUtilities.jsx";
+import Chatbot from "../../components/ChatBot.jsx";
 const ProviderSpecialty = () => {
   const [inputValues, setInputValues] = useState(FileConstants.formInputValues);
   const [options, setOptions] = useState(FileConstants.formOptions);
@@ -18,6 +22,19 @@ const ProviderSpecialty = () => {
   const [OutPatientrowdata, setOutPatientRowdata] = useState();
   const [toggle, setToggle] = useState(true);
   const { filterOptions, initialInputValues } = useContext(DataContext);
+  const [membersPerSpecialty, setMembersPerSpecialty] = useState([]);
+  const [topSpecialties, setTopSpecialties] = useState([]);
+  const [topMembersPerSpecialty, setTopMembersPerSpecialty] = useState([]);
+  const [topProvidersBySpecialty, setTopProvidersBySpecialty] = useState([]);
+  const [specialtyOptions, setSpecialtyOptions] = useState([]);
+  const [dataType, setDataType] = useState(["Target", "Actual"]);
+  const [tabIndex, setTabIndex] = useState("");
+  const [selectedProviderSpecialtyOption, setSelectedProviderSpecialtyOption] =
+    useState("");
+
+  const handleSelectChange = (value) => {
+    setSelectedProviderSpecialtyOption(value);
+  };
 
   const [tabs, setTabs] = useState([
     {
@@ -26,14 +43,29 @@ const ProviderSpecialty = () => {
         <ProviderSpecialtySummary
           InpatientDataArray={InPatientrowdata}
           OutpatientDataArray={OutPatientrowdata}
+          dataType={dataType}
+          graphtype={{ type1: dataType[0], type2: dataType[1] }}
         />
       ),
     },
     {
       label: "Details",
-      content: <ProviderSpecialtyDetails />,
+      content: (
+        <ProviderSpecialtyDetails
+          membersPerSpecialty={membersPerSpecialty}
+          topSpecialties={topSpecialties}
+          topMembersPerSpecialty={topMembersPerSpecialty}
+          topProvidersBySpecialty={topProvidersBySpecialty}
+          specialtyOptions={specialtyOptions}
+          onSelectChange={handleSelectChange}
+        />
+      ),
     },
   ]);
+
+  const getDatafromTabs = (index) => {
+    setTabIndex(index);
+  };
 
   const handleChange = (fieldName, selectedValue) => {
     console.log(selectedValue);
@@ -42,10 +74,22 @@ const ProviderSpecialty = () => {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonOptions.find(
           (option) => option.label === selectedValue
@@ -96,6 +140,37 @@ const ProviderSpecialty = () => {
     useeffecttrigger();
   };
 
+  useEffect(() => {
+    if (tabIndex == 0) {
+      fetchData();
+    } else {
+      fetchDetailsData();
+    }
+  }, [toggle, tabIndex, selectedProviderSpecialtyOption]);
+
+  const fetchDetailsData = async () => {
+    try {
+      const response = await providerSpecialtyDetailsFetch({
+        ...inputValues,
+        speciality: selectedProviderSpecialtyOption,
+      });
+      if (response.status === 200) {
+        const membersPerSpecialty = response.data.membersPerSpeciality;
+        const topSpecialties = response.data.topSpecialitiesByCost;
+        const topMembersPerSpecialty = response.data.topMembersPerSpeciality;
+        const topProvidersBySpecialty = response.data.topProvidersPerSpeciality;
+        const specialtyOptions = response.data.distinctSpeciality;
+        setMembersPerSpecialty(membersPerSpecialty);
+        setTopSpecialties(topSpecialties);
+        setTopMembersPerSpecialty(topMembersPerSpecialty);
+        setTopProvidersBySpecialty(topProvidersBySpecialty);
+        setSpecialtyOptions(formatOptions(specialtyOptions));
+      }
+    } catch (error) {
+      console.log("Could not fetch data: " + error);
+    }
+  };
+
   const fetchData = async () => {
     try {
       const response2 = await providerSpecialtyFetch(inputValues);
@@ -117,6 +192,14 @@ const ProviderSpecialty = () => {
           ...item,
           target_actual: [item.actual, item.target],
         }));
+        if (
+          inputValues.graphType === "Target vs Actual" ||
+          inputValues.graphType === ""
+        ) {
+          setDataType(["Target", "Actual"]);
+        } else {
+          setDataType(["Prior", "Current"]);
+        }
         setInPatientRowdata(transformedData);
         setOutPatientRowdata(transformedData2);
       }
@@ -135,10 +218,6 @@ const ProviderSpecialty = () => {
   }, [filterOptions, initialInputValues]);
 
   useEffect(() => {
-    fetchData();
-  }, [toggle, options]);
-
-  useEffect(() => {
     setTabs([
       {
         label: "Summary",
@@ -146,15 +225,25 @@ const ProviderSpecialty = () => {
           <ProviderSpecialtySummary
             InpatientDataArray={InPatientrowdata}
             OutpatientDataArray={OutPatientrowdata}
+            dataType={dataType}
           />
         ),
       },
       {
         label: "Details",
-        content: <ProviderSpecialtyDetails />,
+        content: (
+          <ProviderSpecialtyDetails
+            membersPerSpecialty={membersPerSpecialty}
+            topSpecialties={topSpecialties}
+            topMembersPerSpecialty={topMembersPerSpecialty}
+            topProvidersBySpecialty={topProvidersBySpecialty}
+            specialtyOptions={specialtyOptions}
+            onSelectChange={handleSelectChange}
+          />
+        ),
       },
     ]);
-  }, [InPatientrowdata, OutPatientrowdata, inputValues]);
+  }, [InPatientrowdata, OutPatientrowdata, specialtyOptions, toggle, tabIndex]);
 
   return (
     <>
@@ -169,7 +258,15 @@ const ProviderSpecialty = () => {
             </div>
             <h3>Provider Specialty</h3>
             <div className="mt-4">
-              <TabComponent tabs={tabs} isSummaryDetail={true} />
+              <TabComponent
+                tabs={tabs}
+                isSummaryDetail={true}
+                sendIndex={getDatafromTabs}
+              />
+            </div>
+            <div className="chatbot-container">
+              <p></p>
+              <Chatbot />
             </div>
           </div>
           <Filters
@@ -180,7 +277,11 @@ const ProviderSpecialty = () => {
             handleReset={handleReset}
             RadioButtonOptions={radioButtonOptions}
             RadioSelectedOption={selectedOption}
-          ></Filters>
+            isSpecialityDisabled={tabIndex == 0 ? false : true}
+            isProviderDisabled={true}
+            isTypeDisabled={tabIndex == 0 ? false : true}
+            isMonthDisabled={tabIndex == 0 ? false : true}
+          />
         </div>
       </div>
     </>

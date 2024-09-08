@@ -13,6 +13,8 @@ function Filters({
   isProviderDisabled,
   isSpecialityDisabled,
   isTypeDisabled,
+  isAreaStateDisabled,
+  isMonthDisabled,
 }) {
   const initialCollapseState =
     localStorage.getItem("filterscollapsed") === "true" ? true : false;
@@ -59,7 +61,7 @@ function Filters({
                   {rightSVG}
                 </Button>
                 {filterSVG}
-                <h6 className="ms-2 mt-3">Filters</h6>
+                <h6 className="ms-2 mt-3 coc-tealcolour">Filters</h6>
               </div>
             </div>
             <div className="row">
@@ -78,6 +80,7 @@ function Filters({
                     options={FormSelectOptions.state}
                     onChange={onChange}
                     name={"state"}
+                    isDisabled={isAreaStateDisabled ? true : false}
                   />
                 </div>
                 <div className="mb-2">
@@ -95,7 +98,7 @@ function Filters({
                     options={FormSelectOptions.product}
                     onChange={onChange}
                     name={"speciality"}
-                    isDisabled={true}
+                    isDisabled={isSpecialityDisabled}
                   />
                 </div>
                 <div className="mb-2">
@@ -104,7 +107,7 @@ function Filters({
                     options={FormSelectOptions.product}
                     onChange={onChange}
                     name={"provider"}
-                    isDisabled={true}
+                    isDisabled={isProviderDisabled}
                   />
                 </div>
 
@@ -130,26 +133,72 @@ function Filters({
                   role="group"
                   aria-label="Radio button group"
                 >
-                  {RadioButtonOptions.map((option) => (
-                    <label
-                      key={option.label}
-                      className={`coc-btn btn btn-md text-black px-2 ${
-                        RadioSelectedOption === option.label
-                          ? "coc-active"
-                          : "border border-dark"
-                      }`}
-                    >
-                      <input
-                        name="startMonth"
-                        type="radio"
-                        value={option.label}
-                        checked={RadioSelectedOption === option.label}
-                        onChange={(e) => onChange("startMonth", e.target.value)}
-                        className="visually-hidden"
-                      />
-                      {option.label}
-                    </label>
-                  ))}
+                  {RadioButtonOptions.map((option, index) =>
+                    isMonthDisabled ? (
+                      index == 0 ? (
+                        <label
+                          key={option.label}
+                          className={`coc-btn btn btn-md text-black px-2 ${
+                            RadioSelectedOption === option.label
+                              ? "coc-active"
+                              : "border border-dark"
+                          }`}
+                        >
+                          <input
+                            name="startMonth"
+                            type="radio"
+                            value={option.label}
+                            checked={RadioSelectedOption === option.label}
+                            onChange={(e) =>
+                              onChange("startMonth", e.target.value)
+                            }
+                            className="visually-hidden"
+                          />
+                          {option.label}
+                        </label>
+                      ) : (
+                        <label
+                          key={option.label}
+                          className={`btn btn-md text-black px-2 ${"coc-disable"} border border-dark`}
+                        >
+                          {" "}
+                          <input
+                            name="startMonth"
+                            type="radio"
+                            value={option.label}
+                            checked={RadioSelectedOption === option.label}
+                            onChange={(e) =>
+                              onChange("startMonth", e.target.value)
+                            }
+                            className="visually-hidden"
+                            disabled={true}
+                          />{" "}
+                          {option.label}
+                        </label>
+                      )
+                    ) : (
+                      <label
+                        key={option.label}
+                        className={`coc-btn btn btn-md text-black px-2 ${
+                          RadioSelectedOption === option.label
+                            ? "coc-active"
+                            : "border border-dark"
+                        }`}
+                      >
+                        <input
+                          name="startMonth"
+                          type="radio"
+                          value={option.label}
+                          checked={RadioSelectedOption === option.label}
+                          onChange={(e) =>
+                            onChange("startMonth", e.target.value)
+                          }
+                          className="visually-hidden"
+                        />
+                        {option.label}
+                      </label>
+                    )
+                  )}
                 </div>
 
                 <div className="mb-2">
@@ -158,7 +207,7 @@ function Filters({
                     options={FormSelectOptions.graphType}
                     onChange={onChange}
                     name="graphType"
-                    isDisabled={isTypeDisabled?true:false}
+                    isDisabled={isTypeDisabled ? true : false}
                   />
                 </div>
                 <div className="d-flex mx-auto">

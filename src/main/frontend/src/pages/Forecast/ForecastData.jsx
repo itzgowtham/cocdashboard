@@ -11,6 +11,7 @@ const ForecastData = (props) => {
       field: "months",
       headerName: "Period",
       flex: 1,
+      unSortIcon:true,
     },
     {
       field: `${
@@ -22,6 +23,7 @@ const ForecastData = (props) => {
         selectedOption === "Cost" ? "PMPM" : "Members"
       })`,
       flex: 1,
+      unSortIcon:true,
       //   hide: showGraph,
       cellRenderer: (params) => {
         return selectedOption === "Cost"
@@ -30,40 +32,67 @@ const ForecastData = (props) => {
       },
     },
     {
-      // field: "confidence_interval",
+      field: "confidenceInterval",
       headerName: `Confidence Interval (${
         selectedOption === "Cost" ? "PMPM" : "Members"
       })`,
       flex: 1,
+      unSortIcon:true,
       //   hide: showGraph,
       cellRenderer: (params) => {
-        const differenceCost =
-          params.data.pmpm_forecast_upper - params.data.pmpm_forecast_lower;
-        const differenceMember =
-          params.data.activemembership_forecast_upper -
-          params.data.activemembership_forecast_lower;
         return selectedOption === "Cost"
-          ? `+/- $ ${differenceCost.toFixed(2)}`
-          : `+/- ${differenceMember}`;
+          ? `+/- $ ${params.data.confidenceInterval?.toFixed(2)}`
+          : `+/- ${params.data.confidenceInterval}`;
       },
     },
   ];
-  
+
   const data = {
-    labels: rowData.map((data) => data.months?.substring(0,3)),
+    labels: rowData.map((data) => data.months?.substring(0, 3)),
     datasets: [
       {
         type: "scatter",
         label: "Observed Data Points",
         data:
           selectedOption === "Cost"
-            ? rowData.map((data) => ({ x: data.months?.substring(0,3), y: data.pmpm }))
-            : rowData.map((data) => ({
-                x: data.months?.substring(0,3),
-                y: data.activemembership,
-              })),
+            ? rowData
+                .filter((data) => data.pmpm > 0)
+                .map((data) => ({
+                  x: data.months?.substring(0, 3),
+                  y: data.pmpm,
+                }))
+            : rowData
+                .filter((data) => data.activemembership > 0)
+                .map((data) => ({
+                  x: data.months?.substring(0, 3),
+                  y: data.activemembership,
+                })),
 
         backgroundColor: "#004F59",
+      },
+      {
+        type: "scatter",
+        label: "Test Data Points",
+        data:
+          selectedOption === "Cost"
+            ? rowData
+                .filter((data) => data.pmpm === 0 && data.pmpm_forecast > 0)
+                .map((data) => ({
+                  x: data.months?.substring(0, 3),
+                  y: data.pmpm_forecast,
+                }))
+            : rowData
+                .filter(
+                  (data) =>
+                    data.activemembership === 0 &&
+                    data.activemembership_forecast > 0
+                )
+                .map((data) => ({
+                  x: data.months?.substring(0, 3),
+                  y: data.activemembership_forecast,
+                })),
+
+        backgroundColor: "#F39000",
       },
       {
         label: "Forecast",
@@ -134,7 +163,7 @@ const ForecastData = (props) => {
               columnDefs={colDefs}
               rowHeight={46}
               pagination={true}
-              paginationPageSize={7}
+              paginationPageSize={20}
             />
           )}
         </div>

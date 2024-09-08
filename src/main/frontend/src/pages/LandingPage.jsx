@@ -17,7 +17,7 @@ const LandingPage = () => {
     pmpm: 0,
     memberMonths: 0,
     endingMembers: 0,
-    mlr: "In progress",
+    mlr: "No Data Available",
     memberMonthsPercentageChange: 0,
     endingMembersPercentage: 0,
     pmpmPercentageChange: 0,
@@ -33,7 +33,7 @@ const LandingPage = () => {
             pmpm: response.data.pmpm,
             memberMonths: response.data.memberMonths,
             endingMembers: response.data.endingMembers,
-            mlr: "In progress",
+            mlr: "No Data Available",
             pmpmPercentageChange: response.data.pmpmPercentageChange,
             endingMembersPercentage:
               response.data.endingMembersPercentageChange,
@@ -62,12 +62,11 @@ const LandingPage = () => {
             <div className="col-8" style={{ fontWeight: "300" }}>
               <h2>Cost Analytics</h2>
               <p className="text-justify">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.Putsbk
-                dolorum illo cum praesentium asperiores? Nisi aut debitis
-                quibusdam quo. Lorem ipsum, dolor sit amet consectetur
-                adipisicing elit. Quas cum laudantium sit minus, nihil
-                repudiandae! Aut, ad eligendi saepe, veniam dolorum dolore rem
-                laboriosam autem architecto itaque sequi, ea numquam.
+                Explore comprehensive Healthcare expenditure insights with our
+                Cost Analytics Dashboard. Identify key cost drivers, recognize
+                savings opportunities, and enhance financial planning with
+                real-time tracking of essential metrics. Empower strategic
+                decision-making for improved cost-effectiveness.
               </p>
             </div>
             <div className="col-4">
@@ -113,25 +112,33 @@ const LandingPage = () => {
                 label={"Summary"}
                 cardUrl={"/summaryPage"}
                 imageUrl={localpolice}
-                description={"Short Description"}
+                description={
+                  "Overview of key Healthcare Expense Metrics and Trends."
+                }
               />
               <Card
                 label={"Care Category"}
                 cardUrl={"/careCategory"}
                 imageUrl={careCategory}
-                description={"Short Description"}
+                description={
+                  "Breakdown of Expenses by distinct Care Categories."
+                }
               />
               <Card
                 label={"Service Region"}
                 cardUrl={"/serviceRegion"}
                 imageUrl={serviceregion}
-                description={"Short Description"}
+                description={
+                  "Geographical Analysis of Healthcare Costs across Regions."
+                }
               />
               <Card
                 label={"Care Provider"}
                 cardUrl={"/careProvider"}
                 imageUrl={careprovider}
-                description={"Short Description"}
+                description={
+                  "Cost analysis for Individual Healthcare Providers."
+                }
               />
             </div>
             <div className="row d-flex mx-auto mb-3">
@@ -139,19 +146,25 @@ const LandingPage = () => {
                 label={"Provider Specialty"}
                 cardUrl={"/providerSpecialty"}
                 imageUrl={providerspeciality}
-                description={"Short Description"}
+                description={
+                  "Cost variations among different Provider Specialties."
+                }
               />
               <Card
                 label={"PCP Group"}
                 cardUrl={"/pcpGroup"}
                 imageUrl={pcpGroup}
-                description={"Short Description"}
+                description={
+                  "Expense tracking for Primary Care Provider (PCP) groups."
+                }
               />
               <Card
                 label={"Forecast"}
                 cardUrl={"/forecast"}
                 imageUrl={forecast}
-                description={"Short Description"}
+                description={
+                  "Predictive Analysis to Forecast future Healthcare Expenses"
+                }
               />
               <div className="col mx-2 mt-3"></div>
             </div>

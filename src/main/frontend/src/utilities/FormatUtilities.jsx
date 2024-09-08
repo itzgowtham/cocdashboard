@@ -10,17 +10,23 @@ export const checkPercentage = (value) => {
   );
 };
 
+export const formatNumberforChart = (value) => {
+    return `${(value).toFixed(2)}`;
+  
+};
+
+
 export const formatNumber = (value) => {
+  value = Number(value);
   if (value >= 1000000000) {
     return `${(value / 1000000000).toFixed(0)}B`;
   } else if (value >= 1000000) {
     return `${(value / 1000000).toFixed(0)}M`;
   } else if (value >= 1000) {
     return `${(value / 1000).toFixed(0)}K`;
-  } else if (value < 1) {
-    return `${value.toFixed(3)}`;
   } else {
-    return value;
+    // return value;
+    return `${(value).toFixed(3)}`;
   }
 };
 
@@ -37,7 +43,7 @@ export const formatNumberColour = (value) => {
   } else {
     val = value;
   }
-  return <b style={{ color: "#004F59" }}>${val}</b>;
+  return <b style={{ color: "#004F59" }}>${value}</b>;
 };
 
 export const formatOptions = (optionsArray) => {
@@ -58,6 +64,10 @@ export const handleDifferenceinPercentage = (params) => {
   );
 };
 
-export const handleValue=(params)=>{
-  return(<p>{params.value} - {formatNumberColour(234.56)}</p>)
- }
+export const handleValue = (params) => {
+  return (
+    <p>
+      {params.value} - {formatNumberColour(234.56)}
+    </p>
+  );
+};

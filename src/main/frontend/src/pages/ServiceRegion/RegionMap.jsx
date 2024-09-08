@@ -9,14 +9,14 @@ const RegionMap = (props) => {
   const geoUrl = geograpyJSON;
   const { selectedViewType, data, dataType } = props;
   let minValue = 0;
-  let maxValue = 390;
+  let maxValue = 100;
   let insufficientData = Object.keys(data).length > 55 ? false : true;
 
   for (let item in data) {
-    if (data[item].actual > maxValue && data[item].name != "others") {
+    if (data[item].actual > maxValue && item != "Others") {
       maxValue = data[item].actual;
     }
-    if (data[item].actual < minValue && data[item].name != "others") {
+    if (data[item].actual < minValue && item != "Others") {
       minValue = data[item].actual;
     }
   }
@@ -202,22 +202,22 @@ const RegionMap = (props) => {
               }
 
               return (
-                  <Geography
-                    className="my-anchor-element"
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={colorCode}
-                    stroke="#fff"
-                    onMouseOver={() => {
-                      setName(name);
-                      actualData !== ""
-                        ? setActual(actualData)
-                        : setActual("No Data");
-                      stateData?.target
-                        ? setTarget(stateData.target)
-                        : setTarget("No Data");
-                    }}
-                  ></Geography>
+                <Geography
+                  className="my-anchor-element"
+                  key={geo.rsmKey}
+                  geography={geo}
+                  fill={colorCode}
+                  stroke="#fff"
+                  onMouseOver={() => {
+                    setName(name);
+                    actualData !== ""
+                      ? selectedViewType === "Expense PMPM" ? setActual("$" + actualData) : setActual(actualData)
+                      : setActual("No Data");
+                    stateData?.target
+                      ? selectedViewType === "Expense PMPM" ? setTarget("$"+ stateData.target) : setTarget(stateData.target)
+                      : setTarget("No Data");
+                  }}
+                ></Geography>
               );
             })
           }
@@ -252,8 +252,8 @@ const RegionMap = (props) => {
           style={{ overflow: "visible" }}
         >
           <p className="m-0">{`Region : ${name}   `}</p>
-          <p className="m-0">{`${dataType[0]}: ${actual}`}</p>
-          <p className="m-0">{`${dataType[1]}: ${target}`}</p>
+          <p className="m-0">{`${dataType[1]}: ${actual}`}</p>
+          <p className="m-0">{`${dataType[0]}: ${target}`}</p>
         </Tooltip>
       </div>
     </div>

@@ -119,6 +119,14 @@ const LineChart = (props) => {
           <span className="w-300 " style={{ fontSize: "11px" }}>
             Uncertainty Interval &nbsp;
           </span>
+          <i
+            className="fa fa-circle me-1 small"
+            style={{ color: "#F39000" }}
+            aria-hidden="true"
+          ></i>
+          <span className="w-300 " style={{ fontSize: "11px" }}>
+            Test Data Points &nbsp;
+          </span>
         </span>
       </div>
       <Line data={data} options={options} />

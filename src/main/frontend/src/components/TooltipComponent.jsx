@@ -4,12 +4,14 @@ import React from "react";
 
 const TooltipComponent = (props) => {
   const { value, length, children } = props;
-  const isValueLong = value.length > length;
-  //   const slicedValue = value.slice(0, length) + "...";
+  const isValueLong = length == 0 ? true : value.length > length;
+  const slicedValue = value.slice(0, length) + "...";
 
   return (
     <>
-      <span title={isValueLong ? value : null}>{children}</span>
+      <span title={isValueLong ? value : null}>
+        {length == 0 ? children : isValueLong ? slicedValue : children}
+      </span>
     </>
   );
 };

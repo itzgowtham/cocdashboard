@@ -1,264 +1,359 @@
 import { useState } from "react";
-// import { AgGridReact } from "ag-grid-react"; // React Grid Logic
+import { AgGridReact } from "ag-grid-react"; // React Grid Logic
 import "ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
-// import { vector } from "../../assets/images/svg/SVGIcons";
-// import InputSelectField from "../../components/InputSelectFiled";
+import { vector } from "../../assets/images/svg/SVGIcons";
+import InputSelectField from "../../components/InputSelectFiled";
 import { graphSVG } from "../../assets/images/svg/SVGIcons";
 import HorizontalBarChart from "../../components/HorizontalBarChart";
-import { handleValue } from "../../utilities/FormatUtilities";
-import "./CareProvider.css";
+import TooltipComponent from "../../components/TooltipComponent";
+import { formatNumberColour } from "../../utilities/FormatUtilities";
 
-const CareProviderDetails = () => {
-  const [showGraph, setShowGraph] = useState(true);
+const CareProviderDetails = (props) => {
+  const {
+    topMembersPerProvider,
+    topTenMembersByCostforEachProvider,
+    topTenProvidersByCost,
+    topTenProvidersByCostForEachSpeciality,
 
-  // const membersbyProviderData = [
-  //   {
-  //     noOfMembers: "Provider Group 1",
-  //     topMembers: 13.4,
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 2",
-  //     topMembers: 1.4,
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 3",
-  //     topMembers: 3.4,
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 4",
-  //     topMembers: 0.4,
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 5",
-  //     topMembers: 11.4,
+    careProviderOptions,
+    onSelectChange,
 
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 6",
-  //     topMembers: 15.4,
+    onProviderChange,
+    providerOptions,
+    // specialtyOptions,
+    // onSpecialtyChange
+  } = props;
 
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 7",
-  //     topMembers: 13.4,
+  //except 1st table
+  const [showTopMembersGraph, setShowTopMembersGraph] = useState(true);
+  const [showTopProviderGraph, setShowTopProviderGraph] = useState(true);
+  const [showTopProviderSpecialtyGraph, setShowTopProviderSpecialtyGraph] =
+    useState(true);
 
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 8",
-  //     topMembers: 13.4,
+  //max values for all 3 graphs
+  const maxValueTopMembersByCostForProvider =
+    topTenMembersByCostforEachProvider[0]?.totalPricePM;
+  const maxValueTopProviderByCost = topTenProvidersByCost[0]?.totalPricePM;
+  const maxValueTopProviderByCostForEachSpeciality =
+    topTenProvidersByCostForEachSpeciality[0]?.totalPricePM;
 
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 9",
-  //     topMembers: 13.4,
+  //graph and number view handling of 2nd table(members by cost for each provider)
+  //graph part
+  const handleTopMembersByCostForEachProviderGraph = (params) => {
+    const name = params?.data?.memberUid;
+    const value = params?.data?.totalPricePM;
+    return (
+      <div className="d-flex">
+        <p className="col-5">{name}</p>
+        <span className="col-7">
+          <HorizontalBarChart
+            actualvalue={value}
+            type={"number"}
+            graphtype={{ type1: "Target", type2: "Actual" }}
+            aspectRatio={6}
+            graphLength={1}
+            height={"38px"}
+            maxValue={maxValueTopMembersByCostForProvider}
+            minValue={0}
+          />
+        </span>
+      </div>
+    );
+  };
 
-  //   },
-  //   {
-  //     noOfMembers: "Provider Group 10",
-  //     topMembers: 13.4,
+  //number format part
+  const handleTopMembersByCostForEachProviderValue = (params) => {
+    const name = params?.data?.memberUid;
+    const value = formatNumberColour(params?.data?.totalPricePM);
+    return (
+      <div className="d-flex">
+        <p className="col-6">{name}</p>
+        <span className="col-6">{value}</span>
+      </div>
+    );
+  };
 
-  //   },
-  // ];
+  //graph and number view handling of 3rd table(providers by cost)
+  //graph part
+  const handleTopProviderByCostGraph = (params) => {
+    console.log("Inside providers by cost graph", params);
+    const providerName = params?.data?.providerName;
+    const providerValue = params?.data?.totalPricePM;
+    return (
+      <div className="d-flex">
+        <p className="col-5">
+          <TooltipComponent
+            value={providerName}
+            length={25}
+            children={providerName}
+          />
+        </p>
+        <span className="col-7">
+          <HorizontalBarChart
+            actualvalue={providerValue}
+            type={"number"}
+            graphtype={{ type1: "Target", type2: "Actual" }}
+            aspectRatio={6}
+            graphLength={1}
+            height={"38px"}
+            maxValue={maxValueTopProviderByCost}
+            minValue={0}
+          />
+        </span>
+      </div>
+    );
+  };
+  //number part
+  const handleTopProviderByCostValue = (params) => {
+    const providerName = params?.data?.providerName;
+    const providerValue = formatNumberColour(params?.data?.totalPricePM);
+    return (
+      <div className="d-flex">
+        <p className="col-8">
+          <TooltipComponent
+            value={providerName}
+            length={45}
+            children={providerName}
+          />
+        </p>
+        <span className="col-4">{providerValue}</span>
+      </div>
+    );
+  };
 
-  // const [membersbyProviderRowData, setMembersbyProviderRowData] = useState(
-  //   membersbyProviderData
-  // );
+  //Top 10 PCP by cost for each specialty
+  const handleTopProviderByCostForEachSpecialityGraph = (params) => {
+    const name = params?.data?.providerName;
+    const value = params?.data?.totalPricePM;
+    return (
+      <div className="d-flex">
+        <p className="col-5">
+          <TooltipComponent value={name} length={25} children={name} />
+        </p>
+        <span className="col-7">
+          <HorizontalBarChart
+            actualvalue={value}
+            type={"number"}
+            graphtype={{ type1: "Target", type2: "Actual" }}
+            aspectRatio={6}
+            graphLength={1}
+            height={"38px"}
+            maxValue={maxValueTopProviderByCostForEachSpeciality}
+            minValue={0}
+          />
+        </span>
+      </div>
+    );
+  };
 
-  // const membersbyProviderColDefs = [
-  //   {
-  //     field: "noOfMembers",
-  //     headerName: "No. of Members",
-  //     flex: 1,
-  //   },
-  //   {
-  //     field: "topMembers",
-  //     headerName: "Top Members",
-  //     flex: 1,
-  //     hide: showGraph,
-  //   },
-  //   {
-  //     field: "topMembersGraph",
-  //     headerName: "Top Members",
-  //     flex: 1,
-  //     cellRenderer: handleGraph,
-  //     hide: !showGraph,
-  //   },
-  // ];
+  const handleTopProviderByCostForEachSpecialityValue = (params) => {
+    const name = params?.data?.providerName;
+    const value = formatNumberColour(params?.data?.totalPricePM);
+    return (
+      <div className="d-flex">
+        <p className="col-9">
+          <TooltipComponent value={name} length={45} children={name} />
+        </p>
+        <span className="col-3">{value}</span>
+      </div>
+    );
+  };
 
-  //Top 10  Specialties
-  const specialtiesData = [
+  //coldefs for all 4 tables
+  const topMembersByProviderColDef = [
     {
-      specialties: "Sample Long Provider Name",
-      cost: "10",
+      field: "providerName",
+      headerName: "Provider Name",
+      flex: 1,
     },
     {
-      specialties: "Sample Long Provider Name",
-      cost: "9",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "8",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "7",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "6",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "5",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "4",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "3",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "2",
-    },
-    {
-      specialties: "Sample Long Provider Name",
-      cost: "1",
+      field: "totalMembers",
+      headerName: "Members",
+      flex: 1,
     },
   ];
-  // const [specialtiesRowData, setSpecialtiesRowData] = useState(specialtiesData);
-  // const specialtiesColDefs = [
-  //   {
-  //     field: "specialties",
-  //     headerName: "Top Providers",
-  //     flex: 1,
-  //     hide: showGraph,
-  //   },
-  //   {
-  //     field: "specialties",
-  //     headerName: "Top Providers",
-  //     flex: 1,
-  //     hide: !showGraph,
-  //     cellRenderer: handleGraph,
-  //   },
-  // ];
-  const handleTableView = () => {
-    setShowGraph(!showGraph);
+
+  const topMembersByCostForEachProviderColDefs = [
+    {
+      field: "memberUid",
+      headerName: "Top Members",
+      flex: 1,
+      hide: showTopMembersGraph,
+      cellRenderer: handleTopMembersByCostForEachProviderValue,
+    },
+    {
+      field: "totalPricePM",
+      headerName: "Top Members",
+      flex: 1,
+      hide: !showTopMembersGraph,
+      cellRenderer: handleTopMembersByCostForEachProviderGraph,
+    },
+  ];
+
+  const topProvidersByCostColDefs = [
+    {
+      field: "providerName",
+      headerName: "Top Provider",
+      flex: 1,
+      hide: showTopProviderGraph,
+      cellRenderer: handleTopProviderByCostValue,
+    },
+    {
+      field: "totalPricePM",
+      headerName: "Top Provider",
+      flex: 1,
+      hide: !showTopProviderGraph,
+      cellRenderer: handleTopProviderByCostGraph,
+    },
+  ];
+
+  const topProvidersByCostForEachSpecialityColDefs = [
+    {
+      field: "providerName",
+      headerName: "Top Provider",
+      flex: 1,
+      hide: showTopProviderSpecialtyGraph,
+      cellRenderer: handleTopProviderByCostForEachSpecialityValue,
+    },
+    {
+      field: "totalPricePM",
+      headerName: "Top Provider",
+      flex: 1,
+      hide: !showTopProviderSpecialtyGraph,
+      cellRenderer: handleTopProviderByCostForEachSpecialityGraph,
+    },
+  ];
+
+  //graph toggle for 3 tables
+  const handleTopMembersTableView = () => {
+    setShowTopMembersGraph(!showTopMembersGraph);
   };
+
+  const handleTopProviderTableView = () => {
+    setShowTopProviderGraph(!showTopProviderGraph);
+  };
+
+  const handleTopProviderSpecialtyTableView = () => {
+    setShowTopProviderSpecialtyGraph(!showTopProviderSpecialtyGraph);
+  };
+
+  //care provider option selection
+  const onSelctedProviderChange = (fieldName, selectedValue) => {
+    onProviderChange(selectedValue);
+  };
+
+  const onSpecialtyChange = (fieldName, selectedValue) => {
+    onSelectChange(selectedValue);
+  };
+
   return (
     <>
-      <span className="d-flex justify-content-between mt-2">
-        <h6>Top 10 Members & Providers per Care Provider</h6>
-        <span className="d-flex justify-content-end">
-          {/* <p>PCP</p>
-          <span className="mx-1">{vector}</span>
-          <span>
-            <InputSelectField
-              options={[{ label: "Surgery", value: "" }]}
-            ></InputSelectField>
-          </span> */}
-          <div onClick={handleTableView} className="coc-cursor ms-3">
-            View: {showGraph ? graphSVG : "123"}
+      <div className="d-flex mt-2 justify-content-between">
+        <div className="col-6 p-2">
+          <h6 style={{ marginBottom: "28px" }}>Members per Provider</h6>
+          <div
+            className={"ag-theme-quartz"}
+            style={{
+              height: "250px",
+            }}
+          >
+            <AgGridReact
+              rowData={topMembersPerProvider}
+              columnDefs={topMembersByProviderColDef}
+            />
           </div>
-        </span>
-      </span>
-      <div className="d-flex mt-0 justify-content-between careProviderDetails">
-        <div className="col-7 p-2">
-          {/* <div
-            className={"ag-theme-quartz"}
-            style={{
-              height: "459px",
-            }}
-          >
-            <AgGridReact
-              rowData={membersbyProviderRowData}
-              columnDefs={membersbyProviderColDefs}
-            />
-          </div> */}
-          <table className="table table-bordered border-2 rounded">
-            <tr className="border">
-              <th>No of Members</th>
-              <th>Top Members</th>
-            </tr>
-            <tbody>
-              {specialtiesData.map((item, index) => (
-                <tr key={index}>
-                  {index === 0 && (
-                    <td
-                      rowSpan={specialtiesData.length}
-                      className="align-middle"
-                    >
-                      13k
-                    </td>
-                  )}
-                  <td>
-                    {showGraph ? (
-                      <div className="d-flex">
-                        <span>{item.specialties}</span>
-                        <HorizontalBarChart
-                          actualvalue={item.cost}
-                          type={"number"}
-                          aspectRatio={5}
-                          graphLength={1}
-                          height={"35px"}
-                        />
-                      </div>
-                    ) : (
-                      `${item.specialties} - ${item.cost}`
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
-        <div className="col-5 p-2">
-          {/* <div
+        <div className="col-6 p-2">
+          <div className="d-flex justify-content-between">
+            <h6 className="col-5">Top 10 Members by Cost for each Provider</h6>
+            <span className="col-7 d-flex justify-content-end">
+              <p>Provider</p>
+              <span className="mx-1">{vector}</span>
+              <span style={{ width: "100px" }}>
+                <InputSelectField
+                  options={providerOptions}
+                  onChange={onSelctedProviderChange}
+                />
+              </span>
+              <div
+                onClick={handleTopMembersTableView}
+                className="coc-cursor ms-3"
+              >
+                View: {showTopMembersGraph ? graphSVG : "123"}
+              </div>
+            </span>
+          </div>
+
+          <div
             className={"ag-theme-quartz"}
             style={{
-              height: "459px",
+              height: "250px",
             }}
           >
             <AgGridReact
-              rowData={specialtiesRowData}
-              columnDefs={specialtiesColDefs}
+              rowData={topTenMembersByCostforEachProvider}
+              columnDefs={topMembersByCostForEachProviderColDefs}
             />
-          </div> */}
-          <table className="table table-bordered border-2 rounded">
-            <tr className="border">
-              <th>Top Providers</th>
-            </tr>
-            <tbody>
-              {specialtiesData.map((item, index) => (
-                <tr key={index}>
-                  {/* {index === 0 && (
-                      <td rowSpan={specialtiesData.length} className="align-middle">
-                        13k
-                      </td>
-                    )} */}
-                  <td>
-                    {showGraph ? (
-                      <div className="d-flex">
-                        <span>{item.specialties}</span>
-                        <HorizontalBarChart
-                          actualvalue={item.cost}
-                          type={"number"}
-                          aspectRatio={5}
-                          graphLength={1}
-                          height={"35px"}
-                        />
-                      </div>
-                    ) : (
-                      `${item.specialties} - ${item.cost}`
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="d-flex justify-content-between">
+          <div className="col-6 p-2">
+            <span className="d-flex justify-content-between">
+              <h6 style={{ marginBottom: "27px" }}>Top 10 Providers by Cost</h6>
+              <div
+                onClick={handleTopProviderTableView}
+                className="coc-cursor ms-3"
+              >
+                View: {showTopProviderGraph ? graphSVG : "123"}
+              </div>
+            </span>
+            <div
+              className={"ag-theme-quartz"}
+              style={{
+                height: "250px",
+              }}
+            >
+              <AgGridReact
+                rowData={topTenProvidersByCost}
+                columnDefs={topProvidersByCostColDefs}
+              />
+            </div>
+          </div>
+          <div className="col-6 p-2">
+            <div className="d-flex justify-content-between">
+              <h6 className="col-4">Top 5 Providers by Cost by Speciality</h6>
+              <span className="col-7 d-flex justify-content-end">
+                <p>Specialty</p>
+                <span className="mx-1">{vector}</span>
+                <span style={{ width: "80px" }}>
+                  <InputSelectField
+                    options={careProviderOptions}
+                    onChange={onSpecialtyChange}
+                  />
+                </span>
+                <div
+                  onClick={handleTopProviderSpecialtyTableView}
+                  className="coc-cursor ms-3"
+                >
+                  View: {showTopProviderSpecialtyGraph ? graphSVG : "123"}
+                </div>
+              </span>
+            </div>
+            <div
+              className={"ag-theme-quartz"}
+              style={{
+                height: "250px",
+              }}
+            >
+              <AgGridReact
+                rowData={topTenProvidersByCostForEachSpeciality}
+                columnDefs={topProvidersByCostForEachSpecialityColDefs}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>

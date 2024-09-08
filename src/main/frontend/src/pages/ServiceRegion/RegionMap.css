@@ -1,22 +1,29 @@
-.expense-color-palette{
-    background: linear-gradient(to right,#E6F4F1,#007680);
-    height: 30px;
+.expense-color-palette {
+  background: linear-gradient(to right, #e6f4f1, #007680);
+  height: 30px;
 }
-.member-color-palette{
-    background: linear-gradient(to right,#E6F4F1,#53C7B4);
-    height: 30px;
+.member-color-palette {
+  background: linear-gradient(to right, #e6f4f1, #53c7b4);
+  height: 30px;
 }
-.label{
-    color: #63666A;
-    font-size: 12px;
+.label {
+  color: #63666a;
+  font-size: 12px;
 }
-.label-color{
-    height: 10px;
-    width: 13px;
-    display: inline-block;
-    margin-right: 4px;
+.label-color {
+  height: 10px;
+  width: 13px;
+  display: inline-block;
+  margin-right: 4px;
 }
-.value{
-    color: #63666A; 
-    font-size: 10px
+.value {
+  color: #63666a;
+  font-size: 10px;
+}
+
+.chatbot-container {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1000;
 }

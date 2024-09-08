@@ -9,22 +9,22 @@ import {
 } from "../../utilities/FormatUtilities";
 
 const ProviderSpecialtyInOutPatient = (props) => {
-  const { showGraph } = props;
+  const { showGraph, dataType } = props;
   const rowData = props.rowdata;
 
   const handleGraph = (params) => {
     return (
-      <div>
+      <span style={{ flex: 1 }}>
         <HorizontalBarChart
           actualvalue={params.value[0]}
           targetvalue={params.value[1]}
           type={"number"}
-          graphtype={{ type1: "Target", type2: "Actual" }}
+          graphtype={{ type1: dataType[0], type2: dataType[1] }}
           aspectRatio={5}
           graphLength={2}
-          height={"100px"}
+          height={"100%"}
         />
-      </div>
+      </span>
     );
   };
 
@@ -36,21 +36,25 @@ const ProviderSpecialtyInOutPatient = (props) => {
     },
     {
       field: "target",
-      headerName: "Target",
+      headerName: dataType ? dataType[0] : "Target",
       flex: 1,
       hide: showGraph,
       cellRenderer: handleValueinDollar,
     },
     {
       field: "actual",
-      headerName: "Actual",
+      headerName: dataType ? dataType[1] : "Actual",
       flex: 1,
       hide: showGraph,
       cellRenderer: handleValueinDollar,
     },
     {
       field: "target_actual",
-      headerName: "Target & Actual",
+      headerName: dataType
+        ? dataType[0] === "Target"
+          ? "Target vs Actual"
+          : "Prior vs Current"
+        : "Target vs Actual",
       flex: 1,
       hide: !showGraph,
       cellRenderer: handleGraph,
@@ -82,7 +86,7 @@ const ProviderSpecialtyInOutPatient = (props) => {
           columnDefs={colDefs}
           rowHeight={46}
           pagination={true}
-          paginationPageSize={7}
+          paginationPageSize={20}
         />
       </div>
     </>

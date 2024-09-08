@@ -2,12 +2,20 @@ import Navbar from "../../components/Navbar/Navbar";
 import * as FileConstants from "../../constants/FileConstants";
 import TabComponent from "../../components/TabComponent";
 import Filters from "../../components/Filters";
-import { careCategoryFetch } from "../../services/ApiDataService";
+import {
+  careCategoryFetch,
+  careCategoryDetailsFetch,
+} from "../../services/ApiDataService";
 import { DataContext } from "../../context/DataContext";
 import CareCategoryDetail from "./CareCategoryDetail.jsx";
 import CareCategorySummary from "./CareCategorySummary.jsx";
 import { useEffect, useState, useContext } from "react";
+import { formatOptions } from "../../utilities/FormatUtilities.jsx";
+import Chatbot from "../../components/ChatBot.jsx";
+import "../CareProvider/CareProvider.css";
 function CareCategory() {
+  var maxValue;
+  var minValue;
   const [inputValues, setInputValues] = useState(FileConstants.formInputValues);
   const [options, setOptions] = useState(FileConstants.formOptions);
   const monthMapping = FileConstants.monthMapping;
@@ -21,6 +29,18 @@ function CareCategory() {
     FileConstants.targetVsActulaGraphtype
   );
   const [dataType, setDataType] = useState(["Target", "Actual"]);
+  const [tabIndex, setTabIndex] = useState("");
+  const [careCategoryOptions, setCareCategoryOptions] = useState([]);
+  const [selectedCarecategoryOption, setSelectedCarecategoryOption] =
+    useState("");
+  const [topProviders, setTopProviders] = useState([]);
+  const [topMembers, setTopMembers] = useState([]);
+  const [membersCount, setMembersCount] = useState(0);
+  const [providersCount, setProvidersCount] = useState(0);
+
+  const handleSelectChange = (value) => {
+    setSelectedCarecategoryOption(value);
+  };
 
   const [tabs, setTabs] = useState([
     {
@@ -29,14 +49,29 @@ function CareCategory() {
         <CareCategorySummary
           InpatientDataArray={InPatientrowdata}
           OutpatientDataArray={OutPatientrowdata}
+          dataType={dataType}
         />
       ),
     },
     {
       label: "Details",
-      content: <CareCategoryDetail />,
+      content: (
+        <CareCategoryDetail
+          inputValues={inputValues}
+          careCategoryOptions={careCategoryOptions}
+          topProviders={topProviders}
+          topMembers={topMembers}
+          onSelectChange={handleSelectChange}
+          membersCount={membersCount}
+          providersCount={providersCount}
+        />
+      ),
     },
   ]);
+
+  const getDatafromTabs = (index) => {
+    setTabIndex(index);
+  };
 
   const handleChange = (fieldName, selectedValue) => {
     if (fieldName === "startMonth") {
@@ -44,10 +79,22 @@ function CareCategory() {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonoptions.find(
           (option) => option.label === selectedValue
@@ -124,7 +171,7 @@ function CareCategory() {
           setDataType(["Target", "Actual"]);
         } else {
           setGraphType({ type1: "Prior", type2: "Current" });
-          setDataType(["Current", "Prior"]);
+          setDataType(["Prior", "Current"]);
         }
         setInPatientdata(transformedData);
         setOutPatientdata(transformedData2);
@@ -144,8 +191,38 @@ function CareCategory() {
   }, [filterOptions, initialInputValues]);
 
   useEffect(() => {
-    fetchData();
-  }, [toggle, options]);
+    if (tabIndex == 0) {
+      fetchData();
+    } else {
+      fetchDataDetails();
+    }
+  }, [toggle, tabIndex, selectedCarecategoryOption]);
+
+  const fetchDataDetails = async () => {
+    try {
+      const response = await careCategoryDetailsFetch({
+        ...inputValues,
+        careCategory: selectedCarecategoryOption,
+      });
+      if (response.status === 200) {
+        const careCategoryTempoptions = formatOptions(
+          response.data.distinctCategory
+        );
+        setCareCategoryOptions([
+          { label: "All", value: "" },
+          ...careCategoryTempoptions,
+        ]);
+        setTopProviders(response.data.topProvidersPerCareCategory);
+        setTopMembers(response.data.topMembersPerCareCategory);
+        setProvidersCount(response.data.providersCount);
+        setMembersCount(response.data.membersCount);
+        maxValue = topProviders[0].totalPricePM;
+        minValue = topProviders[0].totalPricePM;
+      }
+    } catch (error) {
+      console.log("Could not fetch data: " + error);
+    }
+  };
 
   useEffect(() => {
     setTabs([
@@ -162,13 +239,23 @@ function CareCategory() {
       },
       {
         label: "Details",
-        content: <CareCategoryDetail />,
+        content: (
+          <CareCategoryDetail
+            inputValues={inputValues}
+            careCategoryOptions={careCategoryOptions}
+            topProviders={topProviders}
+            topMembers={topMembers}
+            onSelectChange={handleSelectChange}
+            membersCount={membersCount}
+            providersCount={providersCount}
+          />
+        ),
       },
     ]);
-  }, [InPatientrowdata, OutPatientrowdata, inputValues]);
+  }, [InPatientrowdata, OutPatientrowdata, careCategoryOptions, toggle]);
 
   return (
-    <div className="container-fluid h-100 m-0">
+    <div className="container-fluid h-100">
       <div className="row">
         <Navbar />
         <div className="column second-column overflow-auto px-3 py-2">
@@ -178,8 +265,16 @@ function CareCategory() {
             </a>
           </div>
           <h3>Care Category</h3>
+
           <div className="my-4">
-            <TabComponent tabs={tabs} isSummaryDetail={true} />
+            <TabComponent
+              tabs={tabs}
+              isSummaryDetail={true}
+              sendIndex={getDatafromTabs}
+            />
+          </div>
+          <div className="chatbot-container">
+            <Chatbot />
           </div>
         </div>
         <Filters
@@ -190,6 +285,10 @@ function CareCategory() {
           handleReset={handleReset}
           RadioButtonOptions={radioButtonoptions}
           RadioSelectedOption={selectedOption}
+          isSpecialityDisabled={tabIndex == 0 ? true : true}
+          isProviderDisabled={tabIndex == 0 ? true : true}
+          isTypeDisabled={tabIndex == 0 ? false : true}
+          isMonthDisabled={tabIndex == 0 ? false : true}
         />
       </div>
     </div>

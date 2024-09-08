@@ -5,7 +5,13 @@ const TabComponent = (props) => {
   const { tabs, isSummaryDetail } = props;
   const [activeTab, setActiveTab] = useState(0);
 
-  const handleTabClick = (index) => setActiveTab(index);
+  const handleTabClick = (index) => {
+    setActiveTab(index);
+    if (props.sendIndex) {
+      props.sendIndex(index);
+    }
+  };
+
   return (
     <div className="tabComponent">
       <div className="tab-header">

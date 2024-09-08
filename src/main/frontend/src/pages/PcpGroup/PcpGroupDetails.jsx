@@ -6,204 +6,306 @@ import { vector } from "../../assets/images/svg/SVGIcons";
 import InputSelectField from "../../components/InputSelectFiled";
 import { graphSVG } from "../../assets/images/svg/SVGIcons";
 import HorizontalBarChart from "../../components/HorizontalBarChart";
-import { handleValue } from "../../utilities/FormatUtilities";
-const PcpGroupDetails = () => {
+import TooltipComponent from "../../components/TooltipComponent";
+import { formatNumberColour } from "../../utilities/FormatUtilities";
+
+const PcpGroupDetails = (props) => {
+  const {
+    membersPerPcpGroup,
+    topMembersByCostForEachPcp,
+    topPcpByCost,
+    topPcpByCostForEachSpeciality,
+    pcpOptions,
+    specialtyOptions,
+    onPcpChange,
+    onSpecialtyChange,
+  } = props;
   const [showTopMembersGraph, setShowTopMembersGraph] = useState(true);
   const [showTopPcpGraph, setShowTopPcpGraph] = useState(true);
   const [showTopPcpSpecialtyGraph, setShowTopPcpSpecialtyGraph] =
     useState(true);
-  const handleGraph = () => {
+  // const maxValueMembersPerPcpGroup = membersPerPcpGroup[0]?.totalPricePM;
+  // const minValueMembersPerPcpGroup =
+  //   membersPerPcpGroup[membersPerPcpGroup.length - 1]?.totalPricePM;
+  const maxValueTopMembersByCostForEachPcp =
+    topMembersByCostForEachPcp[0]?.totalPricePM;
+  const maxValueTopPcpByCost = topPcpByCost[0]?.totalPricePM;
+  const maxValueTopPcpByCostForEachSpeciality =
+    topPcpByCostForEachSpeciality[0]?.totalPricePM;
+
+  //TMembers Per PCP Group
+  // const handleMembersPerPcpGroupGraph = (params) => {
+  //   const specialtyName = params?.data?.speciality;
+  //   const specialtyValue = params?.data?.totalPricePM;
+  //   return (
+  //     <div className="d-flex">
+  //       <p style={{ flex: 2 }}>
+  //         <TooltipComponent
+  //           value={specialtyName}
+  //           length={28}
+  //           children={specialtyName}
+  //         />
+  //       </p>
+  //       <span style={{ flex: 2 }}>
+  //         <HorizontalBarChart
+  //           actualvalue={specialtyValue}
+  //           type={"number"}
+  //           graphtype={{ type1: "Target", type2: "Actual" }}
+  //           aspectRatio={6}
+  //           graphLength={1}
+  //           height={"38px"}
+  //           maxValue={maxValueMembersPerPcpGroup}
+  //           minValue={0}
+  //         />
+  //       </span>
+  //     </div>
+  //   );
+  // };
+  // const handleMembersPerPcpGroupValue = (params) => {
+  //   const specialtyName = params?.data?.speciality;
+  //   const specialtyValue = params?.data?.totalPricePM;
+  //   return (
+  //     <div className="d-flex">
+  //       <p style={{ flex: 2 }}>
+  //         {" "}
+  //         <TooltipComponent
+  //           value={specialtyName}
+  //           length={45}
+  //           children={specialtyName}
+  //         />
+  //       </p>
+  //       <span style={{ flex: 1 }}>{specialtyValue}</span>
+  //     </div>
+  //   );
+  // };
+
+  //Top 10 Members by cost for each PCP
+  const handleTopMembersByCostForEachPcpGraph = (params) => {
+    const name = params?.data?.memberUid;
+    const value = params?.data?.totalPricePM;
     return (
       <div className="d-flex">
-        <p>Sample Long Name</p>
-        <HorizontalBarChart
-          actualvalue={10}
-          type={"number"}
-          aspectRatio={5}
-          graphLength={1}
-          height={"35px"}
-        />
+        <p className="col-4">{name}</p>
+        <span className="col-8">
+          <HorizontalBarChart
+            actualvalue={value}
+            type={"number"}
+            graphtype={{ type1: "Target", type2: "Actual" }}
+            aspectRatio={6}
+            graphLength={1}
+            height={"38px"}
+            maxValue={maxValueTopMembersByCostForEachPcp}
+            minValue={0}
+          />
+        </span>
       </div>
     );
   };
-  //Members Per PCP Group
-  const pcpData = [
+  const handleTopMembersByCostForEachPcpValue = (params) => {
+    const name = params?.data?.memberUid;
+    const value = formatNumberColour(params?.data?.totalPricePM);
+    return (
+      <div className="d-flex">
+        <p className="col-6">{name}</p>
+        <span className="col-6">{value}</span>
+      </div>
+    );
+  };
+
+  //Top 10 PCP by Cost
+  const handleTopPcpByCostGraph = (params) => {
+    const specialtyName = params?.data?.providerName;
+    const specialtyValue = params?.data?.totalPricePM;
+    return (
+      <div className="d-flex">
+        <p className="col-5">
+          <TooltipComponent
+            value={specialtyName}
+            length={25}
+            children={specialtyName}
+          />
+        </p>
+        <span className="col-7">
+          <HorizontalBarChart
+            actualvalue={specialtyValue}
+            type={"number"}
+            graphtype={{ type1: "Target", type2: "Actual" }}
+            aspectRatio={6}
+            graphLength={1}
+            height={"38px"}
+            maxValue={maxValueTopPcpByCost}
+            minValue={0}
+          />
+        </span>
+      </div>
+    );
+  };
+  const handleTopPcpByCostValue = (params) => {
+    const specialtyName = params?.data?.providerName;
+    const specialtyValue = formatNumberColour(params?.data?.totalPricePM);
+    return (
+      <div className="d-flex">
+        <p className="col-8">
+          <TooltipComponent
+            value={specialtyName}
+            length={45}
+            children={specialtyName}
+          />
+        </p>
+        <span className="col-4">{specialtyValue}</span>
+      </div>
+    );
+  };
+
+  //Top 10 PCP by cost for each specialty
+  const handleTopPcpByCostForEachSpecialityGraph = (params) => {
+    const name = params?.data?.providerName;
+    const value = params?.data?.totalPricePM;
+    return (
+      <div className="d-flex">
+        <p className="col-5">
+          <TooltipComponent value={name} length={23} children={name} />
+        </p>
+        <span className="col-7">
+          <HorizontalBarChart
+            actualvalue={value}
+            type={"number"}
+            graphtype={{ type1: "Target", type2: "Actual" }}
+            aspectRatio={6}
+            graphLength={1}
+            height={"38px"}
+            maxValue={maxValueTopPcpByCostForEachSpeciality}
+            minValue={0}
+          />
+        </span>
+      </div>
+    );
+  };
+  const handleTopPcpByCostForEachSpecialityValue = (params) => {
+    const name = params?.data?.providerName;
+    const value = formatNumberColour(params?.data?.totalPricePM);
+    return (
+      <div className="d-flex">
+        <p className="col-9">
+          <TooltipComponent value={name} length={45} children={name} />
+        </p>
+        <span className="col-3">{value}</span>
+      </div>
+    );
+  };
+
+  const membersPerPcpGroupColDefs = [
     {
-      pcpProviderGroup: "Provider Group 1",
-      members: 13.4,
-    },
-    {
-      pcpProviderGroup: "Provider Group 2",
-      members: 13.4,
-    },
-    {
-      pcpProviderGroup: "Provider Group 2",
-      members: 13.4,
-    },
-    {
-      pcpProviderGroup: "Provider Group 2",
-      members: 13.4,
-    },
-    {
-      pcpProviderGroup: "Provider Group 2",
-      members: 13.4,
-    },
-  ];
-  const [pcpRowData, setPcpRowData] = useState(pcpData);
-  const pcpColDefs = [
-    {
-      field: "pcpProviderGroup",
+      field: "providerName",
       headerName: "PCP Provider Group",
       flex: 1,
     },
     {
-      field: "members",
+      field: "totalMembers",
       headerName: "Members",
       flex: 1,
     },
   ];
 
-  //Top 5 PCP by cost for each Specialty
-  const top5RowData = [
+  const topMembersByCostForEachPcpColDefs = [
     {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-  ];
-  const [top5PcpRowData, setTop5PcpRowData] = useState(top5RowData);
-  const top5PcpColDefs = [
-    {
-      field: "topPcp",
-      headerName: "Top PCP",
+      field: "speciality",
+      headerName: "Top Members",
       flex: 1,
       hide: showTopMembersGraph,
-      cellRenderer: handleValue,
+      cellRenderer: handleTopMembersByCostForEachPcpValue,
     },
     {
-      field: "topPcp",
-      headerName: "Top PCP",
+      field: "totalPricePM",
+      headerName: "Top Members",
       flex: 1,
       hide: !showTopMembersGraph,
-      cellRenderer: handleGraph,
+      cellRenderer: handleTopMembersByCostForEachPcpGraph,
     },
   ];
 
-  //Top 10 PCP by cost
-  const top10RowData = [
+  const topPcpByCostColDefs = [
     {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-    {
-      topPcp: "Sample Long PCP Name",
-    },
-  ];
-  const [top10PcpByCost, setTop5PcpByCost] = useState(top10RowData);
-  const top10PcpByCostColDefs = [
-    {
-      field: "topPcp",
+      field: "speciality",
       headerName: "Top PCP",
       flex: 1,
       hide: showTopPcpGraph,
-      cellRenderer: handleValue,
+      cellRenderer: handleTopPcpByCostValue,
     },
     {
-      field: "topPcp",
+      field: "totalPricePM",
       headerName: "Top PCP",
       flex: 1,
       hide: !showTopPcpGraph,
-      cellRenderer: handleGraph,
+      cellRenderer: handleTopPcpByCostGraph,
     },
   ];
 
-  //Top 10 Members by cost for each PCP
-  const top10MembersByCost = [
+  const topPcpByCostForEachSpecialityColDefs = [
     {
-      topMembers: "Sample Long Member Name",
-    },
-    {
-      topMembers: "Sample Long Member Name",
-    },
-    {
-      topMembers: "Sample Long Member Name",
-    },
-    {
-      topMembers: "Sample Long Member Name",
-    },
-    {
-      topMembers: "Sample Long Member Name",
-    },
-  ];
-  const [top10MembersByCostRowData, setTop10MembersByCostRowData] =
-    useState(top10MembersByCost);
-  const top10MembersByCostColDefs = [
-    {
-      field: "topMembers",
-      headerName: "Top Members",
+      field: "providerName",
+      headerName: "Top PCP",
       flex: 1,
       hide: showTopPcpSpecialtyGraph,
-      cellRenderer: handleValue,
+      cellRenderer: handleTopPcpByCostForEachSpecialityValue,
     },
     {
-      field: "topMembers",
-      headerName: "Top Members",
+      field: "totalPricePM",
+      headerName: "Top PCP",
       flex: 1,
       hide: !showTopPcpSpecialtyGraph,
-      cellRenderer: handleGraph,
+      cellRenderer: handleTopPcpByCostForEachSpecialityGraph,
     },
   ];
+
   const handleTopMembersTableView = () => {
     setShowTopMembersGraph(!showTopMembersGraph);
   };
+
   const handleTopPcpTableView = () => {
     setShowTopPcpGraph(!showTopPcpGraph);
   };
+
   const handleTopPcpSpecialtyTableView = () => {
     setShowTopPcpSpecialtyGraph(!showTopPcpSpecialtyGraph);
+  };
+
+  const onPcpSelectChange = (fieldName, selectedValue) => {
+    onPcpChange(selectedValue);
+  };
+
+  const onSpecialtySelectChange = (fieldName, selectedValue) => {
+    onSpecialtyChange(selectedValue);
   };
 
   return (
     <>
       <div className="d-flex mt-2 justify-content-between">
-        <div className="col-5 p-2">
-          <h6 className="mb-4">Members Per PCP Group</h6>
+        <div className="col-6 p-2">
+          <h6 style={{ marginBottom: "28px" }}>Members Per PCP Group</h6>
           <div
             className={"ag-theme-quartz"}
             style={{
               height: "250px",
             }}
           >
-            <AgGridReact rowData={pcpRowData} columnDefs={pcpColDefs} />
+            <AgGridReact
+              rowData={membersPerPcpGroup}
+              columnDefs={membersPerPcpGroupColDefs}
+            />
           </div>
         </div>
-        <div className="col-7 p-2">
+        <div className="col-6 p-2">
           <div className="d-flex justify-content-between">
-            <h6 className="mb-4">Top 5 PCP by cost for each Specialty</h6>
-            <span className="d-flex justify-content-end">
+            <h6 className="col-5">Top 10 Members by cost for each PCP</h6>
+            <span className="col-7 d-flex justify-content-end">
+              <p>PCP</p>
               <span className="mx-1">{vector}</span>
-              <span>
+              <span style={{ width: "100px" }}>
                 <InputSelectField
-                  options={[{ label: "Surgery", value: "" }]}
-                ></InputSelectField>
+                  options={pcpOptions}
+                  onChange={onPcpSelectChange}
+                />
               </span>
               <div
                 onClick={handleTopMembersTableView}
@@ -220,45 +322,49 @@ const PcpGroupDetails = () => {
               height: "250px",
             }}
           >
-            <AgGridReact rowData={top5PcpRowData} columnDefs={top5PcpColDefs} />
+            <AgGridReact
+              rowData={topMembersByCostForEachPcp}
+              columnDefs={topMembersByCostForEachPcpColDefs}
+            />
           </div>
         </div>
       </div>
       <div className="row">
-        <div className="d-flex mt-2 justify-content-between">
-          <div className="col-5 p-2">
-            <span className="d-flex mb-4 justify-content-between">
-              <h6>Top 10 PCP by Cost</h6>
+        <div className="d-flex justify-content-between">
+          <div className="col-6 p-2">
+            <span className="d-flex justify-content-between">
+              <h6 style={{ marginBottom: "24px" }}>Top 10 PCP by Cost</h6>
               <div onClick={handleTopPcpTableView} className="coc-cursor ms-3">
                 View: {showTopPcpGraph ? graphSVG : "123"}
               </div>
             </span>
             <div
-              className={"ag-theme-quartz"}
+              className={"ag-theme-quartz mt-1"}
               style={{
                 height: "250px",
               }}
             >
               <AgGridReact
-                rowData={top10PcpByCost}
-                columnDefs={top10PcpByCostColDefs}
+                rowData={topPcpByCost}
+                columnDefs={topPcpByCostColDefs}
               />
             </div>
           </div>
-          <div className="col-7 p-2">
-            <div className="d-flex mb-3 justify-content-between">
-              <h6 className="">Top 5 PCP by cost for each PCP</h6>
-              <span className="d-flex justify-content-end">
-                <p>PCP</p>
+          <div className="col-6 p-2">
+            <div className="d-flex justify-content-between">
+              <h6 className="col-4">Top 5 PCP by cost by Speciality</h6>
+              <span className="col-7 d-flex justify-content-end">
+                <p>Specialty</p>
                 <span className="mx-1">{vector}</span>
-                <span>
+                <span style={{ width: "80px" }}>
                   <InputSelectField
-                    options={[{ label: "Surgery", value: "" }]}
-                  ></InputSelectField>
+                    options={specialtyOptions}
+                    onChange={onSpecialtySelectChange}
+                  />
                 </span>
                 <div
                   onClick={handleTopPcpSpecialtyTableView}
-                  className="coc-cursor ms-3"
+                  className="coc-cursor ms-1"
                 >
                   View: {showTopPcpSpecialtyGraph ? graphSVG : "123"}
                 </div>
@@ -271,8 +377,8 @@ const PcpGroupDetails = () => {
               }}
             >
               <AgGridReact
-                rowData={top10MembersByCostRowData}
-                columnDefs={top10MembersByCostColDefs}
+                rowData={topPcpByCostForEachSpeciality}
+                columnDefs={topPcpByCostForEachSpecialityColDefs}
               />
             </div>
           </div>

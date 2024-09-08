@@ -9,7 +9,8 @@ function KPIMetricCard(props) {
           <h6 className="card-title">{title}</h6>
           <h4 className="card-text mt-3 mb-3">
           {title === "PMPM" ? "$" : ""}
-            {formatNumber(value)}</h4>
+          {title==="MLR"?value:`${formatNumber(value)}`}
+            </h4>
           <div className="d-flex">
             <p className="card-text me-2">
               {checkPercentage(percentage)}

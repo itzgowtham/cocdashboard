@@ -59,9 +59,8 @@ function CareCategorySummary(props) {
   }, [InpatientDataArray, OutpatientDataArray, showGraph]);
 
   return (
-    <div className="container-fluid h-100 mt-3">
+    <div className="container-fluid mt-3">
       <div className="row">
-        <div className="column second-column overflow-auto p-0">
           <div className="col-12 p-0">
             <div className="d-flex justify-content-between p-0">
               <strong>PMPM</strong>
@@ -93,7 +92,7 @@ function CareCategorySummary(props) {
             </div>
             <TabComponent tabs={tabs} />
           </div>
-        </div>
+       
       </div>
     </div>
   );

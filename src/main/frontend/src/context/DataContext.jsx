@@ -9,8 +9,6 @@ export const DataProvider = ({ children }) => {
   const [filterOptions, setFilterOptions] = useState({});
   const [initialInputValues, setInitialInputValues] = useState({});
   const location = useLocation();
-  console.log("Current Path Name", location.pathname);
-  const currentPath = location.pathname;
   const fetchData = async () => {
     try {
       const response1 = await FilterOptions();

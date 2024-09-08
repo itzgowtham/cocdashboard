@@ -3,11 +3,12 @@ import Navbar from "../../components/Navbar/Navbar.jsx";
 import RadioButtons from "../../components/RadioButtons.jsx";
 import * as FileConstants from "../../constants/FileConstants.jsx";
 import Filters from "../../components/Filters.jsx";
-import "./Forecast.css";
 import { graphSVG } from "../../assets/images/svg/SVGIcons.jsx";
 import ForecastData from "./ForecastData.jsx";
 import { DataContext } from "../../context/DataContext.jsx";
 import { forecastFetch } from "../../services/ApiDataService.js";
+import Chatbot from "../../components/ChatBot.jsx";
+import "./Forecast.css";
 
 const Forecast = () => {
   const [options, setOptions] = useState(FileConstants.formOptions);
@@ -44,10 +45,22 @@ const Forecast = () => {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonoptions.find(
           (option) => option.label === selectedValue
@@ -174,6 +187,10 @@ const Forecast = () => {
             }
             selectedOption={selectedForecastOption}
           />
+          <div className="chatbot-container">
+            <p></p>
+            <Chatbot />
+          </div>
         </div>
         <Filters
           FormSelectOptions={options}
@@ -184,6 +201,7 @@ const Forecast = () => {
           RadioButtonOptions={radioButtonoptions}
           RadioSelectedOption={selectedOption}
           isTypeDisabled={true}
+          isMonthDisabled={true}
         />
       </div>
     </div>

@@ -9,6 +9,7 @@ import * as FileConstants from "../../constants/FileConstants";
 import TabComponent from "../../components/TabComponent";
 import { DataContext } from "../../context/DataContext";
 import "./SummaryPage.css";
+import Chatbot from "../../components/ChatBot";
 
 function SummaryPage() {
   const [toggle, setToggle] = useState(true);
@@ -47,12 +48,13 @@ function SummaryPage() {
     {
       label: "MLR Trend",
       content: (
-        <AreaChart
-          className="mt-7"
-          labels={labels}
-          data={areaData}
-          graphtype={graphType}
-        />
+        <h4>No MLR Data Available</h4>
+        // <AreaChart
+        //   className="mt-7"
+        //   labels={labels}
+        //   data={areaData}
+        //   graphtype={graphType}
+        // />
       ),
     },
   ];
@@ -71,10 +73,22 @@ function SummaryPage() {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonOptions.find(
           (option) => option.label === selectedValue
@@ -215,64 +229,72 @@ function SummaryPage() {
                   </span>
                 </div>
                 <div className="col-12 align-items-center ">
-                  <div className="d-flex row mb-0">
-                    <div className="col-8">
-                      <HorizontalBarChart
-                        actualvalue={kpiMetrics.endingMembers}
-                        targetvalue={kpiMetrics.targetEndingMembers}
-                        label={"Ending Membership"}
-                        type={"number"}
-                        graphtype={graphType}
-                        aspectRatio={7}
-                        graphLength={2}
-                        height={"90px"}
-                      />
-                    </div>
-                    <div className="col-4 mt-4 pt-3">
-                      {checkPercentage(
-                        kpiMetrics.endingMembersPercentageChange
-                      )}
-                    </div>
-                  </div>
-                  <div className="d-flex row mb-0">
-                    <div className="col-8">
-                      <HorizontalBarChart
-                        actualvalue={kpiMetrics.memberMonths}
-                        targetvalue={kpiMetrics.targetMemberMonths}
-                        label={"Member Months"}
-                        type={"number"}
-                        graphtype={graphType}
-                        aspectRatio={7}
-                        graphLength={2}
-                        height={"90px"}
-                      />
-                    </div>
-                    <div className="col-4 mt-4 pt-3">
-                      {checkPercentage(kpiMetrics.memberMonthsPercentageChange)}
+                  <div className="row mb-0">
+                    <div className="d-flex">
+                      <div style={{ flex: 2 }}>
+                        <HorizontalBarChart
+                          actualvalue={kpiMetrics.endingMembers}
+                          targetvalue={kpiMetrics.targetEndingMembers}
+                          label={"Ending Membership"}
+                          type={"number"}
+                          graphtype={graphType}
+                          aspectRatio={7}
+                          graphLength={2}
+                          height={"90px"}
+                        />
+                      </div>
+                      <div style={{ flex: 2, marginTop: "30px" }}>
+                        {checkPercentage(
+                          kpiMetrics.endingMembersPercentageChange
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div className="d-flex row mb-0">
-                    <div className="col-8">
-                      <HorizontalBarChart
-                        actualvalue={kpiMetrics.PMPMExpense}
-                        targetvalue={kpiMetrics.targetPMPMExpense}
-                        label="Paid Expense PMPM"
-                        type={"dollar"}
-                        graphtype={graphType}
-                        aspectRatio={7}
-                        graphLength={2}
-                        height={"90px"}
-                      />
+                  <div className="row mb-0">
+                    <div className="d-flex">
+                      <div style={{ flex: 2 }}>
+                        <HorizontalBarChart
+                          actualvalue={kpiMetrics.memberMonths}
+                          targetvalue={kpiMetrics.targetMemberMonths}
+                          label={"Member Months"}
+                          type={"number"}
+                          graphtype={graphType}
+                          aspectRatio={7}
+                          graphLength={2}
+                          height={"90px"}
+                        />
+                      </div>
+                      <div style={{ flex: 2, marginTop: "30px" }}>
+                        {checkPercentage(
+                          kpiMetrics.memberMonthsPercentageChange
+                        )}
+                      </div>
                     </div>
-                    <div className="col-4 mt-4 pt-3">
-                      {checkPercentage(kpiMetrics.pmpmPercentageChange)}
+                  </div>
+
+                  <div className="row mb-0">
+                    <div className="d-flex">
+                      <div style={{ flex: 2 }}>
+                        <HorizontalBarChart
+                          actualvalue={kpiMetrics.PMPMExpense}
+                          targetvalue={kpiMetrics.targetPMPMExpense}
+                          label={"Paid Expense PMPM"}
+                          graphtype={graphType}
+                          aspectRatio={7}
+                          graphLength={2}
+                          height={"90px"}
+                        />
+                      </div>
+                      <div style={{ flex: 2, marginTop: "30px" }}>
+                        {checkPercentage(kpiMetrics.pmpmPercentageChange)}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="d-flex justify-content-between mt-2 mb-0">
+            <div className="d-flex justify-content-between mt-0 mb-0">
               <h5>Month over Month Trends</h5>
               <span>
                 <i
@@ -292,6 +314,9 @@ function SummaryPage() {
             <div className="row mb-0">
               <TabComponent tabs={tabs} />
             </div>
+            <div className="chatbot-container">
+              <Chatbot />
+            </div>
           </div>
         </div>
         <Filters
@@ -302,6 +327,8 @@ function SummaryPage() {
           handleReset={handleReset}
           RadioButtonOptions={radioButtonOptions}
           RadioSelectedOption={selectedOption}
+          isSpecialityDisabled={true}
+          isProviderDisabled={true}
         ></Filters>
       </div>
     </div>

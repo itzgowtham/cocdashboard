@@ -10,12 +10,12 @@ import "ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 
 const PcpGroupSummary = (props) => {
-  const { rowData } = props;
+  const { rowData, dataType } = props;
   const [showGraph, setShowGraph] = useState(false);
 
   const handleGraph = (params) => {
     return (
-      <div>
+      <span style={{ flex: 1 }}>
         <HorizontalBarChart
           actualvalue={params.value[0]}
           targetvalue={params.value[1]}
@@ -23,9 +23,9 @@ const PcpGroupSummary = (props) => {
           graphtype={{ type1: "Target", type2: "Actual" }}
           aspectRatio={5}
           graphLength={2}
-          height={"100px"}
+          height={"100%"}
         />
-      </div>
+      </span>
     );
   };
 
@@ -40,21 +40,25 @@ const PcpGroupSummary = (props) => {
     },
     {
       field: "target",
-      headerName: "Target",
+      headerName: dataType ? dataType[0] : "Target",
       flex: 1,
       hide: showGraph,
       cellRenderer: handleValueinDollar,
     },
     {
       field: "actual",
-      headerName: "Actual",
+      headerName: dataType ? dataType[1] : "Actual",
       flex: 1,
       hide: showGraph,
       cellRenderer: handleValueinDollar,
     },
     {
       field: "target_actual",
-      headerName: "Target & Actual",
+      headerName: dataType
+        ? dataType[0] === "Target"
+          ? "Target vs Actual"
+          : "Prior vs Current"
+        : "Target vs Actual",
       flex: 1,
       hide: !showGraph,
       cellRenderer: handleGraph,
@@ -106,10 +110,15 @@ const PcpGroupSummary = (props) => {
       <div
         className={"ag-theme-quartz mt-2"}
         style={{
-          height: "418px",
+          height: "430px",
         }}
       >
-        <AgGridReact rowData={rowData} columnDefs={colDefs} />
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={colDefs}
+          pagination={true}
+          paginationPageSize={20}
+        />
       </div>
     </>
   );

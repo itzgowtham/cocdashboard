@@ -4,19 +4,27 @@ import ProviderSpecialtyInOutPatient from "./ProviderSpecialtyInOutPatient.jsx";
 import { graphSVG } from "../../assets/images/svg/SVGIcons.jsx";
 
 const ProviderSpecialtySummary = (props) => {
-  const { InpatientDataArray, OutpatientDataArray } = props;
+  const { InpatientDataArray, OutpatientDataArray, dataType } = props;
   const [showGraph, setShowGraph] = useState(false);
   const [tabs, setTabs] = useState([
     {
       label: "In Patient",
       content: (
-        <ProviderSpecialtyInOutPatient showGraph={showGraph} rowdata={""} />
+        <ProviderSpecialtyInOutPatient
+          showGraph={showGraph}
+          rowdata={""}
+          dataType={dataType}
+        />
       ),
     },
     {
       label: "Out Patient",
       content: (
-        <ProviderSpecialtyInOutPatient showGraph={showGraph} rowdata={""} />
+        <ProviderSpecialtyInOutPatient
+          showGraph={showGraph}
+          rowdata={""}
+          dataType={dataType}
+        />
       ),
     },
   ]);
@@ -33,6 +41,7 @@ const ProviderSpecialtySummary = (props) => {
           <ProviderSpecialtyInOutPatient
             showGraph={showGraph}
             rowdata={InpatientDataArray}
+            dataType={dataType}
           />
         ),
       },
@@ -42,6 +51,7 @@ const ProviderSpecialtySummary = (props) => {
           <ProviderSpecialtyInOutPatient
             showGraph={showGraph}
             rowdata={OutpatientDataArray}
+            dataType={dataType}
           />
         ),
       },

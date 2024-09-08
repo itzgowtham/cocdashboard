@@ -6,7 +6,8 @@ import ServiceRegionSummary from "./ServiceRegionSummary";
 import Filters from "../../components/Filters";
 import { DataContext } from "../../context/DataContext";
 import ServiceRegionDetails from "./ServiceRegionDetails";
-
+import Chatbot from "../../components/ChatBot";
+import "./RegionMap.css";
 const ServiceRegion = () => {
   const [inputValues, setInputValues] = useState(FileConstants.formInputValues);
   const [options, setOptions] = useState(FileConstants.formOptions);
@@ -15,6 +16,7 @@ const ServiceRegion = () => {
   const [selectedOption, setSelectedOption] = useState("M");
   const [toggle, setToggle] = useState(true);
   const { filterOptions, initialInputValues } = useContext(DataContext);
+  const [tabIndex, setTabIndex] = useState("");
   const [tabs, setTabs] = useState([
     {
       label: "Summary",
@@ -22,9 +24,13 @@ const ServiceRegion = () => {
     },
     {
       label: "Details",
-      content: <ServiceRegionDetails />,
+      content: <ServiceRegionDetails inputValues={inputValues} />,
     },
   ]);
+
+  const getDatafromTabs = (index) => {
+    setTabIndex(index);
+  };
 
   const useeffecttrigger = () => setToggle((prevToggle) => !prevToggle);
 
@@ -46,10 +52,22 @@ const ServiceRegion = () => {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonOptions.find(
           (option) => option.label === selectedValue
@@ -68,7 +86,8 @@ const ServiceRegion = () => {
             startMonth: startMonth,
           });
         } else {
-          const startMonth = options.endMonth[options.endMonth.length-1].value;
+          const startMonth =
+            options.endMonth[options.endMonth.length - 1].value;
           setInputValues({
             ...inputValues,
             startMonth: startMonth,
@@ -104,7 +123,7 @@ const ServiceRegion = () => {
       },
       {
         label: "Details",
-        content: <ServiceRegionDetails />,
+        content: <ServiceRegionDetails inputValues={inputValues} />,
       },
     ]);
   }, [toggle]);
@@ -121,7 +140,14 @@ const ServiceRegion = () => {
           </div>
           <h3>Service Region</h3>
           <div className="my-4">
-            <TabComponent tabs={tabs} isSummaryDetail={true} />
+            <TabComponent
+              tabs={tabs}
+              isSummaryDetail={true}
+              sendIndex={getDatafromTabs}
+            />
+          </div>
+          <div className="chatbot-container">
+            <Chatbot />
           </div>
         </div>
         <Filters
@@ -132,6 +158,11 @@ const ServiceRegion = () => {
           handleReset={handleReset}
           RadioButtonOptions={radioButtonOptions}
           RadioSelectedOption={selectedOption}
+          isSpecialityDisabled={true}
+          isProviderDisabled={true}
+          isAreaStateDisabled={false}
+          isTypeDisabled={tabIndex == 0 ? false : true}
+          isMonthDisabled={tabIndex == 0 ? false : true}
         />
       </div>
     </div>
