@@ -33,6 +33,7 @@ public class DashboardDetailsService {
 				? dateFormat.convertStringtoIntegerDateFormat(pmpmObject.getEndMonth())
 				: null);
 		pmpmObject.setSpeciality(StringUtils.trimToNull(pmpmObject.getSpeciality()));
+		pmpmObject.setProviderName(StringUtils.trimToNull(pmpmObject.getProviderName()));
 		pmpmObject.setCareCategory(StringUtils.trimToNull(pmpmObject.getCareCategory()));
 		pmpmObject.setGraphType(StringUtils.defaultIfBlank(pmpmObject.getGraphType(), DataConstants.TARGET_VS_ACTUAL));
 		pmpmObject.setViewType(StringUtils.defaultIfBlank(pmpmObject.getViewType(), DataConstants.EXPENSE_PMPM));
@@ -71,7 +72,8 @@ public class DashboardDetailsService {
 		log.info("Inside DashboardDetailsService.careProviderDetails() method");
 		pmpmObject = validatePMPMObject(pmpmObject);
 		Map<String, Object> mapData = dataAccessService.careProviderDetails(pmpmObject.getLob(), pmpmObject.getState(),
-				pmpmObject.getStartMonth(), pmpmObject.getEndMonth(), pmpmObject.getSpeciality());
+				pmpmObject.getStartMonth(), pmpmObject.getEndMonth(), pmpmObject.getSpeciality(),
+				pmpmObject.getProviderName());
 		log.info("Exiting DashboardService.careProviderDetails() method");
 		return mapData;
 	}
@@ -80,7 +82,8 @@ public class DashboardDetailsService {
 		log.info("Inside DashboardDetailsService.pcpGroupDetails() method");
 		pmpmObject = validatePMPMObject(pmpmObject);
 		Map<String, Object> mapData = dataAccessService.pcpGroupDetails(pmpmObject.getLob(), pmpmObject.getState(),
-				pmpmObject.getStartMonth(), pmpmObject.getEndMonth(), pmpmObject.getSpeciality());
+				pmpmObject.getStartMonth(), pmpmObject.getEndMonth(), pmpmObject.getSpeciality(),
+				pmpmObject.getProviderName());
 		log.info("Exiting DashboardService.pcpGroupDetails() method");
 		return mapData;
 	}

@@ -48,6 +48,16 @@ public interface ProviderSpecialityDetailsRepository extends JpaRepository<Provi
 			+ "order by count(p.memberUid) desc limit 10")
 	List<TopMemberProvider> findTopMembersByProvider(String lob, String state, String startMonth, String endMonth);
 
+	@Query("SELECT NEW com.coc.dashboard.dto.TopMember(p.memberUid, sum(p.pricePM)) from ProviderSpecialityDetail p "
+			+ "where (:lob IS NULL OR p.lob = :lob) " + "AND (:state IS NULL OR p.state = :state) "
+			+ "AND ((:startMonth is NULL AND :endMonth is NULL) "
+			+ "OR (:startMonth IS NOT NULL AND :endMonth IS NOT NULL AND p.months between :startMonth AND :endMonth) "
+			+ "OR (:startMonth IS NULL AND p.months = :endMonth)) "
+			+ "AND (:providerName IS NULL OR p.providerName = :providerName) " + "AND p.pricePM > 0 "
+			+ "group by p.memberUid " + "order by sum(p.pricePM) desc limit 10")
+	List<TopMember> findTopMembersByProvider(String lob, String state, String startMonth, String endMonth,
+			String providerName);
+
 	@Query("SELECT count(p.providerName) from ProviderSpecialityDetail p " + "where (:lob IS NULL OR p.lob = :lob) "
 			+ "AND (:state IS NULL OR p.state = :state) " + "AND ((:startMonth is NULL AND :endMonth is NULL) "
 			+ "OR (:startMonth IS NOT NULL AND :endMonth IS NOT NULL AND p.months between :startMonth AND :endMonth) "

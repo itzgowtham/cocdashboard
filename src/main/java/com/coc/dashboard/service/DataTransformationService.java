@@ -58,7 +58,7 @@ public class DataTransformationService {
 		return finalMetric;
 	}
 
-	public Map<String, Double> filterMetric(List<PMPMDTO> pmpm, Map<String, Long> targetPercentageMap,
+	private Map<String, Double> filterMetric(List<PMPMDTO> pmpm, Map<String, Long> targetPercentageMap,
 			String startMonth, String endMonth, String patientType, Function<PMPMDTO, String> keyExtractor) {
 		List<PMPMDTO> finalPmpm = pmpm.stream().map(PMPMDTO::clone).collect(Collectors.toList());
 		return finalPmpm.stream()

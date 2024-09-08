@@ -109,9 +109,9 @@ public class PMPMDataAccessService {
 	}
 
 	@Async
-	public CompletableFuture<List<TopSpeciality>> findPcpTopSpeciality(String lob, String state, String startMonth,
+	public CompletableFuture<List<TopProvider>> findPcpTopSpeciality(String lob, String state, String startMonth,
 			String endMonth) {
-		return CompletableFuture.completedFuture(pmpmPcpRepository.findTopSpeciality(lob, state, startMonth, endMonth));
+		return CompletableFuture.completedFuture(pmpmPcpRepository.findTopProviders(lob, state, startMonth, endMonth));
 	}
 
 	@Async
@@ -130,10 +130,20 @@ public class PMPMDataAccessService {
 	public CompletableFuture<List<String>> distinctSpeciality() {
 		return CompletableFuture.completedFuture(pmpmRepository.findDistinctSpecialities());
 	}
+	
+	@Async
+	public CompletableFuture<List<String>> distinctProvider(String lob, String state, String endMonth) {
+		return CompletableFuture.completedFuture(pmpmRepository.findDistinctProviders(lob, state, endMonth));
+	}
 
 	@Async
 	public CompletableFuture<List<String>> distinctSpecialityPcp() {
 		return CompletableFuture.completedFuture(pmpmPcpRepository.findDistinctSpecialities());
+	}
+	
+	@Async
+	public CompletableFuture<List<String>> distinctProviderPcp(String lob, String state, String endMonth) {
+		return CompletableFuture.completedFuture(pmpmPcpRepository.findDistinctProviders(lob, state, endMonth));
 	}
 
 	@Async

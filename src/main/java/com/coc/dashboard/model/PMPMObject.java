@@ -16,6 +16,7 @@ public class PMPMObject {
 	private String startMonth;
 	private String endMonth;
 	private String speciality;
+	private String providerName;
 	private String careCategory;
 	private String graphType;
 	private String viewType;

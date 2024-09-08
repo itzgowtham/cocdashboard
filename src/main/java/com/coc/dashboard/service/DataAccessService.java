@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -58,8 +57,8 @@ public class DataAccessService {
 			log.info("Exiting DataAccessService.distinctLobStateMonths() method");
 			return distinctData;
 		} catch (Exception e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -77,9 +76,9 @@ public class DataAccessService {
 					.summaryPage(pmpmList, memberViewList, targetPercentage);
 			log.info("Exiting DataAccessService.kpiMetrics() method");
 			return finalData;
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -99,9 +98,9 @@ public class DataAccessService {
 			List<TargetPMPM> targetPercentage = targetPercentageFuture.get();
 			log.info("Exiting DataAccessService.careCategory() method");
 			return new DataPair<>(pmpmList, targetPercentage, null);
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -117,9 +116,9 @@ public class DataAccessService {
 			List<TargetPMPM> targetPercentage = targetPercentageFuture.get();
 			log.info("Exiting DataAccessService.serviceRegion() method");
 			return new DataPair<>(pmpmList, memberViewList, targetPercentage);
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -133,9 +132,9 @@ public class DataAccessService {
 			List<TargetPMPM> targetPercentage = targetPercentageFuture.get();
 			log.info("Exiting DataAccessService.providerSpeciality() method");
 			return new DataPair<>(pmpmList, targetPercentage, null);
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -150,9 +149,9 @@ public class DataAccessService {
 			List<TargetPMPM> targetPercentage = targetPercentageFuture.get();
 			log.info("Exiting DataAccessService.careProvider() method");
 			return new DataPair<>(pmpmList, targetPercentage, null);
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -166,9 +165,9 @@ public class DataAccessService {
 			List<TargetPMPM> targetPercentage = targetPercentageFuture.get();
 			log.info("Exiting DataAccessService.pcpGroup() method");
 			return new DataPair<>(pmpmList, targetPercentage, null);
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -182,9 +181,9 @@ public class DataAccessService {
 			List<Forecast_ActiveMembership> member = memberFuture.get();
 			log.info("Exiting DataAccessService.forecast() method");
 			return new DataPair<>(pmpm, member, null);
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -209,9 +208,9 @@ public class DataAccessService {
 			mapData.put("distinctCategory", distinctCategory.get());
 			log.info("Exiting DataAccessService.careCategoryDetails() method");
 			return mapData;
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
@@ -228,16 +227,16 @@ public class DataAccessService {
 					topProviders.get(), memberViewList.get(), topMembers.get(), startMonth, endMonth);
 			log.info("Exiting DataAccessService.serviceRegionDetails() method");
 			return mapData;
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
 	public Map<String, Object> providerSpecialityDetails(String lob, String state, String startMonth, String endMonth,
 			String speciality) throws MyCustomException {
 		try {
-			log.info("Inside DataAccessService.providerSpeciality() method");
+			log.info("Inside DataAccessService.providerSpecialityDetails() method");
 			CompletableFuture<List<TopSpeciality>> topSpeciality = pmpm.findTopSpecialities(lob, state, startMonth,
 					endMonth);
 			CompletableFuture<List<TopProvider>> topProvidersBySpeciality = pmpm.findTopProvidersBySpeciality(lob,
@@ -253,16 +252,16 @@ public class DataAccessService {
 			mapData.put("membersPerSpeciality", topMembers.get());
 			mapData.put("topMembersPerSpeciality", topMembersBySpeciality.get());
 			mapData.put("distinctSpeciality", distinctSpeciality.get());
-			log.info("Exiting DataAccessService.providerSpeciality() method");
+			log.info("Exiting DataAccessService.providerSpecialityDetails() method");
 			return mapData;
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
 	public Map<String, Object> careProviderDetails(String lob, String state, String startMonth, String endMonth,
-			String speciality) throws MyCustomException {
+			String speciality, String providerName) throws MyCustomException {
 		try {
 			log.info("Inside DataAccessService.careProviderDetails() method");
 			CompletableFuture<List<TopProvider>> topProviders = pmpm.findTopProviders(lob, state, startMonth, endMonth);
@@ -270,47 +269,51 @@ public class DataAccessService {
 					state, startMonth, endMonth, speciality);
 			CompletableFuture<List<TopMemberProvider>> topMembersByProvider = memberView.findTopMembersByProvider(lob,
 					state, startMonth, endMonth);
-			CompletableFuture<List<TopMember>> topMembersBySpeciality = memberView.findTopMembersBySpeciality(lob,
-					state, startMonth, endMonth, speciality);
+			CompletableFuture<List<TopMember>> topMembersBySpeciality = memberView.findTopMembersByProvider(lob,
+					state, startMonth, endMonth, providerName);
 			CompletableFuture<List<String>> distinctSpeciality = pmpm.distinctSpeciality();
+			CompletableFuture<List<String>> distinctProvider = pmpm.distinctProvider(lob, state, endMonth);
 			Map<String, Object> mapData = new HashMap<>();
 			mapData.put("topMembersPerProvider", topMembersByProvider.get());
 			mapData.put("top10ProvidersByCost", topProviders.get());
 			mapData.put("top10MembersByCostForEachSpeciality", topMembersBySpeciality.get());
 			mapData.put("top10ProvidersByCostForEachSpeciality", topProvidersBySpeciality.get());
 			mapData.put("distinctSpeciality", distinctSpeciality.get());
+			mapData.put("distinctProvider", distinctProvider.get());
 			log.info("Exiting DataAccessService.careProviderDetails() method");
 			return mapData;
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 
 	public Map<String, Object> pcpGroupDetails(String lob, String state, String startMonth, String endMonth,
-			String speciality) throws MyCustomException {
+			String speciality, String providerName) throws MyCustomException {
 		try {
-			log.info("Inside DataAccessService.pcpGroup() method");
-			CompletableFuture<List<TopSpeciality>> topSpeciality = pmpm.findPcpTopSpeciality(lob, state, startMonth,
+			log.info("Inside DataAccessService.pcpGroupDetails() method");
+			CompletableFuture<List<TopProvider>> topSpeciality = pmpm.findPcpTopSpeciality(lob, state, startMonth,
 					endMonth);
 			CompletableFuture<List<TopProvider>> topProvidersBySpeciality = pmpm.findPcpTopProvidersBySpeciality(lob,
 					state, startMonth, endMonth, speciality);
-			CompletableFuture<List<TopMemberSpeciality>> topMembers = memberView.findPcpGroupTopMembers(lob, state,
+			CompletableFuture<List<TopMemberProvider>> topMembers = memberView.findPcpGroupTopMembers(lob, state,
 					startMonth, endMonth);
 			CompletableFuture<List<TopMember>> topMembersBySpeciality = memberView
-					.findPcpGroupTopMembersBySpeciality(lob, state, startMonth, endMonth, speciality);
+					.findPcpGroupTopMembersBySpeciality(lob, state, startMonth, endMonth, providerName);
 			CompletableFuture<List<String>> distinctSpeciality = pmpm.distinctSpecialityPcp();
+			CompletableFuture<List<String>> distinctProvider = pmpm.distinctProviderPcp(lob, state, endMonth);
 			Map<String, Object> mapData = new HashMap<>();
 			mapData.put("topPcpByCost", topSpeciality.get());
 			mapData.put("topPcpByCostForEachSpeciality", topProvidersBySpeciality.get());
 			mapData.put("membersPerPcpGroup", topMembers.get());
 			mapData.put("topMembersByCostForEachPcp", topMembersBySpeciality.get());
 			mapData.put("distinctSpeciality", distinctSpeciality.get());
-			log.info("Exiting DataAccessService.pcpGroup() method");
+			mapData.put("distinctProvider", distinctProvider.get());
+			log.info("Exiting DataAccessService.pcpGroupDetails() method");
 			return mapData;
-		} catch (InterruptedException | ExecutionException e) {
-			log.error("Exception occured while reading the data from db: " + e.getMessage());
-			throw new MyCustomException("Exception occured while reading the data from db");
+		} catch (Exception e) {
+			log.error("Exception occurred while reading the data from db: " + e.getMessage());
+			throw new MyCustomException("Exception occurred while reading the data from db");
 		}
 	}
 }

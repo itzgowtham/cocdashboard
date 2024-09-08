@@ -84,10 +84,9 @@ public class DashboardService {
 		log.info("Inside DashboardService.landingPage() method");
 		DataPair<List<ResultData>, Map<String, Long>, String> data = fetchData(null, null);
 		List<ResultData> kpiMetrics = data.getFirst();
-		Map<String, Long> targetPercentageMap = data.getSecond();
-		String endMonth = data.getThird();
-		FinalResult result = process.kpiMetrics(kpiMetrics, null, endMonth, DataConstants.CURRENT_VS_PRIOR,
-				targetPercentageMap);
+		String endMonth = "2019-12";
+		String startMonth = "2019-11";
+		FinalResult result = process.landingPageMetrics(kpiMetrics, startMonth, endMonth);
 		log.info("Exiting DashboardService.landingPage() method");
 		return result;
 	}

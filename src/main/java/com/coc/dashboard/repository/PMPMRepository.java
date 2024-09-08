@@ -25,6 +25,11 @@ public interface PMPMRepository extends JpaRepository<PMPM, Long> {
 
 	@Query("SELECT distinct(speciality) from PMPM where speciality is not null")
 	List<String> findDistinctSpecialities();
+	
+	@Query("SELECT distinct(p.providerName) from PMPM p where p.providerName is not null "
+			+ "AND (:lob IS NULL OR p.lob = :lob) " + "AND (:state IS NULL OR p.state = :state) "
+			+ "AND p.months=:endMonth order by p.providerName limit 100")
+	List<String> findDistinctProviders(String lob, String state, String endMonth);
 
 	@Query("SELECT NEW com.coc.dashboard.dto.PMPMDTO(SUM(p.pricePM), p.months) FROM PMPM p "
 			+ "where (:lob IS NULL OR p.lob = :lob) " + "AND (:state IS NULL OR p.state = :state) "

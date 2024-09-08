@@ -11,8 +11,6 @@ import com.coc.dashboard.dto.MemberViewDTO;
 import com.coc.dashboard.dto.TopMember;
 import com.coc.dashboard.dto.TopMemberProvider;
 import com.coc.dashboard.dto.TopMemberSpeciality;
-import com.coc.dashboard.dto.TopProvider;
-import com.coc.dashboard.dto.TopSpeciality;
 import com.coc.dashboard.entity.Forecast_ActiveMembership;
 import com.coc.dashboard.repository.CareCategoryDetailsRepository;
 import com.coc.dashboard.repository.ForecastMemberRepository;
@@ -98,9 +96,16 @@ public class MemberViewDataAccessService {
 		return CompletableFuture.completedFuture(
 				providerSpecialityDetailsRepository.findTopMembersByProvider(lob, state, startMonth, endMonth));
 	}
+	
+	@Async
+	public CompletableFuture<List<TopMember>> findTopMembersByProvider(String lob, String state,
+			String startMonth, String endMonth, String providerName) {
+		return CompletableFuture.completedFuture(
+				providerSpecialityDetailsRepository.findTopMembersByProvider(lob, state, startMonth, endMonth, providerName));
+	}
 
 	@Async
-	public CompletableFuture<List<TopMemberSpeciality>> findPcpGroupTopMembers(String lob, String state,
+	public CompletableFuture<List<TopMemberProvider>> findPcpGroupTopMembers(String lob, String state,
 			String startMonth, String endMonth) {
 		return CompletableFuture
 				.completedFuture(pcpGroupDetailsRepository.findTopMembers(lob, state, startMonth, endMonth));
@@ -108,9 +113,9 @@ public class MemberViewDataAccessService {
 
 	@Async
 	public CompletableFuture<List<TopMember>> findPcpGroupTopMembersBySpeciality(String lob, String state,
-			String startMonth, String endMonth, String speciality) {
+			String startMonth, String endMonth, String providerName) {
 		return CompletableFuture.completedFuture(
-				pcpGroupDetailsRepository.findTopMembersBySpeciality(lob, state, startMonth, endMonth, speciality));
+				pcpGroupDetailsRepository.findTopMembersBySpeciality(lob, state, startMonth, endMonth, providerName));
 	}
 
 	@Async

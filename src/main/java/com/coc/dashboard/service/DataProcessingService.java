@@ -1,13 +1,6 @@
 package com.coc.dashboard.service;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -88,6 +81,26 @@ public class DataProcessingService {
 			finalResult = new FinalResult(activeMembers, endingMembers, pmpmData, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
 		}
 		log.info("Exiting DataProcessingService.kpiMetrics() method");
+		return finalResult;
+	}
+
+	public FinalResult landingPageMetrics(List<ResultData> kpiMetrics, String startMonth, String endMonth) {
+		List<ResultData> finalData = cloneData(kpiMetrics);
+		ResultData currentData = finalData.stream().filter(val -> val.getMonths().compareTo(endMonth) == 0).findAny()
+				.orElse(null);
+		ResultData previousData = kpiMetrics.stream().filter(val -> val.getMonths().compareTo(startMonth) == 0)
+				.findAny().orElse(null);
+		double pmpm = currentData.getTotalPricepm() / currentData.getTotalActiveMembers();
+		double prevPmpm = previousData.getTotalPricepm() / previousData.getTotalActiveMembers();
+		long currentMembers = currentData.getTotalActiveMembers();
+		long previousMembers = previousData.getTotalActiveMembers();
+		FinalResult finalResult = null;
+		if (currentData != null && previousData != null) {
+			finalResult = calculateFinalResult(currentMembers, currentMembers, pmpm, previousMembers, previousMembers,
+					prevPmpm);
+		} else {
+			finalResult = new FinalResult(0L, 0L, 0.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+		}
 		return finalResult;
 	}
 
@@ -211,21 +224,20 @@ public class DataProcessingService {
 		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
 				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
 				: null;
+		boolean val = Objects.equals(graphType, DataConstants.TARGET_VS_ACTUAL);
+		targetPercentageMap = val ? targetPercentageMap : null;
 		Map<String, ResultData> currentFinalMetric = dataTransformationService.filterServiceRegionMetric(pmpm,
 				memberView, null, startMonth, endMonth, null);
 		Map<String, ResultData> previousFinalMetric = dataTransformationService.filterServiceRegionMetric(pmpm,
-				memberView, graphType.equals(DataConstants.TARGET_VS_ACTUAL) ? targetPercentageMap : null,
-				prevStartMonth, prevEndMonth, null);
+				memberView, targetPercentageMap, prevStartMonth, prevEndMonth, null);
 		Map<String, ResultData> currentIpFinalMetric = dataTransformationService.filterServiceRegionMetric(pmpm,
 				memberView, null, startMonth, endMonth, "I");
 		Map<String, ResultData> previousIpFinalMetric = dataTransformationService.filterServiceRegionMetric(pmpm,
-				memberView, graphType.equals(DataConstants.TARGET_VS_ACTUAL) ? targetPercentageMap : null,
-				prevStartMonth, prevEndMonth, "I");
+				memberView, targetPercentageMap, prevStartMonth, prevEndMonth, "I");
 		Map<String, ResultData> currentOpFinalMetric = dataTransformationService.filterServiceRegionMetric(pmpm,
 				memberView, null, startMonth, endMonth, "O");
 		Map<String, ResultData> previousOpFinalMetric = dataTransformationService.filterServiceRegionMetric(pmpm,
-				memberView, graphType.equals(DataConstants.TARGET_VS_ACTUAL) ? targetPercentageMap : null,
-				prevStartMonth, prevEndMonth, "O");
+				memberView, targetPercentageMap, prevStartMonth, prevEndMonth, "O");
 		Map<String, MetricData> allFinalMetric = serviceRegionResult(currentFinalMetric, previousFinalMetric, viewType);
 		Map<String, MetricData> ipFinalMetric = serviceRegionResult(currentIpFinalMetric, previousIpFinalMetric,
 				viewType);
@@ -293,5 +305,4 @@ public class DataProcessingService {
 		log.info("Exiting DataProcessingService.forecast() method");
 		return finalMap;
 	}
-
 }
