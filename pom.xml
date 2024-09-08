@@ -16,6 +16,8 @@
 	<description>COC Dashboard project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
+        <jacoco.version>0.8.7</jacoco.version>
+		<pitest.version>1.16.1</pitest.version>
         <frontend-src-dir>${project.basedir}/src/main/frontend</frontend-src-dir>
         <node.version>v20.12.2</node.version>
         <yarn.version>v1.22.22</yarn.version>
@@ -63,19 +65,93 @@
 
 	<build>
 		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
+				<executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+                <configuration>
                     <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
+                        <exclude>**/DashboardApplication.*</exclude>
+                        <exclude>**/config/*</exclude>
+                        <exclude>**/constants/*</exclude>
+                        <exclude>**/dto/*</exclude>
+                        <exclude>**/entity/*</exclude>
+                        <exclude>**/exception/*</exclude>
+                        <exclude>**/model/*</exclude>
                     </excludes>
                 </configuration>
-			</plugin>
+            </plugin>
 			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>${pitest.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>1.2.1</version> <!-- Adjust version as needed -->
+					</dependency>
+				</dependencies>
+				<configuration>
+					<targetClasses>
+						<param>com.coc.dashboard.constants.*</param>
+						<param>com.coc.dashboard.controller.*</param>
+						<param>com.coc.dashboard.service.*</param>
+						<param>com.coc.dashboard.util.*</param>
+					</targetClasses>
+					<targetTests>
+						<param>com.coc.dashboard.constants.*</param>
+						<param>com.coc.dashboard.controller.*</param>
+						<param>com.coc.dashboard.service.*</param>
+						<param>com.coc.dashboard.util.*</param>
+					</targetTests>
+					<reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>pit-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>mutationCoverage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--<plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>${frontend-maven-plugin.version}</version>
@@ -158,7 +234,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 		</plugins>
 	</build>
 
