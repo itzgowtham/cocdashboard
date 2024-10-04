@@ -133,8 +133,11 @@ const PcpGroup = () => {
         setTopMembersByCostForEachPcp(topMembersByCostForEachPcp);
         setTopPcpByCost(topPcpByCost);
         setTopPcpByCostForEachSpeciality(topPcpByCostForEachSpeciality);
-        setPcpOptions([{ label: "All", value: "" },...pcpOptions]);
-        setSpecialityOptions([{ label: "All", value: "" },...specialityOptions]);
+        setPcpOptions([{ label: "All", value: "" }, ...pcpOptions]);
+        setSpecialityOptions([
+          { label: "All", value: "" },
+          ...specialityOptions,
+        ]);
       }
     } catch (error) {
       console.log("Could not fetch data: " + error);
@@ -168,6 +171,8 @@ const PcpGroup = () => {
   };
 
   const useeffecttrigger = () => {
+    setSelectedSpecialityOption("");
+    setSelectedPcpOption("");
     setToggle((prevToggle) => !prevToggle);
   };
 
@@ -182,10 +187,22 @@ const PcpGroup = () => {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonoptions.find(
           (option) => option.label === selectedValue
@@ -255,7 +272,7 @@ const PcpGroup = () => {
                 sendIndex={getDatafromTabs}
               />
             </div>
-            <div className="d-flex mt-2 justify-content-between">
+            <div className="chatbot-container">
               <p></p>
               <Chatbot />
             </div>

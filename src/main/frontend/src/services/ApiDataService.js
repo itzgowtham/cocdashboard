@@ -2,8 +2,15 @@ import axios from "axios";
 import { endPoint, API_PARAMS } from "../constants/EndPointConstants";
 
 const BASE_URL = `${endPoint.BASE_URL}`;
+const CHAT_URL = `${endPoint.CHAT_URL}`;
 const headers = {
   "Access-Control-Allow-Origin": "*",
+};
+const chatHeaders = {
+  accept: "application/json",
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Disable-Loader": true,
 };
 
 export const PMPMfetch = (payload) => {
@@ -126,5 +133,14 @@ export const careProviderDetailsFetch = (payload) => {
     url: `${BASE_URL}${API_PARAMS.CARE_PROVIDER_DETAILS}`,
     data: payload,
     headers,
+  });
+};
+
+export const chatBotDataFetch = (payload) => {
+  return axios({
+    method: "post",
+    url: `${CHAT_URL}${API_PARAMS.CHAT_BOT}`,
+    data: payload,
+    chatHeaders,
   });
 };

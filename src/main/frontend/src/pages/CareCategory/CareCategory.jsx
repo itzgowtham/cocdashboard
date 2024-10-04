@@ -12,6 +12,7 @@ import CareCategorySummary from "./CareCategorySummary.jsx";
 import { useEffect, useState, useContext } from "react";
 import { formatOptions } from "../../utilities/FormatUtilities.jsx";
 import Chatbot from "../../components/ChatBot.jsx";
+import "../CareProvider/CareProvider.css";
 function CareCategory() {
   var maxValue;
   var minValue;
@@ -78,10 +79,22 @@ function CareCategory() {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonoptions.find(
           (option) => option.label === selectedValue
@@ -192,7 +205,13 @@ function CareCategory() {
         careCategory: selectedCarecategoryOption,
       });
       if (response.status === 200) {
-        setCareCategoryOptions(formatOptions(response.data.distinctCategory));
+        const careCategoryTempoptions = formatOptions(
+          response.data.distinctCategory
+        );
+        setCareCategoryOptions([
+          { label: "All", value: "" },
+          ...careCategoryTempoptions,
+        ]);
         setTopProviders(response.data.topProvidersPerCareCategory);
         setTopMembers(response.data.topMembersPerCareCategory);
         setProvidersCount(response.data.providersCount);
@@ -246,7 +265,7 @@ function CareCategory() {
             </a>
           </div>
           <h3>Care Category</h3>
-        
+
           <div className="my-4">
             <TabComponent
               tabs={tabs}
@@ -254,8 +273,7 @@ function CareCategory() {
               sendIndex={getDatafromTabs}
             />
           </div>
-          <div className="d-flex justify-content-between">
-            <span></span>
+          <div className="chatbot-container">
             <Chatbot />
           </div>
         </div>

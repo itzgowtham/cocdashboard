@@ -7,6 +7,7 @@ import Filters from "../../components/Filters";
 import { DataContext } from "../../context/DataContext";
 import ServiceRegionDetails from "./ServiceRegionDetails";
 import Chatbot from "../../components/ChatBot";
+import "./RegionMap.css";
 const ServiceRegion = () => {
   const [inputValues, setInputValues] = useState(FileConstants.formInputValues);
   const [options, setOptions] = useState(FileConstants.formOptions);
@@ -51,10 +52,22 @@ const ServiceRegion = () => {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonOptions.find(
           (option) => option.label === selectedValue
@@ -133,10 +146,9 @@ const ServiceRegion = () => {
               sendIndex={getDatafromTabs}
             />
           </div>
-          <div className="d-flex mt-2 justify-content-between">
-              <p></p>
-              <Chatbot/>
-            </div>
+          <div className="chatbot-container">
+            <Chatbot />
+          </div>
         </div>
         <Filters
           FormSelectOptions={options}

@@ -73,10 +73,22 @@ function SummaryPage() {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        setInputValues({
-          ...inputValues,
-          startMonth: startMonth,
-        });
+        if (
+          options.endMonth.some(
+            (option) =>
+              option.label === startMonth && option.value === startMonth
+          )
+        ) {
+          setInputValues({
+            ...inputValues,
+            startMonth: startMonth,
+          });
+        } else {
+          setInputValues({
+            ...inputValues,
+            startMonth: `Jul 2019`,
+          });
+        }
       } else {
         const selectedMonth = radioButtonOptions.find(
           (option) => option.label === selectedValue
@@ -302,9 +314,8 @@ function SummaryPage() {
             <div className="row mb-0">
               <TabComponent tabs={tabs} />
             </div>
-            <div className="d-flex mt-2 justify-content-between">
-              <p></p>
-              <Chatbot/>
+            <div className="chatbot-container">
+              <Chatbot />
             </div>
           </div>
         </div>

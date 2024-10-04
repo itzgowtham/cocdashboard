@@ -278,7 +278,7 @@ const ProviderSpecialtyDetails = (props) => {
         </div>
         <div className="col-6 p-2">
           <div className="d-flex mb-0 justify-content-between">
-            <h6 className="mb-4">Top 5 Specialties by cost</h6>
+            <h6 className="mb-4">Top 10 Specialties by cost</h6>
 
             <div onClick={handleSpecialtyTableView} className="coc-cursor ms-3">
               View: {showSpecialtyGraph ? graphSVG : "123"}

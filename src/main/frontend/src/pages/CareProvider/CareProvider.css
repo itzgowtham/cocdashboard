@@ -7,3 +7,9 @@
     font-weight: 600;
   }
 }
+.chatbot-container {
+  position: fixed;
+  right: 30px;
+  bottom: 20px;
+  z-index: 1000;
+}
