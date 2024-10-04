@@ -145,6 +145,7 @@ public class DataAccessServiceTest {
         List<TargetPMPM> targetPercentage = new ArrayList<>();
         when(pmpmDataAccessService.findCareProvider(anyString(), anyString())).thenReturn(CompletableFuture.completedFuture(pmpmList));
         when(targetPMPMRepository.findAll()).thenReturn(targetPercentage);
+        when(pmpmDataAccessService.distinctState()).thenReturn(CompletableFuture.completedFuture(List.of("State1", "State2")));
 
         // Test method invocation
         DataPair<List<PMPMDTO>, List<TargetPMPM>, Object> result = dataAccessService.careProvider("Lob1", "State1");
@@ -153,6 +154,9 @@ public class DataAccessServiceTest {
         assertEquals(pmpmList, result.getFirst());
         assertEquals(targetPercentage, result.getSecond());
         assertEquals(null, result.getThird());
+
+        result = dataAccessService.careProvider("Lob1", null);
+        assertNotNull(result);
     }
 
     @Test

@@ -45,22 +45,10 @@ const Forecast = () => {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        if (
-          options.endMonth.some(
-            (option) =>
-              option.label === startMonth && option.value === startMonth
-          )
-        ) {
-          setInputValues({
-            ...inputValues,
-            startMonth: startMonth,
-          });
-        } else {
-          setInputValues({
-            ...inputValues,
-            startMonth: `Jul 2019`,
-          });
-        }
+        setInputValues({
+          ...inputValues,
+          startMonth: startMonth,
+        });
       } else {
         const selectedMonth = radioButtonoptions.find(
           (option) => option.label === selectedValue
@@ -187,10 +175,10 @@ const Forecast = () => {
             }
             selectedOption={selectedForecastOption}
           />
-          <div className="chatbot-container">
-            <p></p>
-            <Chatbot />
-          </div>
+           <div className="d-flex mt-2 justify-content-between">
+              <p></p>
+              <Chatbot/>
+            </div>
         </div>
         <Filters
           FormSelectOptions={options}

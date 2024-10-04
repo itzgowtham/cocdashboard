@@ -47,6 +47,22 @@ public class DashboardServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    private PMPMObject preparePMPMObject() {
+        PMPMObject pmpmObject = new PMPMObject();
+        pmpmObject.setLob("TestLOB");
+        pmpmObject.setState("TestState");
+        pmpmObject.setStartMonth("2019-02");
+        pmpmObject.setEndMonth("2020-02");
+        return pmpmObject;
+    }
+
+    private TargetPMPM getTargetPmpm() {
+        TargetPMPM targetPMPM = new TargetPMPM();
+        targetPMPM.setMonths("key");
+        targetPMPM.setTargetPercentage(50L);
+        return targetPMPM;
+    }
+
     @Test
     void testSummary() throws MyCustomException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         PMPMObject pmpmObject = preparePMPMObject();
@@ -76,6 +92,13 @@ public class DashboardServiceTest {
         Map<String, Object> result = dashboardService.summary(pmpmObject);
 
         // Assertions
+        assertEquals(mockFinalResult, result.get("kpimetrics"));
+        assertEquals(mockFinalResult, result.get("kpimetrics"));
+        assertEquals(mockMapData, result.get("areaChart"));
+
+        pmpmObject.setEndMonth(" ");
+        result = dashboardService.summary(pmpmObject);
+        assertNotNull(result);
         assertEquals(mockFinalResult, result.get("kpimetrics"));
         assertEquals(mockMapData, result.get("areaChart"));
     }
@@ -348,21 +371,5 @@ public class DashboardServiceTest {
         } catch (Exception e) {
             throw new MyCustomException("Failed to invoke validatePMPMObject");
         }
-    }
-
-    private PMPMObject preparePMPMObject() {
-        PMPMObject pmpmObject = new PMPMObject();
-        pmpmObject.setLob("TestLOB");
-        pmpmObject.setState("TestState");
-        pmpmObject.setStartMonth("2019-02");
-        pmpmObject.setEndMonth("2020-02");
-        return pmpmObject;
-    }
-
-    private TargetPMPM getTargetPmpm() {
-        TargetPMPM targetPMPM = new TargetPMPM();
-        targetPMPM.setMonths("key");
-        targetPMPM.setTargetPercentage(50L);
-        return targetPMPM;
     }
 }

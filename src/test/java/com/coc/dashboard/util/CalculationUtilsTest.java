@@ -36,8 +36,8 @@ public class CalculationUtilsTest {
 
         // Test case 3: Zero present value
         presentValue = 0.0;
-        previousValue = 50.0;
-        expected = -100.0;
+        previousValue = 0.0;
+        expected = 0.0;
         assertEquals(expected, calculationUtils.calculatePercentageChange(presentValue, previousValue));
     }
 

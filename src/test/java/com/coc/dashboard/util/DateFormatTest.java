@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
-import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,18 +17,18 @@ public class DateFormatTest {
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testConvertIntegertoStringDateFormat() {
+    public void testConvertIntegerToStringDateFormat() {
         String inputDate = "2024-07";
         String expected = "Jul 2024";
         assertEquals(expected, dateFormat.convertIntegertoStringDateFormat(inputDate));
     }
 
     @Test
-    public void testConvertStringtoIntegerDateFormat() {
+    public void testConvertStringToIntegerDateFormat() {
         String inputDate = "Jul 2024";
         String expected = "2024-07";
         assertEquals(expected, dateFormat.convertStringtoIntegerDateFormat(inputDate));
@@ -62,7 +60,7 @@ public class DateFormatTest {
     @Test
     public void testMonthYearComparator() {
         List<String> dates = new ArrayList<>(List.of("Jul 2024", "Dec 2023", "May 2024"));
-        Collections.sort(dates, new DateFormat.MonthYearComparator());
+        dates.sort(new DateFormat.MonthYearComparator());
         assertEquals("Jul 2024", dates.get(0));
         assertEquals("May 2024", dates.get(1));
         assertEquals("Dec 2023", dates.get(2));

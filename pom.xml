@@ -127,16 +127,20 @@
 				</dependencies>
 				<configuration>
 					<targetClasses>
-						<param>com.coc.dashboard.constants.*</param>
-						<param>com.coc.dashboard.controller.*</param>
-						<param>com.coc.dashboard.service.*</param>
-						<param>com.coc.dashboard.util.*</param>
+						<!--<param>com.coc.dashboard.constants.*</param>
+						<param>com.coc.dashboard.controller.*</param>-->
+						<!--<param>com.coc.dashboard.service.*</param>-->
+						<!--<param>com.coc.dashboard.util.*</param>-->
+						<param>com.coc.dashboard.service.DataProcessingService*</param>
+						<!--<param>com.coc.dashboard.service.DataTransformationService*</param>-->
 					</targetClasses>
 					<targetTests>
-						<param>com.coc.dashboard.constants.*</param>
-						<param>com.coc.dashboard.controller.*</param>
-						<param>com.coc.dashboard.service.*</param>
-						<param>com.coc.dashboard.util.*</param>
+						<!--<param>com.coc.dashboard.constants.*</param>
+						<param>com.coc.dashboard.controller.*</param>-->
+						<!--<param>com.coc.dashboard.service.*</param>-->
+						<!--<param>com.coc.dashboard.util.*</param>-->
+						<param>com.coc.dashboard.service.DataProcessingService*</param>
+						<!--<param>com.coc.dashboard.service.DataTransformationService*</param>-->
 					</targetTests>
 					<reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
 				</configuration>

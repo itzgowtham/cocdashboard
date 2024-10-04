@@ -9,9 +9,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use((config) => {
-      if (!config.headers["Disable-Loader"]) {
-        setLoading(true);
-      }
+      setLoading(true);
       return config;
     });
 

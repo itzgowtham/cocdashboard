@@ -1,6 +1,5 @@
 export const endPoint = {
   BASE_URL: "http://localhost:8080",
-  CHAT_URL: "http://localhost:8000",
 };
 
 export const API_PARAMS = {
@@ -18,5 +17,4 @@ export const API_PARAMS = {
   PCP_GROUP: "/pcpGroup",
   PCP_GROUP_DETAILS: "/pcpGroupDetails",
   FORECAST: "/forecast",
-  CHAT_BOT: "/qa_chat/invoke",
 };

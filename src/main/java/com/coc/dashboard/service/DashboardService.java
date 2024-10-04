@@ -68,7 +68,7 @@ public class DashboardService {
 		DataPair<List<ResultData>, Map<String, Long>, String> data = fetchData(lob, state);
 		List<ResultData> kpiMetrics = data.getFirst();
 		Map<String, Long> targetPercentageMap = data.getSecond();
-		endMonth = StringUtils.isBlank(endMonth) ? data.getThird() : endMonth;
+		endMonth = StringUtils.isEmpty(endMonth) ? data.getThird() : endMonth;
 
 		FinalResult result = process.kpiMetrics(kpiMetrics, startMonth, endMonth, graphType, targetPercentageMap);
 		Map<String, Map<String, Double>> mapData = process.areaChart(kpiMetrics, endMonth, graphType,

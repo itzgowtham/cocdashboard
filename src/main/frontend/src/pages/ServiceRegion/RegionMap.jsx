@@ -9,14 +9,14 @@ const RegionMap = (props) => {
   const geoUrl = geograpyJSON;
   const { selectedViewType, data, dataType } = props;
   let minValue = 0;
-  let maxValue = 100;
+  let maxValue = 390;
   let insufficientData = Object.keys(data).length > 55 ? false : true;
 
   for (let item in data) {
-    if (data[item].actual > maxValue && item != "Others") {
+    if (data[item].actual > maxValue && data[item].name != "others") {
       maxValue = data[item].actual;
     }
-    if (data[item].actual < minValue && item != "Others") {
+    if (data[item].actual < minValue && data[item].name != "others") {
       minValue = data[item].actual;
     }
   }

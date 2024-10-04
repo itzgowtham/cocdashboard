@@ -60,6 +60,7 @@ public class DataProcessingServiceTest {
         Map<String, Long> targetPercentageMap = Map.of("Aug 2018", 5L, "Feb 2019", 6L, "Feb 2020", 7L);
 
         when(dateFormat.getPreviousMonths("2019-03", 1)).thenReturn("2019-02");
+        when(dateFormat.getPreviousMonths("2020-02", 1)).thenReturn("2019-02");
         when(dateFormat.getPreviousMonths("2019-02", 11)).thenReturn("2018-02");
         when(dateFormat.getPreviousYearMonth("2020-02")).thenReturn("2019-03");
         when(dateFormat.getPreviousYearMonth("2019-02")).thenReturn("2018-03");
@@ -78,11 +79,13 @@ public class DataProcessingServiceTest {
     //    when(dataProcessingService.calculateFinalResult(anyLong(), anyLong(), anyDouble(), anyLong(), anyLong(), anyDouble())).thenReturn(expectedResult);
 
         // Execute
-        FinalResult result = dataProcessingService.kpiMetrics(data, "2019-03", "2020-02", DataConstants.TARGET_VS_ACTUAL, targetPercentageMap);
+        FinalResult targetVsActualResult = dataProcessingService.kpiMetrics(data, "2019-03", "2020-02", DataConstants.TARGET_VS_ACTUAL, targetPercentageMap);
+        FinalResult currentVsPriorResult = dataProcessingService.kpiMetrics(data, null, "2020-02", DataConstants.CURRENT_VS_PRIOR, targetPercentageMap);
 
         // Verify
-        assertNotNull(result);
-        assertEquals(expectedResult, result);
+        assertNotNull(targetVsActualResult);
+        assertEquals(expectedResult, targetVsActualResult);
+        assertNotNull(currentVsPriorResult);
     }
 
     @Test
@@ -110,21 +113,26 @@ public class DataProcessingServiceTest {
                 new ResultData(50L, 500.0, "2018-08"),
                 new ResultData(100L, 1000.0, "2019-02"),
                 new ResultData(150L, 1500.0, "2019-08"),
-                new ResultData(200L, 2000.0, "2020-02")
+                new ResultData(200L, 2000.0, "2020-02"),
+                new ResultData(250L, 2500.0, "2020-02"),
+                new ResultData(300L, 3000.0, "2019-02"),
+                new ResultData(350L, 3500.0, "2020-08")
         );
-        Map<String, Long> targetPercentageMap = Map.of("2018-08", 5L, "2019-08", 6L, "2020-02", 7L);
+        Map<String, Long> targetPercentageMap = Map.of("Aug 2018", 5L, "Feb 2019", 5L, "Aug 2019", 5L, "Feb 2020", 5L);
 
         when(dateFormat.getPreviousMonths(anyString(), anyInt())).thenReturn("2019-02");
-        when(dateFormat.getPreviousYearMonth("2020-02")).thenReturn("2019-03");
+        when(dateFormat.getPreviousYearMonth("2020-02")).thenReturn("2019-02");
         when(dateFormat.getPreviousYearMonth("2019-02")).thenReturn("2018-03");
         when(dateFormat.convertIntegertoStringDateFormat("2018-08")).thenReturn("Aug 2018");
         when(dateFormat.convertIntegertoStringDateFormat("2019-02")).thenReturn("Feb 2019");
         when(dateFormat.convertIntegertoStringDateFormat("2019-08")).thenReturn("Aug 2019");
         when(dateFormat.convertIntegertoStringDateFormat("2020-02")).thenReturn("Feb 2020");
         when(calculationUtils.roundToTwoDecimals(10.0)).thenReturn(10.0);
+        when(calculationUtils.roundToTwoDecimals(10.5)).thenReturn(10.5);
 
         Map<String, Double> expectedCurrentData = Map.of("Aug 2019", 10.0, "Feb 2020", 10.0);
         Map<String, Double> expectedPreviousData = Map.of("Aug 2018", 10.0, "Feb 2019", 10.0);
+        Map<String, Double> expectedTargetData = Map.of("Aug 2018", 10.5, "Feb 2019", 10.5);
 
         // Execute
         Map<String, Map<String, Double>> targetVsActualResult = dataProcessingService.areaChart(areaChart, "2020-02", DataConstants.TARGET_VS_ACTUAL, targetPercentageMap);
@@ -133,7 +141,11 @@ public class DataProcessingServiceTest {
         // Verify
         assertNotNull(targetVsActualResult);
         assertEquals(expectedCurrentData, targetVsActualResult.get("actual"));
-        assertEquals(expectedPreviousData, targetVsActualResult.get("target"));
+        assertEquals(10.0, targetVsActualResult.get("actual").get("Feb 2020"));
+        assertEquals(10.0, targetVsActualResult.get("actual").get("Aug 2019"));
+        assertEquals(expectedTargetData, targetVsActualResult.get("target"));
+        assertEquals(10.5, targetVsActualResult.get("target").get("Feb 2019"));
+        assertEquals(10.5, targetVsActualResult.get("target").get("Aug 2018"));
 
         assertNotNull(currentVsPriorResult);
         assertEquals(expectedCurrentData, currentVsPriorResult.get("current"));
@@ -189,37 +201,22 @@ public class DataProcessingServiceTest {
 
         assertFalse(currentVsPriorResult.get("all").isEmpty());
         assertNotNull(currentVsPriorResult.get("all").get("A"));
+        assertEquals(100.0, currentVsPriorResult.get("all").get("A").getActual());
+        assertEquals(100.0, currentVsPriorResult.get("all").get("A").getTarget());
+        assertEquals(100.0, currentVsPriorResult.get("all").get("A").getDifference());
+        assertEquals(0.0, currentVsPriorResult.get("all").get("A").getDifferencePercentage());
         assertFalse(currentVsPriorResult.get("ip").isEmpty());
         assertFalse(currentVsPriorResult.get("op").isEmpty());
 
         assertFalse(targetVsActualResult.get("all").isEmpty());
+        assertNotNull(targetVsActualResult.get("all").get("A"));
+        assertEquals(100.0, targetVsActualResult.get("all").get("A").getActual());
+        assertEquals(100.0, targetVsActualResult.get("all").get("A").getTarget());
+        assertEquals(100.0, targetVsActualResult.get("all").get("A").getDifference());
+        assertEquals(0.0, targetVsActualResult.get("all").get("A").getDifferencePercentage());
         assertFalse(targetVsActualResult.get("ip").isEmpty());
         assertFalse(targetVsActualResult.get("op").isEmpty());
     }
-
-//    @Test
-//    public void testServiceRegion_NullCondition() {
-//        // Setup
-//        List<PMPMDTO> pmpm = new ArrayList<>();
-//        List<MemberViewDTO> memberView = new ArrayList<>();
-//
-//        when(dataTransformationService.filterServiceRegionMetric(anyList(), anyList(), any(), any(), any(), any()))
-//                .thenReturn(new HashMap<>());
-//
-//        // Execute
-//        Map<String, Map<String, MetricData>> result = dataProcessingService.serviceRegion(pmpm, memberView, null, null, null, null, null);
-//        Map<String, Map<String, MetricData>> result2 = dataProcessingService.serviceRegion(pmpm, memberView, null, null, null, DataConstants.TARGET_VS_ACTUAL, null);
-//
-//        // Verify
-//        assertTrue(result.get("all").isEmpty());
-//        assertTrue(result.get("ip").isEmpty());
-//        assertTrue(result.get("op").isEmpty());
-//
-//        assertTrue(result2.get("all").isEmpty());
-//        assertTrue(result2.get("ip").isEmpty());
-//        assertTrue(result2.get("op").isEmpty());
-//    }
-
 
     @Test
     public void testCareCategory_SuccessResponse() {

@@ -88,11 +88,7 @@ function CareProvider(props) {
     setTabIndex(index);
   };
 
-  const useeffecttrigger = () => {
-    setSelectedProviderOption("");
-    setSelectedCareProviderOption("");
-    setToggle((prevToggle) => !prevToggle);
-  };
+  const useeffecttrigger = () => setToggle((prevToggle) => !prevToggle);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,22 +101,10 @@ function CareProvider(props) {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        if (
-          options.endMonth.some(
-            (option) =>
-              option.label === startMonth && option.value === startMonth
-          )
-        ) {
-          setInputValues({
-            ...inputValues,
-            startMonth: startMonth,
-          });
-        } else {
-          setInputValues({
-            ...inputValues,
-            startMonth: `Jul 2019`,
-          });
-        }
+        setInputValues({
+          ...inputValues,
+          startMonth: startMonth,
+        });
       } else {
         const selectedMonth = radioButtonoptions.find(
           (option) => option.label === selectedValue
@@ -227,14 +211,9 @@ function CareProvider(props) {
         providerName: selectedProviderOption,
       });
       if (response3.status === 200) {
-        setCareProviderOptions([
-          { label: "All", value: "" },
-          ...formatOptions(response3?.data?.distinctSpeciality),
-        ]);
-        setProviderOptions([
-          { label: "All", value: "" },
-          ...formatOptions(response3?.data?.distinctProvider),
-        ]);
+        setCareProviderOptions(
+          [{ label: "All", value: "" },...formatOptions(response3?.data?.distinctSpeciality)]);
+        setProviderOptions([{ label: "All", value: "" },...formatOptions(response3?.data?.distinctProvider)]);
         setTopTenProvidersByCost(response3?.data?.top10ProvidersByCost);
         setTopTenMembersByCostForEachProvider(
           response3.data?.top10MembersByCostForEachSpeciality
@@ -313,7 +292,8 @@ function CareProvider(props) {
               sendIndex={getDatafromTabs}
             />
           </div>
-          <div className="chatbot-container">
+          <div className="d-flex mt-2 justify-content-between">
+            <p></p>
             <Chatbot />
           </div>
         </div>

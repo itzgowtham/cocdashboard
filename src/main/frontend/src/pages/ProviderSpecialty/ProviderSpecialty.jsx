@@ -74,22 +74,10 @@ const ProviderSpecialty = () => {
       if (selectedValue === "YTD") {
         const year = inputValues.endMonth.slice(-4);
         const startMonth = `Jan ${year}`;
-        if (
-          options.endMonth.some(
-            (option) =>
-              option.label === startMonth && option.value === startMonth
-          )
-        ) {
-          setInputValues({
-            ...inputValues,
-            startMonth: startMonth,
-          });
-        } else {
-          setInputValues({
-            ...inputValues,
-            startMonth: `Jul 2019`,
-          });
-        }
+        setInputValues({
+          ...inputValues,
+          startMonth: startMonth,
+        });
       } else {
         const selectedMonth = radioButtonOptions.find(
           (option) => option.label === selectedValue
@@ -264,9 +252,9 @@ const ProviderSpecialty = () => {
                 sendIndex={getDatafromTabs}
               />
             </div>
-            <div className="chatbot-container">
+            <div className="d-flex mt-2 justify-content-between">
               <p></p>
-              <Chatbot />
+              <Chatbot/>
             </div>
           </div>
           <Filters

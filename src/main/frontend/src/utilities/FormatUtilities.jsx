@@ -10,12 +10,6 @@ export const checkPercentage = (value) => {
   );
 };
 
-export const formatNumberforChart = (value) => {
-    return `${(value).toFixed(2)}`;
-  
-};
-
-
 export const formatNumber = (value) => {
   value = Number(value);
   if (value >= 1000000000) {

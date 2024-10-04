@@ -39,7 +39,7 @@ public class DataTransformationService {
 			Function<PMPMDTO, String> keyExtractor) {
 		String prevEndMonth = (StringUtils.isEmpty(startMonth)) ? dateFormat.getPreviousMonths(endMonth, 1)
 				: dateFormat.getPreviousMonths(startMonth, 1);
-		Integer totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
+		int totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
 				: 0;
 		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
 				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
@@ -60,7 +60,7 @@ public class DataTransformationService {
 
 	private Map<String, Double> filterMetric(List<PMPMDTO> pmpm, Map<String, Long> targetPercentageMap,
 			String startMonth, String endMonth, String patientType, Function<PMPMDTO, String> keyExtractor) {
-		List<PMPMDTO> finalPmpm = pmpm.stream().map(PMPMDTO::clone).collect(Collectors.toList());
+		List<PMPMDTO> finalPmpm = pmpm.stream().map(PMPMDTO::clone).toList();
 		return finalPmpm.stream()
 				.filter(val -> StringUtils.isNotEmpty(startMonth)
 						? (val.getMonths().compareTo(startMonth) >= 0 && val.getMonths().compareTo(endMonth) <= 0)
@@ -68,7 +68,7 @@ public class DataTransformationService {
 				.filter(val -> (patientType != null) ? val.getPatientType().compareTo(patientType) == 0 : true)
 				.map(val -> {
 					val.setSpeciality(val.getSpeciality() != null ? val.getSpeciality() : "Others");
-					Double totalPricepm = (val.getTotalPricepm() == null) ? 0.0 : val.getTotalPricepm();
+					double totalPricepm = (val.getTotalPricepm() == null) ? 0.0 : val.getTotalPricepm();
 					if (ObjectUtils.isNotEmpty(targetPercentageMap)) {
 						Long targetPercentageValue = targetPercentageMap.getOrDefault(val.getMonths(), 0L);
 						totalPricepm += totalPricepm * targetPercentageValue / 100;
@@ -158,7 +158,7 @@ public class DataTransformationService {
 			String startMonth, String endMonth, String graphType) {
 		String prevEndMonth = (StringUtils.isEmpty(startMonth)) ? dateFormat.getPreviousMonths(endMonth, 1)
 				: dateFormat.getPreviousMonths(startMonth, 1);
-		Integer totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
+		int totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
 				: 0;
 		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
 				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)

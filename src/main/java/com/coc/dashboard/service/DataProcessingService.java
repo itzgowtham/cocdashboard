@@ -44,7 +44,7 @@ public class DataProcessingService {
 		finalData = cloneData(data);
 		String prevEndMonth = (StringUtils.isEmpty(startMonth)) ? dateFormat.getPreviousMonths(endMonth, 1)
 				: dateFormat.getPreviousMonths(startMonth, 1);
-		Integer totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
+		int totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
 				: 0;
 		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
 				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
@@ -57,10 +57,10 @@ public class DataProcessingService {
 				: calculateResultData(previousYearMonths);
 
 		Long activeMembers = currentYearResult.getTotalActiveMembers();
-		Long endingMembers = (currentYearMonths.size() > 0) ? currentYearMonths.get(0).getTotalActiveMembers() : 0;
+		Long endingMembers = (!currentYearMonths.isEmpty()) ? currentYearMonths.get(0).getTotalActiveMembers() : 0;
 		Double pmpmData = calculationUtils.roundToTwoDecimals(currentYearResult.getTotalPricepm() / activeMembers);
 		Long prevActiveMembers = previousYearResult.getTotalActiveMembers();
-		Long prevEndingMembers = (previousYearMonths.size() > 0) ? previousYearMonths.get(0).getTotalActiveMembers()
+		Long prevEndingMembers = (!previousYearMonths.isEmpty()) ? previousYearMonths.get(0).getTotalActiveMembers()
 				: 0;
 		Double prevPmpm = calculationUtils.roundToTwoDecimals(graphType.equals(DataConstants.TARGET_VS_ACTUAL)
 				? previousYearResult.getTotalPricepm() / calculateResultData(previousYearMonths).getTotalActiveMembers()
@@ -71,7 +71,7 @@ public class DataProcessingService {
 				? prevEndingMembers + prevEndingMembers * prevEndingMembersPercentage / 100
 				: prevEndingMembers;
 		FinalResult finalResult = null;
-		if (currentYearMonths.size() == 0) {
+		if (currentYearMonths.isEmpty()) {
 			throw new MyCustomException("No Data Found");
 		}
 		if (currentYearMonths.size() == previousYearMonths.size()) {
@@ -105,7 +105,7 @@ public class DataProcessingService {
 	}
 
 	private List<ResultData> cloneData(List<ResultData> data) {
-		return data.stream().map(ResultData::clone).collect(Collectors.toList());
+		return data.stream().map(ResultData::clone).toList();
 	}
 
 	private List<ResultData> filterYearMonths(List<ResultData> finalData, String startMonth, String endMonth) {
@@ -171,7 +171,7 @@ public class DataProcessingService {
 	}
 
 	private Map<String, Double> mapData(List<ResultData> months, Map<String, Long> targetPercentageMap) {
-		Map<String, Double> mapData = months.stream().collect(Collectors.toMap(ResultData::getMonths, entry -> {
+		return months.stream().collect(Collectors.toMap(ResultData::getMonths, entry -> {
 			double pricePM = entry.getTotalPricepm();
 			double activeMembers = entry.getTotalActiveMembers();
 			double pmpm = pricePM / activeMembers;
@@ -181,7 +181,6 @@ public class DataProcessingService {
 			}
 			return calculationUtils.roundToTwoDecimals(pmpm);
 		}, (v1, v2) -> v1, LinkedHashMap::new));
-		return mapData;
 	}
 
 	public FinalResult calculateFinalResult(Long memberMonths, Long endingMembers, Double pmpm, Long prevMemberMonths,
@@ -217,11 +216,11 @@ public class DataProcessingService {
 			Map<String, Long> targetPercentageMap, String startMonth, String endMonth, String graphType,
 			String viewType) {
 		log.info("Inside DataProcessingService.serviceRegion() method");
-		String prevEndMonth = (StringUtils.isEmpty(startMonth)) ? dateFormat.getPreviousMonths(endMonth, 1)
+		boolean startFlag = StringUtils.isEmpty(startMonth);
+		String prevEndMonth = startFlag ? dateFormat.getPreviousMonths(endMonth, 1)
 				: dateFormat.getPreviousMonths(startMonth, 1);
-		Integer totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
-				: 0;
-		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
+		int totalMonths = !startFlag ? dateFormat.getTotalMonths(startMonth, endMonth) : 0;
+		String prevStartMonth = !startFlag
 				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
 				: null;
 		boolean val = Objects.equals(graphType, DataConstants.TARGET_VS_ACTUAL);

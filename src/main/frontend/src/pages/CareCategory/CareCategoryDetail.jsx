@@ -6,7 +6,6 @@ import { graphSVG, vector } from "../../assets/images/svg/SVGIcons";
 import {
   formatNumberColour,
   formatNumber,
-  formatNumberforChart,
 } from "../../utilities/FormatUtilities";
 const CareCategoryDetail = (props) => {
   const {
@@ -91,7 +90,7 @@ const CareCategoryDetail = (props) => {
                             <span className="col-6">{item.memberUid}</span>
                             <span className="col-6">
                               {formatNumberColour(
-                                formatNumberforChart(item.totalPricePM)
+                                formatNumber(item.totalPricePM)
                               )}
                             </span>
                           </span>
@@ -157,18 +156,18 @@ const CareCategoryDetail = (props) => {
                       {!showGraph ? (
                         <td>
                           <span className="d-flex p-2">
-                            <span className="col-8">
+                            <span className="col-10">
                               <TooltipComponent
                                 value={item.providerName}
-                                length={25}
+                                length={35}
                                 children={item.providerName}
                               >
                                 {item.providerName}
                               </TooltipComponent>
                             </span>
-                            <span className="col-4">
+                            <span className="col-2">
                               {formatNumberColour(
-                                formatNumberforChart(item.totalPricePM)
+                                formatNumber(item.totalPricePM)
                               )}
                             </span>
                           </span>

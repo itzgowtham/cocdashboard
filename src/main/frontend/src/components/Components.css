@@ -133,32 +133,31 @@
 }
 
 /*Filters.jsx - ends here**/
+
 .chat {
   list-style-type: none;
   padding: 0px;
   margin: 0px;
-  height: 450px;
+  height: 275px;
   font-family: Open Sans;
-  overflow-y: auto;
+  overflow-y:scroll ;
   .message-left {
     display: block;
     text-align: left;
     padding: 5px 10px;
-    width: 46%;
+    width: 40%;
     border-radius: 12px 0px 12px 12px;
     background-color: #d0d0ce;
     font-size: 16px;
-    word-wrap: break-word;
   }
   .message-right {
     display: block;
     padding: 5px 10px;
-    margin-left: 52%;
-    width: 48%;
+    margin-left: 60%;
+    width: 40%;
     border-radius: 0px 12px 12px 12px;
     background-color: #e4f6ff;
     font-size: 16px;
-    word-wrap: break-word;
   }
   .msg-admin-info {
     font-size: 12px;
@@ -172,15 +171,8 @@
   }
 }
 /* Chat */
+
 /* message input field*/
-.chatbot-welcome-message {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-  margin-top: 18vh;
-}
 .chat-input-field {
   display: block;
   flex-direction: row;
@@ -215,15 +207,15 @@
     color: #75787b;
   }
 }
-.coc-chatbot {
+.coc-chatbot{
   position: "fixed";
   margin-top: -100px;
   margin-right: 5px;
   z-index: 1000;
   cursor: "move";
 }
-.coc-chatbot-icon {
+.coc-chatbot-icon{
   height: 100px;
-  width: 100px;
-  z-index: 1000;
+   width: 100px;
+   z-index:  1000
 }

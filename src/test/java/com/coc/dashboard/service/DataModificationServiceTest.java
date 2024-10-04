@@ -99,6 +99,9 @@ public class DataModificationServiceTest {
 
         // Assertions
         assertEquals(4, result.getFirst().size()); // Assuming correct number of ResultData objects
+        assertEquals("2018-02", result.getFirst().get(0).getMonths());
+        assertEquals(50.0, result.getFirst().get(0).getTotalPricepm());
+        assertEquals(0, result.getFirst().get(0).getTotalActiveMembers());
         assertEquals(2, result.getSecond().size()); // Assuming correct number of TargetPMPM objects
         assertEquals("2021-02", result.getThird()); // Assuming correct endMonth value
     }
@@ -153,8 +156,15 @@ public class DataModificationServiceTest {
         // Call the method under test
         Map<String, Object> result = dataModificationService.serviceRegionDetails(pmpmList, topProviders, memberViewList, topMembers, "2019-02", "2020-02");
 
+        Map<String, ServiceRegionBreakdown> serviceRegionBreakdownMap = (Map<String, ServiceRegionBreakdown>) result.get("serviceRegionBreakdown");
+
         // Assertions
-        assertEquals(3, ((Map<String, ServiceRegionBreakdown>) result.get("serviceRegionBreakdown")).size()); // Assuming correct breakdown map size
+        assertEquals(3, serviceRegionBreakdownMap.size()); // Assuming correct breakdown map size
+        assertEquals(0, serviceRegionBreakdownMap.get("State3").getTotalMembers());
+        assertEquals(1, serviceRegionBreakdownMap.get("State3").getTotalProvidersCount());
+        //These two assertions is to verify the group by objects assertion
+        assertEquals(95, serviceRegionBreakdownMap.get("State2").getTotalMembers());
+        assertEquals(2, serviceRegionBreakdownMap.get("State2").getTotalProvidersCount());
         assertEquals(1, ((List<TopMember>) result.get("topMembersPerServiceRegion")).size()); // Assuming correct top members list size
         assertEquals(1, ((List<TopProvider>) result.get("topProvidersPerServiceRegion")).size()); // Assuming correct top providers list size
     }

@@ -38,10 +38,3 @@
 .coc-percentage {
   flex: 1;
 }
-
-.chatbot-container {
-  position: fixed;
-  right: 60px;
-  bottom: 20px;
-  z-index: 1000;
-}

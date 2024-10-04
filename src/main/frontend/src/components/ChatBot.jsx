@@ -1,234 +1,208 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Modal from "react-modal";
 import "./Components.css";
+import { crossIcon } from "../assets/images/svg/SVGIcons";
 import chatRobot from "../assets/images/Chat Button 1.png";
-import messageIcon from "../assets/images/MessageIcon.png";
 import Draggable from "react-draggable";
-import { chatBotDataFetch } from "../services/ApiDataService";
+import axios from "axios";
+
+// import io from "socket.io-client";
+// const socket = io("localhost:8000/qa_chat/invoke");
 
 function Chatbot() {
-  const [isMaximized, setIsMaximized] = useState(false);
   const [isChatOpen, setChatOpen] = useState(false);
   const [inputText, setInputText] = useState("");
-  const [conversationHistory, setConversationHistory] = useState([]);
+  const [response, setResponse] = useState({});
+  const [chatData, setChatData] = useState([]);
+  const chatButtonRef = useRef(null);
   const date = new Date();
-  const iconRef = useRef(null);
-  const [modalPosition, setModalPosition] = useState({});
+  const user = "hjkgnfbgn";
+  // const chatData = [];
+  let top = 0,
+    left = 0;
+  console.log("chatData", chatData);
 
-  /*To update position and modal open state*/
-  const openModal = () => {
-    if (iconRef.current) {
-      const rect = iconRef.current.getBoundingClientRect();
-      const modalWidth = isMaximized ? 1000 : 400;
-      const modalHeight = 533;
-      setModalPosition({
-        top: rect.top + window.scrollY - modalHeight + 25,
-        left: rect.left + window.scrollX - modalWidth + 25,
-      });
-    }
-    setChatOpen(true);
-  };
+  if (chatButtonRef.current) {
+    const rect = chatButtonRef.current.getBoundingClientRect();
+    top = rect.top;
+    left = rect.left;
+  }
 
-  /*To update position and modal*/
-  const updateModalPosition = () => {
-    if (iconRef.current) {
-      const rect = iconRef.current.getBoundingClientRect();
-      const modalWidth = isMaximized ? 1000 : 400;
-      const modalHeight = 533;
-      setModalPosition({
-        top: rect.top + window.scrollY - modalHeight + 25,
-        left: rect.left + window.scrollX - modalWidth + 25,
-      });
-    }
-  };
+  // useEffect(() => {
+  //   socket.on("response", (data) => {
+  //     console.log("response", data);
+  //     setResponse(data);
+  //   });
 
-  /*To update position when chat modal maximized or minimized*/
-  useEffect(() => {
-    if (isChatOpen) {
-      updateModalPosition();
-    }
-  }, [isMaximized]);
-
-  /*To toggle between maximize and minimize */
-  const toggleMaximize = () => {
-    setIsMaximized(!isMaximized);
-  };
+  //   return () => {
+  //     socket.off("response");
+  //   };
+  // }, []);
 
   const customStyles = {
     overlay: {
       background: "transparent",
     },
     content: {
-      position: "absolute",
-      top: `${modalPosition.top}px`,
-      left: `${modalPosition.left}px`,
-      zIndex: "1001",
-      width: isMaximized ? "1000px" : "400px",
-      height: isMaximized ? "533px" : "533px",
+      position: "fixed",
+      top: `${top - 330}px`,
+      left: `${left - 330}px`,
+      zIndex: "-100",
+      width: "350px",
+      height: "350px",
       background: "#F5F5F8",
       padding: "5px",
-      overflow: "hidden",
     },
   };
-
-  /**To update the position when window resize happens */
-  useEffect(() => {
-    const handleResize = () => {
-      updateModalPosition();
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [isMaximized]);
 
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };
 
+  // const sendMessage = () => {
+  //   const date = new Date();
+  //   const payload = [
+  //     ...chatData,
+  //     {
+  //       input: {
+  //         input: inputText,
+  //       },
+  //       config: {
+  //         configurable: {
+  //           session_id: Math.random(),
+  //         },
+  //       },
+  //       kwargs: {},
+  //     },
+  //   ];
+  //   setChatData(payload);
+  //   setInputText("");
+  //   console.log("paylaod", payload);
+
+  //   // socket.emit("send payload", payload);
+  // };
+
   const sendMessage = async () => {
-    console.log("fghjkl");
-    const newHistoryItem = {
-      user: inputText,
-      timestamp: new Date().toLocaleString(),
-    };
-    setConversationHistory((prevHistory) => [...prevHistory, newHistoryItem]);
-    const payload = {
-      input: {
-        input: inputText,
-      },
-      config: {
-        configurable: {
-          session_id: "abc123",
+    const date = new Date();
+    const payload = [
+      // ...chatData,
+      {
+        input: {
+          input: inputText,
         },
+        config: {
+          configurable: {
+            session_id: Math.random(),
+          },
+        },
+        kwargs: {},
       },
-      kwargs: {},
-    };
+    ];
+    setChatData(payload);
     setInputText("");
+    console.log("paylaod", payload);
 
     try {
-      const response = await chatBotDataFetch(payload);
-      if (response.status === 200) {
-        console.log("chatbot response", response);
-        const answer = response?.data?.output?.answer;
-        const updatedHistoryItem = { ...newHistoryItem, answer };
-        setConversationHistory((prevHistory) => {
-          const updatedHistory = [...prevHistory];
-          updatedHistory[updatedHistory.length - 1] = updatedHistoryItem;
-          return updatedHistory;
-        });
-      }
+      const response = await axios.post(
+        "http://localhost:8080/qa_chat/invoke",
+        payload
+      );
+      console.log("api response", response);
+      setResponse(response);
+      console.log("chatbot response", response);
     } catch (error) {
       console.error("error fetching the response...");
     }
   };
 
   return (
-    <Draggable>
-      <div>
+    <div>
+      <Draggable>
         <div className="coc-chatbot">
           <button
-            ref={iconRef}
-            onClick={openModal}
-            className="border-0 m-1"
+            className="border-0"
+            ref={chatButtonRef}
+            onClick={() => setChatOpen(true)}
             style={{ background: "none" }}
           >
             <img src={chatRobot} className="coc-chatbot-icon"></img>
           </button>
         </div>
-        <div className="chat-container">
-          <Modal
-            isOpen={isChatOpen}
-            onRequestClose={() => setChatOpen(false)}
-            style={customStyles}
-            contentLabel="Chat Modal"
+      </Draggable>
+      <Modal
+        isOpen={isChatOpen}
+        onRequestClose={() => setChatOpen(false)}
+        style={customStyles}
+        contentLabel="Chat Modal"
+      >
+        <div className="d-flex justify-content-between">
+          <p></p>
+          <button
+            className="border-0 p-0 m-0"
+            onClick={() => setChatOpen(false)}
           >
-            <div className="d-flex justify-content-between">
-              <h6></h6>
-              <span className="d-flex">
-                <button onClick={toggleMaximize} className="border-0 m-1">
-                  {isMaximized ? (
-                    <i class="fa fa-window-minimize" aria-hidden="true"></i>
-                  ) : (
-                    <i class="fa fa-window-maximize" aria-hidden="true"></i>
-                  )}
-                </button>
-                <button
-                  className="border-0 m-1"
-                  onClick={() => setChatOpen(false)}
-                >
-                  <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-              </span>
-            </div>
-            <div className="chat">
-              {conversationHistory.length === 0 ? (
-                <span className="chatbot-welcome-message">
-                  <img
-                    src={messageIcon}
-                    alt="Welcome Icon"
-                    height={80}
-                    width={100}
-                  />
-                  <h6 className="mt-3">
-                    Welcome to our chatbot! How can we assist you today?
-                  </h6>
-                </span>
-              ) : (
-                conversationHistory.map((item, index) => (
-                  <div key={index}>
-                    {item.user && (
-                      <>
-                        <span className="msg-user-info">
-                          Arnold {item.timestamp}
-                        </span>
-                        <div className="message-right">{item.user}</div>
-                      </>
-                    )}
-                    {item.answer && (
-                      <>
-                        <span className="msg-admin-info">
-                          Admin {date.toLocaleString()}
-                        </span>
-                        <div className="message-left">{item.answer} </div>
-                      </>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-            <div className="chat-input-field mt-0 p-1">
-              <div className="d-flex justify-content-between">
-                <input
-                  type="text"
-                  placeholder="Type in your message"
-                  className="message-input"
-                  value={inputText}
-                  onChange={handleInputChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      sendMessage();
-                      e.preventDefault();
-                    }
-                  }}
-                />
-
-                <button
-                  onClick={sendMessage}
-                  className="m-0 border-0"
-                  style={{ zIndex: "1000" }}
-                >
-                  <i
-                    className="fa far fa-paper-plane searchColor coc-cursor"
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-            </div>
-          </Modal>
+            {crossIcon}
+          </button>
         </div>
-      </div>
-    </Draggable>
+        <div className="chat">
+          {chatData?.map((item) => (
+            <>
+              {user && (
+                <>
+                  <span className="msg-user-info">
+                    Arnold {date.toLocaleString()}
+                  </span>
+                  <div className="message-right">
+                    <span>{item.input.input}</span>
+                  </div>
+                </>
+              )}
+              {user !== item.messageOwner && (
+                <>
+                  <span className="msg-admin-info">
+                    Admin {date.toLocaleString()}
+                  </span>
+                  <div className="message-left">
+                    <span>response...</span>
+                  </div>
+                </>
+              )}
+            </>
+          ))}
+          {/* {response?.map((item) => (
+            <>
+              {user !== item.messageOwner && (
+                <>
+                  <span className="msg-admin-info">
+                    Admin {date.toLocaleString()}
+                  </span>
+                  <div className="message-left">
+                    <span>{item.output.answer}</span>
+                  </div>
+                </>
+              )}
+            </>
+          ))} */}
+        </div>
+        <div className="chat-input-field mt-0 p-1">
+          <div className="d-flex justify-content-between">
+            <input
+              type="text"
+              placeholder="Type in your message"
+              className="message-input"
+              value={inputText}
+              onChange={handleInputChange}
+            />
+            <span className="send-icon" onClick={sendMessage}>
+              <i
+                className="fa far fa-paper-plane searchColor"
+                aria-hidden="true"
+              ></i>
+            </span>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 }
 
