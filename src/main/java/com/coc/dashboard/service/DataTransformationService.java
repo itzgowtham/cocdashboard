@@ -65,7 +65,7 @@ public class DataTransformationService {
 				.filter(val -> StringUtils.isNotEmpty(startMonth)
 						? (val.getMonths().compareTo(startMonth) >= 0 && val.getMonths().compareTo(endMonth) <= 0)
 						: val.getMonths().compareTo(endMonth) == 0)
-				.filter(val -> (patientType != null) ? val.getPatientType().compareTo(patientType) == 0 : true)
+				.filter(val -> (patientType != null) ? val.getPatientType() != null && val.getPatientType().compareTo(patientType) == 0 : true)
 				.map(val -> {
 					val.setSpeciality(val.getSpeciality() != null ? val.getSpeciality() : "Others");
 					double totalPricepm = (val.getTotalPricepm() == null) ? 0.0 : val.getTotalPricepm();
@@ -110,7 +110,7 @@ public class DataTransformationService {
 		}).filter(val -> (StringUtils.isNotEmpty(startMonth))
 				? val.getMonths().compareTo(startMonth) >= 0 && val.getMonths().compareTo(endMonth) <= 0
 				: val.getMonths().compareTo(endMonth) == 0)
-				.filter(val -> (patientType != null) ? val.getPatientType().compareTo(patientType) == 0 : true)
+				.filter(val -> (patientType != null) ? val.getPatientType() != null && val.getPatientType().compareTo(patientType) == 0 : true)
 				.collect(Collectors.toList());
 
 		if (StringUtils.isEmpty(patientType)) {

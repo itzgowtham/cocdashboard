@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import java.util.*;
 
@@ -24,17 +25,14 @@ public class DataProcessingServiceTest {
     @InjectMocks
     private DataProcessingService dataProcessingService;
 
-    @Mock
+    @Spy
     private DateFormat dateFormat;
 
     @Mock
     private DataTransformationService dataTransformationService;
 
-    @Mock
+    @Spy
     private CalculationUtils calculationUtils;
-
-    @Mock
-    private DateFormat.MonthYearComparator monthYearComparator;
 
     @BeforeEach
     public void setUp() {
@@ -59,24 +57,8 @@ public class DataProcessingServiceTest {
         );
         Map<String, Long> targetPercentageMap = Map.of("Aug 2018", 5L, "Feb 2019", 6L, "Feb 2020", 7L);
 
-        when(dateFormat.getPreviousMonths("2019-03", 1)).thenReturn("2019-02");
-        when(dateFormat.getPreviousMonths("2020-02", 1)).thenReturn("2019-02");
-        when(dateFormat.getPreviousMonths("2019-02", 11)).thenReturn("2018-02");
-        when(dateFormat.getPreviousYearMonth("2020-02")).thenReturn("2019-03");
-        when(dateFormat.getPreviousYearMonth("2019-02")).thenReturn("2018-03");
-        when(dateFormat.convertIntegertoStringDateFormat("2018-08")).thenReturn("Aug 2018");
-        when(dateFormat.convertIntegertoStringDateFormat("2019-02")).thenReturn("Feb 2019");
-        when(dateFormat.convertIntegertoStringDateFormat("2019-08")).thenReturn("Aug 2019");
-        when(dateFormat.convertIntegertoStringDateFormat("2020-02")).thenReturn("Feb 2020");
-        when(dateFormat.getTotalMonths(anyString(), anyString())).thenReturn(12);
-        when(calculationUtils.roundToTwoDecimals(10.0)).thenReturn(10.0);
-        when(calculationUtils.roundToTwoDecimals(1585.0/150)).thenReturn(10.67);
-        when(calculationUtils.calculatePercentageChange(350L,158L)).thenReturn(221.0);
-        when(calculationUtils.calculatePercentageChange(200L,106L)).thenReturn(188.0);
-        when(calculationUtils.calculatePercentageChange(10.0,10.67)).thenReturn(-6.27);
-
-        FinalResult expectedResult = new FinalResult(350L, 200L, 10.0, 158L, 106L, 10.67, 221.0, 188.0, -6.27);
-    //    when(dataProcessingService.calculateFinalResult(anyLong(), anyLong(), anyDouble(), anyLong(), anyLong(), anyDouble())).thenReturn(expectedResult);
+        FinalResult expectedResult1 = new FinalResult(350L, 200L, 10.0, 158L, 106L, 10.57, 121.52, 88.68, -5.39);
+        FinalResult expectedResult2 = new FinalResult(200L, 200L, 10.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
 
         // Execute
         FinalResult targetVsActualResult = dataProcessingService.kpiMetrics(data, "2019-03", "2020-02", DataConstants.TARGET_VS_ACTUAL, targetPercentageMap);
@@ -84,7 +66,8 @@ public class DataProcessingServiceTest {
 
         // Verify
         assertNotNull(targetVsActualResult);
-        assertEquals(expectedResult, targetVsActualResult);
+        assertEquals(expectedResult1, targetVsActualResult);
+        assertEquals(expectedResult2, currentVsPriorResult);
         assertNotNull(currentVsPriorResult);
     }
 
@@ -120,19 +103,9 @@ public class DataProcessingServiceTest {
         );
         Map<String, Long> targetPercentageMap = Map.of("Aug 2018", 5L, "Feb 2019", 5L, "Aug 2019", 5L, "Feb 2020", 5L);
 
-        when(dateFormat.getPreviousMonths(anyString(), anyInt())).thenReturn("2019-02");
-        when(dateFormat.getPreviousYearMonth("2020-02")).thenReturn("2019-02");
-        when(dateFormat.getPreviousYearMonth("2019-02")).thenReturn("2018-03");
-        when(dateFormat.convertIntegertoStringDateFormat("2018-08")).thenReturn("Aug 2018");
-        when(dateFormat.convertIntegertoStringDateFormat("2019-02")).thenReturn("Feb 2019");
-        when(dateFormat.convertIntegertoStringDateFormat("2019-08")).thenReturn("Aug 2019");
-        when(dateFormat.convertIntegertoStringDateFormat("2020-02")).thenReturn("Feb 2020");
-        when(calculationUtils.roundToTwoDecimals(10.0)).thenReturn(10.0);
-        when(calculationUtils.roundToTwoDecimals(10.5)).thenReturn(10.5);
-
         Map<String, Double> expectedCurrentData = Map.of("Aug 2019", 10.0, "Feb 2020", 10.0);
-        Map<String, Double> expectedPreviousData = Map.of("Aug 2018", 10.0, "Feb 2019", 10.0);
-        Map<String, Double> expectedTargetData = Map.of("Aug 2018", 10.5, "Feb 2019", 10.5);
+        Map<String, Double> expectedPreviousData = Map.of("Feb 2019", 10.0, "Aug 2019", 10.0);
+        Map<String, Double> expectedTargetData = Map.of("Feb 2019", 10.5, "Aug 2019", 10.5);
 
         // Execute
         Map<String, Map<String, Double>> targetVsActualResult = dataProcessingService.areaChart(areaChart, "2020-02", DataConstants.TARGET_VS_ACTUAL, targetPercentageMap);
@@ -145,7 +118,7 @@ public class DataProcessingServiceTest {
         assertEquals(10.0, targetVsActualResult.get("actual").get("Aug 2019"));
         assertEquals(expectedTargetData, targetVsActualResult.get("target"));
         assertEquals(10.5, targetVsActualResult.get("target").get("Feb 2019"));
-        assertEquals(10.5, targetVsActualResult.get("target").get("Aug 2018"));
+        assertEquals(10.5, targetVsActualResult.get("target").get("Aug 2019"));
 
         assertNotNull(currentVsPriorResult);
         assertEquals(expectedCurrentData, currentVsPriorResult.get("current"));
@@ -156,7 +129,7 @@ public class DataProcessingServiceTest {
 
         // Validate keys are present
         assertTrue(targetVsActualResult.get("actual").containsKey("Aug 2019"));
-        assertTrue(targetVsActualResult.get("target").containsKey("Aug 2018"));
+        assertTrue(targetVsActualResult.get("target").containsKey("Aug 2019"));
         assertTrue(currentVsPriorResult.get("current").containsKey("Feb 2020"));
         assertTrue(currentVsPriorResult.get("previous").containsKey("Feb 2019"));
     }
@@ -184,10 +157,6 @@ public class DataProcessingServiceTest {
                 .thenReturn(currentResultData);
         when(dataTransformationService.filterServiceRegionMetric(anyList(), anyList(), eq(targetPercentageMap), any(), any(), any()))
                 .thenReturn(previousResultData);
-        when(dateFormat.getPreviousMonths(any(), anyInt())).thenReturn("2019-01");
-        when(dateFormat.getTotalMonths(any(), any())).thenReturn(13);
-        when(calculationUtils.calculatePercentageChange(anyInt(), anyInt())).thenReturn(10.0);
-        when(calculationUtils.roundToTwoDecimals(anyDouble())).thenReturn(100.0);
 
         // Execute
         Map<String, Map<String, MetricData>> currentVsPriorResult = dataProcessingService.serviceRegion(pmpm, memberView, targetPercentageMap, startMonth, endMonth, DataConstants.CURRENT_VS_PRIOR, viewType);
@@ -201,9 +170,9 @@ public class DataProcessingServiceTest {
 
         assertFalse(currentVsPriorResult.get("all").isEmpty());
         assertNotNull(currentVsPriorResult.get("all").get("A"));
-        assertEquals(100.0, currentVsPriorResult.get("all").get("A").getActual());
-        assertEquals(100.0, currentVsPriorResult.get("all").get("A").getTarget());
-        assertEquals(100.0, currentVsPriorResult.get("all").get("A").getDifference());
+        assertEquals(1000.0, currentVsPriorResult.get("all").get("A").getActual());
+        assertEquals(1000.0, currentVsPriorResult.get("all").get("A").getTarget());
+        assertEquals(0.0, currentVsPriorResult.get("all").get("A").getDifference());
         assertEquals(0.0, currentVsPriorResult.get("all").get("A").getDifferencePercentage());
         assertFalse(currentVsPriorResult.get("ip").isEmpty());
         assertFalse(currentVsPriorResult.get("op").isEmpty());
@@ -212,7 +181,7 @@ public class DataProcessingServiceTest {
         assertNotNull(targetVsActualResult.get("all").get("A"));
         assertEquals(100.0, targetVsActualResult.get("all").get("A").getActual());
         assertEquals(100.0, targetVsActualResult.get("all").get("A").getTarget());
-        assertEquals(100.0, targetVsActualResult.get("all").get("A").getDifference());
+        assertEquals(0.0, targetVsActualResult.get("all").get("A").getDifference());
         assertEquals(0.0, targetVsActualResult.get("all").get("A").getDifferencePercentage());
         assertFalse(targetVsActualResult.get("ip").isEmpty());
         assertFalse(targetVsActualResult.get("op").isEmpty());
