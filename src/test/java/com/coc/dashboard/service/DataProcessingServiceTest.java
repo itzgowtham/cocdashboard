@@ -46,38 +46,55 @@ public class DataProcessingServiceTest {
         assertFalse(StringUtils.isEmpty("2019-02"));
     }
 
+    private List<ResultData> getKpiMetricsResultData() {
+        List<ResultData> data = new ArrayList<>();
+        data.add(new ResultData(25L, 250.0, "2018-03"));
+        data.add(new ResultData(50L, 500.0, "2018-08"));
+        data.add(new ResultData(100L, 1000.0, "2019-02"));
+        data.add(new ResultData(150L, 1500.0, "2019-03"));
+        data.add(new ResultData(200L, 2000.0, "2019-08"));
+        data.add(new ResultData(250L, 2500.0, "2020-02"));
+        data.add(new ResultData(300L, 3000.0, "2020-08"));
+        return data;
+    }
+
     @Test
-    public void testKpiMetrics_SuccessResponse() throws MyCustomException {
+    public void testKpiMetrics_TargetVsActual() throws MyCustomException {
         // Setup
-        List<ResultData> data = Arrays.asList(
-                new ResultData(50L, 500.0, "2018-08"),
-                new ResultData(100L, 1000.0, "2019-02"),
-                new ResultData(150L, 1500.0, "2019-08"),
-                new ResultData(200L, 2000.0, "2020-02")
-        );
+        List<ResultData> data = getKpiMetricsResultData();
         Map<String, Long> targetPercentageMap = Map.of("Aug 2018", 5L, "Feb 2019", 6L, "Feb 2020", 7L);
 
-        FinalResult expectedResult1 = new FinalResult(350L, 200L, 10.0, 158L, 106L, 10.57, 121.52, 88.68, -5.39);
-        FinalResult expectedResult2 = new FinalResult(200L, 200L, 10.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+        FinalResult expectedResult = new FinalResult(600L, 250L, 10.0, 183L, 106L, 10.49, 227.87, 135.85, -4.67);
 
         // Execute
-        FinalResult targetVsActualResult = dataProcessingService.kpiMetrics(data, "2019-03", "2020-02", DataConstants.TARGET_VS_ACTUAL, targetPercentageMap);
-        FinalResult currentVsPriorResult = dataProcessingService.kpiMetrics(data, null, "2020-02", DataConstants.CURRENT_VS_PRIOR, targetPercentageMap);
+        FinalResult result = dataProcessingService.kpiMetrics(data, "2019-03", "2020-02", DataConstants.TARGET_VS_ACTUAL, targetPercentageMap);
 
         // Verify
-        assertNotNull(targetVsActualResult);
-        assertEquals(expectedResult1, targetVsActualResult);
-        assertEquals(expectedResult2, currentVsPriorResult);
-        assertNotNull(currentVsPriorResult);
+        assertNotNull(result);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testKpiMetrics_CurrentVsPrior() throws MyCustomException {
+        // Setup
+        List<ResultData> data = getKpiMetricsResultData();
+        data.add(new ResultData(125L, 1250.0, "2019-03"));
+        Map<String, Long> targetPercentageMap = Map.of("Aug 2018", 5L, "Feb 2019", 6L, "Feb 2020", 7L);
+
+        FinalResult expectedResult = new FinalResult(250L, 250L, 10.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+
+        // Execute
+        FinalResult result = dataProcessingService.kpiMetrics(data, null, "2020-02", DataConstants.CURRENT_VS_PRIOR, targetPercentageMap);
+
+        // Verify
+        assertNotNull(result);
+        assertEquals(expectedResult, result);
     }
 
     @Test
     public void testLandingPageMetrics_missingData() {
         // Setup
-        List<ResultData> kpiMetrics = Arrays.asList(
-                new ResultData(100L, 1000.0, "2019-02"),
-                new ResultData(200L, 2000.0, "2020-02")
-        );
+        List<ResultData> kpiMetrics = getKpiMetricsResultData();
         String startMonth = "2019-02";
         String endMonth = "2020-02";
 
@@ -86,7 +103,7 @@ public class DataProcessingServiceTest {
 
         // Verify
         assertNotNull(result);
-        assertEquals(new FinalResult(200L, 200L, 10.0, 100L, 100L, 10.0, 0.0, 0.0, 0.0), result);
+        assertEquals(new FinalResult(250L, 250L, 10.0, 100L, 100L, 10.0, 150.0, 150.0, 0.0), result);
     }
 
     @Test
@@ -278,7 +295,6 @@ public class DataProcessingServiceTest {
         List<Forecast_ActiveMembership> member = Arrays.asList(new Forecast_ActiveMembership(), new Forecast_ActiveMembership());
         String endMonth = "2020-02";
 
-        when(dateFormat.getPreviousYearMonth(anyString())).thenReturn(endMonth);
         when(dataTransformationService.filterForecastPmpmMetrics(anyList(), anyString(), anyString())).thenReturn(new ArrayList<>(pmpm));
         when(dataTransformationService.filterForecastMemberMetrics(anyList(), anyString(), anyString())).thenReturn(new ArrayList<>(member));
 
