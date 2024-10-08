@@ -47,7 +47,7 @@ public class DataProcessingService {
 		int totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
 				: 0;
 		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
-				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
+				? dateFormat.getPreviousMonths(startMonth, totalMonths)
 				: null;
 		List<ResultData> previousYearMonths = filterYearMonths(finalData, prevStartMonth, prevEndMonth);
 
@@ -70,18 +70,11 @@ public class DataProcessingService {
 		prevEndingMembers = graphType.equals(DataConstants.TARGET_VS_ACTUAL)
 				? prevEndingMembers + prevEndingMembers * prevEndingMembersPercentage / 100
 				: prevEndingMembers;
-		FinalResult finalResult = null;
 		if (currentYearMonths.isEmpty()) {
 			throw new MyCustomException("No Data Found");
 		}
-		if (currentYearMonths.size() == previousYearMonths.size()) {
-			finalResult = calculateFinalResult(activeMembers, endingMembers, pmpmData, prevActiveMembers,
-					prevEndingMembers, prevPmpm);
-		} else {
-			finalResult = new FinalResult(activeMembers, endingMembers, pmpmData, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
-		}
 		log.info("Exiting DataProcessingService.kpiMetrics() method");
-		return finalResult;
+		return generateFinalResult(currentYearMonths.size(), previousYearMonths.size(), activeMembers, endingMembers, pmpmData, prevActiveMembers, prevEndingMembers, prevPmpm);
 	}
 
 	public FinalResult landingPageMetrics(List<ResultData> kpiMetrics, String startMonth, String endMonth) {
@@ -90,18 +83,14 @@ public class DataProcessingService {
 				.orElse(null);
 		ResultData previousData = kpiMetrics.stream().filter(val -> val.getMonths().compareTo(startMonth) == 0)
 				.findAny().orElse(null);
+		if (currentData == null || previousData == null) {
+			return new FinalResult(0L, 0L, 0.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+		}
 		double pmpm = currentData.getTotalPricepm() / currentData.getTotalActiveMembers();
 		double prevPmpm = previousData.getTotalPricepm() / previousData.getTotalActiveMembers();
 		long currentMembers = currentData.getTotalActiveMembers();
 		long previousMembers = previousData.getTotalActiveMembers();
-		FinalResult finalResult = null;
-		if (currentData != null && previousData != null) {
-			finalResult = calculateFinalResult(currentMembers, currentMembers, pmpm, previousMembers, previousMembers,
-					prevPmpm);
-		} else {
-			finalResult = new FinalResult(0L, 0L, 0.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
-		}
-		return finalResult;
+		return generateFinalResult(1, 1, currentMembers, currentMembers, pmpm, previousMembers, previousMembers, prevPmpm);
 	}
 
 	private List<ResultData> cloneData(List<ResultData> data) {
@@ -135,6 +124,15 @@ public class DataProcessingService {
 			return new ResultData(partialResult.getTotalActiveMembers() + adjustedActiveMembers,
 					partialResult.getTotalPricepm() + adjustedPricepm, null);
 		});
+	}
+
+	private FinalResult generateFinalResult(int currentSize, int previousSize, Long activeMembers, Long endingMembers, Double pmpmData,
+											Long prevActiveMembers, Long prevEndingMembers, Double prevPmpm) {
+		if (currentSize == previousSize) {
+			return calculateFinalResult(activeMembers, endingMembers, pmpmData, prevActiveMembers, prevEndingMembers, prevPmpm);
+		} else {
+			return new FinalResult(activeMembers, endingMembers, pmpmData, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+		}
 	}
 
 	public Map<String, Map<String, Double>> areaChart(List<ResultData> areaChart, String endMonth, String graphType,
@@ -221,7 +219,7 @@ public class DataProcessingService {
 				: dateFormat.getPreviousMonths(startMonth, 1);
 		int totalMonths = !startFlag ? dateFormat.getTotalMonths(startMonth, endMonth) : 0;
 		String prevStartMonth = !startFlag
-				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
+				? dateFormat.getPreviousMonths(startMonth, totalMonths)
 				: null;
 		boolean val = Objects.equals(graphType, DataConstants.TARGET_VS_ACTUAL);
 		targetPercentageMap = val ? targetPercentageMap : null;
@@ -253,11 +251,12 @@ public class DataProcessingService {
 	private Map<String, MetricData> serviceRegionResult(Map<String, ResultData> currentServiceRegion,
 			Map<String, ResultData> targetServiceRegion, String viewType) {
 		Set<String> allStates = new HashSet<>(currentServiceRegion.keySet());
-		return allStates.stream().collect(Collectors.toMap(state -> state, state -> {
+		Map<String, MetricData> result = new TreeMap<>();  // Using TreeMap for sorted results
+		allStates.forEach(state -> {
 			ResultData currentData = currentServiceRegion.getOrDefault(state, null);
 			ResultData targetData = targetServiceRegion.getOrDefault(state, null);
-			Double targetValue = 0.0;
-			Double actualValue = 0.0;
+			double targetValue = 0.0;
+			double actualValue = 0.0;
 			if (viewType.equals(DataConstants.EXPENSE_PMPM)) {
 				targetValue = (targetData != null) ? targetData.getTotalPricepm() : 0.0;
 				actualValue = (currentData != null) ? currentData.getTotalPricepm() : 0.0;
@@ -267,10 +266,33 @@ public class DataProcessingService {
 			}
 			Double difference = actualValue - targetValue;
 			Double percentageChange = calculationUtils.calculatePercentageChange(actualValue, targetValue);
-			return new MetricData(calculationUtils.roundToTwoDecimals(targetValue),
-					calculationUtils.roundToTwoDecimals(actualValue), calculationUtils.roundToTwoDecimals(difference),
-					percentageChange);
-		}, (v1, v2) -> v1, TreeMap::new));
+			result.put(state, new MetricData(
+					calculationUtils.roundToTwoDecimals(targetValue),
+					calculationUtils.roundToTwoDecimals(actualValue),
+					calculationUtils.roundToTwoDecimals(difference),
+					percentageChange)
+			);
+		});
+
+		return result;
+//		return allStates.stream().collect(Collectors.toMap(state -> state, state -> {
+//			ResultData currentData = currentServiceRegion.getOrDefault(state, null);
+//			ResultData targetData = targetServiceRegion.getOrDefault(state, null);
+//			Double targetValue = 0.0;
+//			Double actualValue = 0.0;
+//			if (viewType.equals(DataConstants.EXPENSE_PMPM)) {
+//				targetValue = (targetData != null) ? targetData.getTotalPricepm() : 0.0;
+//				actualValue = (currentData != null) ? currentData.getTotalPricepm() : 0.0;
+//			} else {
+//				targetValue = (targetData != null) ? targetData.getTotalActiveMembers() : 0.0;
+//				actualValue = (currentData != null) ? currentData.getTotalActiveMembers() : 0.0;
+//			}
+//			Double difference = actualValue - targetValue;
+//			Double percentageChange = calculationUtils.calculatePercentageChange(actualValue, targetValue);
+//			return new MetricData(calculationUtils.roundToTwoDecimals(targetValue),
+//					calculationUtils.roundToTwoDecimals(actualValue), calculationUtils.roundToTwoDecimals(difference),
+//					percentageChange);
+//		}, (v1, v2) -> v1, TreeMap::new));
 	}
 
 	public Map<String, Map<String, MetricData>> careProvider(List<PMPMDTO> pmpm, Map<String, Long> targetPercentageMap,

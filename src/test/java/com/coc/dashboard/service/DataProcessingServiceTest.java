@@ -78,10 +78,10 @@ public class DataProcessingServiceTest {
     public void testKpiMetrics_CurrentVsPrior() throws MyCustomException {
         // Setup
         List<ResultData> data = getKpiMetricsResultData();
-        data.add(new ResultData(125L, 1250.0, "2019-03"));
+        data.add(new ResultData(75L, 750.0, "2020-01"));
         Map<String, Long> targetPercentageMap = Map.of("Aug 2018", 5L, "Feb 2019", 6L, "Feb 2020", 7L);
 
-        FinalResult expectedResult = new FinalResult(250L, 250L, 10.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+        FinalResult expectedResult = new FinalResult(250L, 250L, 10.0, 75L, 75L, 10.0, 233.33, 233.33, 0.0);
 
         // Execute
         FinalResult result = dataProcessingService.kpiMetrics(data, null, "2020-02", DataConstants.CURRENT_VS_PRIOR, targetPercentageMap);
@@ -92,18 +92,71 @@ public class DataProcessingServiceTest {
     }
 
     @Test
-    public void testLandingPageMetrics_missingData() {
+    public void testKpiMetrics_MissingPreviousData() throws MyCustomException {
         // Setup
-        List<ResultData> kpiMetrics = getKpiMetricsResultData();
-        String startMonth = "2019-02";
-        String endMonth = "2020-02";
+        List<ResultData> data = List.of(new ResultData(250L, 2500.0, "2020-02"));
+        FinalResult expectedResult = new FinalResult(250L, 250L, 10.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
 
         // Execute
-        FinalResult result = dataProcessingService.landingPageMetrics(kpiMetrics, startMonth, endMonth);
+        FinalResult result = dataProcessingService.kpiMetrics(data, null, "2020-02", DataConstants.CURRENT_VS_PRIOR, new HashMap<>());
 
         // Verify
         assertNotNull(result);
-        assertEquals(new FinalResult(250L, 250L, 10.0, 100L, 100L, 10.0, 150.0, 150.0, 0.0), result);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testKpiMetrics_CustomException() throws MyCustomException {
+        // Setup
+        List<ResultData> data = new ArrayList<>();
+
+        // Execute
+        Exception exception = assertThrows(MyCustomException.class, () -> dataProcessingService.kpiMetrics(data, null, "2020-02", DataConstants.TARGET_VS_ACTUAL, new HashMap<>()));
+
+        // Verify
+        assertEquals("No Data Found", exception.getMessage());
+    }
+
+    @Test
+    public void testLandingPageMetrics() {
+        // Setup
+        List<ResultData> kpiMetrics = getKpiMetricsResultData();
+        FinalResult expectedResult = new FinalResult(250L, 250L, 10.0, 100L, 100L, 10.0, 150.0, 150.0, 0.0);
+
+        // Execute
+        FinalResult result = dataProcessingService.landingPageMetrics(kpiMetrics, "2019-02", "2020-02");
+
+        // Verify
+        assertNotNull(result);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testLandingPageMetrics_missingCurrentData() {
+        // Setup
+        List<ResultData> kpiMetrics = getKpiMetricsResultData();
+        FinalResult expectedResult = new FinalResult(0L, 0L, 0.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+
+        // Execute
+        FinalResult result = dataProcessingService.landingPageMetrics(kpiMetrics, "2020-01", "2020-02");
+
+        // Verify
+        assertNotNull(result);
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    public void testLandingPageMetrics_missingPreviousData() {
+        // Setup
+        List<ResultData> kpiMetrics = new ArrayList<>();
+        FinalResult expectedResult = new FinalResult(0L, 0L, 0.0, 0L, 0L, 0.0, 0.0, 0.0, 0.0);
+
+        // Execute
+        FinalResult result = dataProcessingService.landingPageMetrics(kpiMetrics, "2020-01", "2020-02");
+
+        // Verify
+        assertNotNull(result);
+        assertEquals(expectedResult, result);
     }
 
     @Test

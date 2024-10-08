@@ -42,7 +42,7 @@ public class DataTransformationService {
 		int totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
 				: 0;
 		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
-				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
+				? dateFormat.getPreviousMonths(startMonth, totalMonths)
 				: null;
 		Map<String, Double> currentInpatient = filterMetric(pmpm, null, startMonth, endMonth, "I", keyExtractor);
 		Map<String, Double> targetInpatient = filterMetric(pmpm,
@@ -86,15 +86,30 @@ public class DataTransformationService {
 	private Map<String, MetricData> finalMetric(Map<String, Double> currentCareCategory,
 			Map<String, Double> targetCareCategory) {
 		Set<String> allData = new HashSet<>(currentCareCategory.keySet());
-		return allData.stream().collect(Collectors.toMap(data -> data, data -> {
+		Map<String, MetricData> resultMap = new TreeMap<>();
+		allData.forEach(data -> {
 			Double targetValue = targetCareCategory.getOrDefault(data, 0.0);
 			Double actualValue = currentCareCategory.getOrDefault(data, 0.0);
 			Double difference = actualValue - targetValue;
 			Double percentageChange = calculationUtils.calculatePercentageChange(actualValue, targetValue);
-			return new MetricData(calculationUtils.roundToTwoDecimals(targetValue),
-					calculationUtils.roundToTwoDecimals(actualValue), calculationUtils.roundToTwoDecimals(difference),
-					percentageChange);
-		}, (v1, v2) -> v1, TreeMap::new));
+
+			resultMap.put(data, new MetricData(
+					calculationUtils.roundToTwoDecimals(targetValue),
+					calculationUtils.roundToTwoDecimals(actualValue),
+					calculationUtils.roundToTwoDecimals(difference),
+					percentageChange)
+			);
+		});
+		return resultMap;
+//		return allData.stream().collect(Collectors.toMap(data -> data, data -> {
+//			Double targetValue = targetCareCategory.getOrDefault(data, 0.0);
+//			Double actualValue = currentCareCategory.getOrDefault(data, 0.0);
+//			Double difference = actualValue - targetValue;
+//			Double percentageChange = calculationUtils.calculatePercentageChange(actualValue, targetValue);
+//			return new MetricData(calculationUtils.roundToTwoDecimals(targetValue),
+//					calculationUtils.roundToTwoDecimals(actualValue), calculationUtils.roundToTwoDecimals(difference),
+//					percentageChange);
+//		}, (v1, v2) -> v1, TreeMap::new));
 	}
 
 	public Map<String, ResultData> filterServiceRegionMetric(List<PMPMDTO> pmpm, List<MemberViewDTO> memberView,
@@ -161,7 +176,7 @@ public class DataTransformationService {
 		int totalMonths = (StringUtils.isNotEmpty(startMonth)) ? dateFormat.getTotalMonths(startMonth, endMonth)
 				: 0;
 		String prevStartMonth = (StringUtils.isNotEmpty(startMonth))
-				? dateFormat.getPreviousMonths(prevEndMonth, totalMonths - 1)
+				? dateFormat.getPreviousMonths(startMonth, totalMonths)
 				: null;
 		Map<String, Double> currentPcpGroup = filterMetric(pmpm, null, startMonth, endMonth, null,
 				PMPMDTO::getProvider);
