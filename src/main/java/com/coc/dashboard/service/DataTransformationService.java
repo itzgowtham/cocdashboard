@@ -65,9 +65,9 @@ public class DataTransformationService {
 				.filter(val -> StringUtils.isNotEmpty(startMonth)
 						? (val.getMonths().compareTo(startMonth) >= 0 && val.getMonths().compareTo(endMonth) <= 0)
 						: val.getMonths().compareTo(endMonth) == 0)
-				.filter(val -> (patientType != null) ? val.getPatientType() != null && val.getPatientType().compareTo(patientType) == 0 : true)
+				.filter(val -> (StringUtils.isNotEmpty(patientType)) ? StringUtils.isNotEmpty(val.getPatientType()) && val.getPatientType().compareTo(patientType) == 0 : true)
 				.map(val -> {
-					val.setSpeciality(val.getSpeciality() != null ? val.getSpeciality() : "Others");
+					val.setSpeciality(StringUtils.isNotEmpty(val.getSpeciality()) ? val.getSpeciality() : "Others");
 					double totalPricepm = (val.getTotalPricepm() == null) ? 0.0 : val.getTotalPricepm();
 					if (ObjectUtils.isNotEmpty(targetPercentageMap)) {
 						Long targetPercentageValue = targetPercentageMap.getOrDefault(val.getMonths(), 0L);
@@ -120,12 +120,12 @@ public class DataTransformationService {
 		Map<String, Long> memberViewMap = filterServiceRegionMemberViewMap(finalMemberView, startMonth, endMonth);
 
 		finalPmpm = finalPmpm.stream().map(val -> {
-			val.setState(val.getState() == null ? "Others" : val.getState());
+			val.setState(StringUtils.isEmpty(val.getState()) ? "Others" : val.getState());
 			return val;
 		}).filter(val -> (StringUtils.isNotEmpty(startMonth))
 				? val.getMonths().compareTo(startMonth) >= 0 && val.getMonths().compareTo(endMonth) <= 0
 				: val.getMonths().compareTo(endMonth) == 0)
-				.filter(val -> (patientType != null) ? val.getPatientType() != null && val.getPatientType().compareTo(patientType) == 0 : true)
+				.filter(val -> (StringUtils.isNotEmpty(patientType)) ? StringUtils.isNotEmpty(val.getPatientType()) && val.getPatientType().compareTo(patientType) == 0 : true)
 				.collect(Collectors.toList());
 
 		if (StringUtils.isEmpty(patientType)) {
@@ -160,7 +160,7 @@ public class DataTransformationService {
 	public Map<String, Long> filterServiceRegionMemberViewMap(List<MemberViewDTO> memberView, String startMonth,
 			String endMonth) {
 		return memberView.stream().map(val -> {
-			val.setState(val.getState() == null ? "Others" : val.getState());
+			val.setState(StringUtils.isNotEmpty(val.getState()) ? "Others" : val.getState());
 			return val;
 		}).filter(val -> (StringUtils.isNotEmpty(startMonth))
 				? val.getMonths().compareTo(startMonth) >= 0 && val.getMonths().compareTo(endMonth) <= 0

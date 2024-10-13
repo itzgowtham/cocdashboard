@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,6 @@ import com.coc.dashboard.model.DataPair;
 import com.coc.dashboard.repository.TargetPMPMRepository;
 
 import lombok.extern.slf4j.Slf4j;
-import net.snowflake.client.jdbc.internal.apache.tika.utils.StringUtils;
 
 @Slf4j
 @Service

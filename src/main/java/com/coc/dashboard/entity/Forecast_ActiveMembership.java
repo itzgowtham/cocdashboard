@@ -1,16 +1,17 @@
 package com.coc.dashboard.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Table(name = "FORECAST_ACTIVEMEMBERSHIP_REPORTING")
 @Data
 public class Forecast_ActiveMembership {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 	
     @Column(name = "payergroupcode")
     private String lob;
@@ -23,8 +24,7 @@ public class Forecast_ActiveMembership {
     
     @Column(name = "activemembership")
     private Long activemembership;
-    
-    @Id
+
     @Column(name = "activemembership_forecast")
     private Long activemembership_forecast;
     

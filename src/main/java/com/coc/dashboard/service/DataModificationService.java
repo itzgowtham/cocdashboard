@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +67,7 @@ public class DataModificationService {
         Map<String, Object> mapData = new HashMap<>();
         Map<String, Long> memberViewMap = dataTransformationService.filterServiceRegionMemberViewMap(memberViewList,
                 startMonth, endMonth);
-        Map<String, ServiceRegionBreakdown> regionBreakdown = pmpmList.stream().filter(val -> val.getState() != null)
+        Map<String, ServiceRegionBreakdown> regionBreakdown = pmpmList.stream().filter(val -> StringUtils.isNotEmpty(val.getState()))
                 .collect(Collectors.groupingBy(PMPMDTO::getState,
                         Collectors.collectingAndThen(Collectors.reducing((p1, p2) -> new PMPMDTO(p1.getState(), p1.getProviderCount() + p2.getProviderCount())
                         ), result -> {

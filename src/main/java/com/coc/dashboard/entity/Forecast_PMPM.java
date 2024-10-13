@@ -13,6 +13,11 @@ import lombok.Data;
 @Table(name = "FORECAST_PMPM_REPORTING")
 @Data
 public class Forecast_PMPM {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 	
     @Column(name = "payergroupcode")
     private String lob;
@@ -25,8 +30,7 @@ public class Forecast_PMPM {
     
     @Column(name = "pmpm")
     private Double pmpm;
-    
-    @Id
+
     @Column(name = "pmpm_forecast")
     private Double pmpm_forecast;
     
