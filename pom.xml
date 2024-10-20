@@ -41,10 +41,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>net.snowflake</groupId>
 			<artifactId>snowflake-jdbc</artifactId>
 			<version>3.14.5</version>
+		</dependency>-->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -128,19 +134,19 @@
 				<configuration>
 					<targetClasses>
 						<!--<param>com.coc.dashboard.constants.*</param>
-						<param>com.coc.dashboard.controller.*</param>-->
-						<!--<param>com.coc.dashboard.service.*</param>-->
-						<!--<param>com.coc.dashboard.util.*</param>-->
+						<param>com.coc.dashboard.controller.*</param>
+						<param>com.coc.dashboard.service.*</param>
+						<param>com.coc.dashboard.util.*</param>-->
 						<param>com.coc.dashboard.service.DataProcessingService*</param>
-						<!--<param>com.coc.dashboard.service.DataTransformationService*</param>-->
+						<param>com.coc.dashboard.service.DataTransformationService*</param>
 					</targetClasses>
 					<targetTests>
 						<!--<param>com.coc.dashboard.constants.*</param>
-						<param>com.coc.dashboard.controller.*</param>-->
-						<!--<param>com.coc.dashboard.service.*</param>-->
-						<!--<param>com.coc.dashboard.util.*</param>-->
+						<param>com.coc.dashboard.controller.*</param>
+						<param>com.coc.dashboard.service.*</param>
+						<param>com.coc.dashboard.util.*</param>-->
 						<param>com.coc.dashboard.service.DataProcessingService*</param>
-						<!--<param>com.coc.dashboard.service.DataTransformationService*</param>-->
+						<param>com.coc.dashboard.service.DataTransformationService*</param>
 					</targetTests>
 					<reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
 				</configuration>

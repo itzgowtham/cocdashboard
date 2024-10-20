@@ -160,7 +160,7 @@ public class DataTransformationService {
 	public Map<String, Long> filterServiceRegionMemberViewMap(List<MemberViewDTO> memberView, String startMonth,
 			String endMonth) {
 		return memberView.stream().map(val -> {
-			val.setState(StringUtils.isNotEmpty(val.getState()) ? "Others" : val.getState());
+			val.setState(StringUtils.isEmpty(val.getState()) ? "Others" : val.getState());
 			return val;
 		}).filter(val -> (StringUtils.isNotEmpty(startMonth))
 				? val.getMonths().compareTo(startMonth) >= 0 && val.getMonths().compareTo(endMonth) <= 0
