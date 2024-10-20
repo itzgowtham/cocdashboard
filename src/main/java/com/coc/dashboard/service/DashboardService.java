@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.coc.dashboard.constants.DataConstants;
@@ -27,21 +27,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class DashboardService {
 
-	@Autowired
 	private DateFormat dateFormat;
-
-	@Autowired
 	private DataAccessService dataAccessService;
-
-	@Autowired
 	private DataModificationService dataModificationService;
-
-	@Autowired
 	private DataProcessingService process;
 
-	private PMPMObject validatePMPMObject(PMPMObject pmpmObject) {
+	private void validatePMPMObject(PMPMObject pmpmObject) {
 		pmpmObject.setLob(StringUtils.trimToNull(pmpmObject.getLob()));
 		pmpmObject.setState(StringUtils.trimToNull(pmpmObject.getState()));
 		pmpmObject.setStartMonth(StringUtils.isNotBlank(pmpmObject.getStartMonth())
@@ -52,12 +46,11 @@ public class DashboardService {
 				: null);
 		pmpmObject.setGraphType(StringUtils.defaultIfBlank(pmpmObject.getGraphType(), DataConstants.TARGET_VS_ACTUAL));
 		pmpmObject.setViewType(StringUtils.defaultIfBlank(pmpmObject.getViewType(), DataConstants.EXPENSE_PMPM));
-		return pmpmObject;
 	}
 
 	public Map<String, Object> summary(PMPMObject pmpmObject) throws MyCustomException {
 		log.info("Inside DashboardService.summary() method");
-		pmpmObject = validatePMPMObject(pmpmObject);
+		validatePMPMObject(pmpmObject);
 		String lob = pmpmObject.getLob();
 		String state = pmpmObject.getState();
 		String startMonth = pmpmObject.getStartMonth();
@@ -111,7 +104,7 @@ public class DashboardService {
 
 	public Map<String, Map<String, MetricData>> careCategory(PMPMObject pmpmObject) throws MyCustomException {
 		log.info("Inside DashboardService.careCategory() method");
-		pmpmObject = validatePMPMObject(pmpmObject);
+		validatePMPMObject(pmpmObject);
 		String lob = pmpmObject.getLob();
 		String state = pmpmObject.getState();
 		String startMonth = pmpmObject.getStartMonth();
@@ -127,7 +120,7 @@ public class DashboardService {
 
 	public Map<String, Map<String, MetricData>> providerSpeciality(PMPMObject pmpmObject) throws MyCustomException {
 		log.info("Inside DashboardService.providerSpeciality() method");
-		pmpmObject = validatePMPMObject(pmpmObject);
+		validatePMPMObject(pmpmObject);
 		String lob = pmpmObject.getLob();
 		String state = pmpmObject.getState();
 		String startMonth = pmpmObject.getStartMonth();
@@ -143,7 +136,7 @@ public class DashboardService {
 
 	public Map<String, Map<String, MetricData>> serviceRegion(PMPMObject pmpmObject) throws MyCustomException {
 		log.info("Inside DashboardService.serviceRegion() method");
-		pmpmObject = validatePMPMObject(pmpmObject);
+		validatePMPMObject(pmpmObject);
 		String lob = pmpmObject.getLob();
 		String state = pmpmObject.getState();
 		String startMonth = pmpmObject.getStartMonth();
@@ -167,7 +160,7 @@ public class DashboardService {
 
 	public Map<String, Map<String, MetricData>> careProvider(PMPMObject pmpmObject) throws MyCustomException {
 		log.info("Inside DashboardService.careProvider() method");
-		pmpmObject = validatePMPMObject(pmpmObject);
+		validatePMPMObject(pmpmObject);
 		String lob = pmpmObject.getLob();
 		String state = pmpmObject.getState();
 		String startMonth = pmpmObject.getStartMonth();
@@ -183,7 +176,7 @@ public class DashboardService {
 
 	public Map<String, MetricData> pcpGroup(PMPMObject pmpmObject) throws MyCustomException {
 		log.info("Inside DashboardService.pcpGroup() method");
-		pmpmObject = validatePMPMObject(pmpmObject);
+		validatePMPMObject(pmpmObject);
 		String lob = pmpmObject.getLob();
 		String state = pmpmObject.getState();
 		String startMonth = pmpmObject.getStartMonth();
@@ -199,7 +192,7 @@ public class DashboardService {
 
 	public Map<String, List<Object>> forecast(PMPMObject pmpmObject) throws MyCustomException {
 		log.info("Inside DashboardService.forecast() method");
-		pmpmObject = validatePMPMObject(pmpmObject);
+		validatePMPMObject(pmpmObject);
 		String lob = pmpmObject.getLob() == null ? "All" : pmpmObject.getLob();
 		String state = pmpmObject.getState() == null ? "All" : pmpmObject.getState();
 		String endMonth = pmpmObject.getEndMonth();

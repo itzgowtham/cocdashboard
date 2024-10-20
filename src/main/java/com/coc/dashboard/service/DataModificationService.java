@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.coc.dashboard.dto.MemberViewDTO;
@@ -24,13 +24,11 @@ import com.coc.dashboard.util.DateFormat;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@AllArgsConstructor
 @Slf4j
 public class DataModificationService {
 
-    @Autowired
     private DateFormat dateFormat;
-
-    @Autowired
     private DataTransformationService dataTransformationService;
 
     public Map<String, List<String>> distinctLobStateMonths(List<String> lobs, List<String> states,

@@ -3,7 +3,7 @@ package com.coc.dashboard.service;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +17,12 @@ import com.coc.dashboard.repository.PMPMPcpRepository;
 import com.coc.dashboard.repository.PMPMRepository;
 
 @Service
+@AllArgsConstructor
 public class PMPMDataAccessService {
 
-	@Autowired
 	private PMPMRepository pmpmRepository;
-
-	@Autowired
 	private PMPMCategoryRepository pmpmCategoryRepository;
-
-	@Autowired
 	private PMPMPcpRepository pmpmPcpRepository;
-
-	@Autowired
 	private ForecastPMPMRepository forecastRepository;
 
 	@Async

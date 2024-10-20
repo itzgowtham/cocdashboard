@@ -3,8 +3,8 @@ package com.coc.dashboard.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.coc.dashboard.constants.DataConstants;
@@ -24,15 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class DataProcessingService {
 
-	@Autowired
 	private DateFormat dateFormat;
-
-	@Autowired
 	private DataTransformationService dataTransformationService;
-
-	@Autowired
 	private CalculationUtils calculationUtils;
 
 	public FinalResult kpiMetrics(List<ResultData> data, String startMonth, String endMonth, String graphType,

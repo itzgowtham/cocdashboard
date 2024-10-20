@@ -3,6 +3,7 @@ package com.coc.dashboard.controller;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@AllArgsConstructor
 public class DashboardController {
 
-	@Autowired
 	private DashboardService dashboardService;
-	
-	@Autowired
 	private DashboardDetailsService dashboardDetailsService;
 
 	@PostMapping("/summary")

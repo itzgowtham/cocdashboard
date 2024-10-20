@@ -1,5 +1,6 @@
 package com.coc.dashboard.service;
 
+import com.coc.dashboard.constants.DataConstants;
 import com.coc.dashboard.dto.*;
 import com.coc.dashboard.entity.Forecast_ActiveMembership;
 import com.coc.dashboard.entity.Forecast_PMPM;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 public class DashboardServiceTest {
 
-    @Mock
+    @Spy
     private DateFormat dateFormat;
 
     @Mock
@@ -51,8 +53,8 @@ public class DashboardServiceTest {
         PMPMObject pmpmObject = new PMPMObject();
         pmpmObject.setLob("TestLOB");
         pmpmObject.setState("TestState");
-        pmpmObject.setStartMonth("2019-02");
-        pmpmObject.setEndMonth("2020-02");
+        pmpmObject.setStartMonth("Nov 2019");
+        pmpmObject.setEndMonth("Dec 2019");
         return pmpmObject;
     }
 
@@ -64,19 +66,16 @@ public class DashboardServiceTest {
     }
 
     @Test
-    void testSummary() throws MyCustomException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void testSummary() throws MyCustomException {
         PMPMObject pmpmObject = preparePMPMObject();
         pmpmObject.setGraphType("TestGraphType");
 
-        when(dateFormat.convertStringtoIntegerDateFormat("2020-02")).thenReturn("2020-02");
         // Mock fetchData using reflection to handle private method invocation
         DataPair<List<ResultData>, List<TargetPMPM>, String> mockDataPair =
-                new DataPair<>(List.of(new ResultData()), List.of(new TargetPMPM()), "2020-02");
+                new DataPair<>(List.of(new ResultData()), List.of(new TargetPMPM()), "2019-12");
         when(dataAccessService.kpiMetrics(any(), any())).thenReturn(mockDataPair);
         Map<String, Long> mockTargetPercentageMap = Collections.singletonMap("key", 50L);
         when(dataModificationService.convertToTargetPercentageMap(anyList())).thenReturn(mockTargetPercentageMap);
-        mockPrivateMethod(dashboardService, "fetchData", String.class, String.class)
-                .invoke(dashboardService, "TestLOB", "TestState");
 
         // Mocking process.kpiMetrics
         FinalResult mockFinalResult = new FinalResult();
@@ -96,23 +95,25 @@ public class DashboardServiceTest {
         assertEquals(mockFinalResult, result.get("kpimetrics"));
         assertEquals(mockMapData, result.get("areaChart"));
 
+        pmpmObject.setStartMonth("Nov 2019");
         pmpmObject.setEndMonth(" ");
         result = dashboardService.summary(pmpmObject);
         assertNotNull(result);
         assertEquals(mockFinalResult, result.get("kpimetrics"));
         assertEquals(mockMapData, result.get("areaChart"));
+
+        verify(process, times(2)).kpiMetrics(mockDataPair.getFirst(), "2019-11", "2019-12", "TestGraphType", mockTargetPercentageMap);
+        verify(process, times(2)).areaChart(mockDataPair.getFirst(), "2019-12", "TestGraphType", mockTargetPercentageMap);
     }
 
     @Test
-    void testLandingPage() throws MyCustomException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void testLandingPage() throws MyCustomException {
         // Mock fetchData using reflection to handle private method invocation
         DataPair<List<ResultData>, List<TargetPMPM>, String> mockDataPair =
                 new DataPair<>(List.of(new ResultData()), List.of(new TargetPMPM()), "2020-02");
         when(dataAccessService.kpiMetrics(any(), any())).thenReturn(mockDataPair);
         Map<String, Long> mockTargetPercentageMap = Collections.singletonMap("key", 50L);
         when(dataModificationService.convertToTargetPercentageMap(anyList())).thenReturn(mockTargetPercentageMap);
-        mockPrivateMethod(dashboardService, "fetchData", String.class, String.class)
-                .invoke(dashboardService, null, null);
 
         // Mocking process.landingPageMetrics
         FinalResult mockFinalResult = new FinalResult();
@@ -124,16 +125,6 @@ public class DashboardServiceTest {
 
         // Assertions
         assertEquals(mockFinalResult, result);
-    }
-
-    /**
-     * Helper method to mock private methods using reflection.
-     */
-    private Method mockPrivateMethod(Object target, String methodName, Class<?>... parameterTypes)
-            throws NoSuchMethodException {
-        Method method = target.getClass().getDeclaredMethod(methodName, parameterTypes);
-        method.setAccessible(true);
-        return method;
     }
 
     @Test
@@ -153,7 +144,7 @@ public class DashboardServiceTest {
     @Test
     void testCareCategory() throws MyCustomException {
         PMPMObject pmpmObject = preparePMPMObject();
-        pmpmObject.setGraphType("TestGraphType");
+        pmpmObject.setGraphType("");
 
         // Mocking dataAccessService.careCategory
         DataPair<List<PMPMDTO>, List<TargetPMPM>, Object> mockDataPair =
@@ -171,6 +162,8 @@ public class DashboardServiceTest {
 
         // Assertions
         assertEquals(mockFinalData, result);
+        verify(dataAccessService, times(1)).careCategory("TestLOB", "TestState");
+        verify(process, times(1)).careCategory(mockDataPair.getFirst(), Collections.singletonMap("key", 50L), "2019-11", "2019-12", DataConstants.TARGET_VS_ACTUAL);
     }
 
     @Test
@@ -194,13 +187,14 @@ public class DashboardServiceTest {
 
         // Assertions
         assertEquals(mockFinalData, result);
+        verify(process, times(1)).providerSpeciality(mockDataPair.getFirst(), Collections.singletonMap("key", 50L), "2019-11", "2019-12", "TestGraphType");
     }
 
     @Test
     void testServiceRegion() throws MyCustomException {
         PMPMObject pmpmObject = preparePMPMObject();
         pmpmObject.setGraphType("TestGraphType");
-        pmpmObject.setViewType("TestViewType");
+        pmpmObject.setViewType("");
 
         // Mocking dataAccessService.serviceRegion
         DataPair<List<PMPMDTO>, List<MemberViewDTO>, List<TargetPMPM>> mockDataPair =
@@ -218,6 +212,7 @@ public class DashboardServiceTest {
 
         // Assertions
         assertEquals(mockFinalData, result);
+        verify(process, times(1)).serviceRegion(mockDataPair.getFirst(), mockDataPair.getSecond(), Collections.singletonMap("key", 50L), "2019-11", "2019-12", "TestGraphType", DataConstants.EXPENSE_PMPM);
     }
 
     @Test
@@ -240,6 +235,7 @@ public class DashboardServiceTest {
         // Assertions
 //        assertNotNull(result);
         assertEquals(mockFinalData, result);
+        verify(process, times(1)).careProvider(mockDataPair.getFirst(), Collections.singletonMap("key", 50L), "2019-11", "2019-12", "TestGraphType");
     }
 
     @Test
@@ -263,6 +259,7 @@ public class DashboardServiceTest {
 
         // Assertions
         assertEquals(mockFinalData, result);
+        verify(process, times(1)).pcpGroup(mockDataPair.getFirst(), Collections.singletonMap("key", 50L), "2019-11", "2019-12", "TestGraphType");
     }
 
     @Test
@@ -272,24 +269,44 @@ public class DashboardServiceTest {
         // Mocking dataAccessService.forecast
         DataPair<List<Forecast_PMPM>, List<Forecast_ActiveMembership>, Object> mockDataPair =
                 new DataPair<>(List.of(new Forecast_PMPM()), List.of(new Forecast_ActiveMembership()), new Object());
-        when(dataAccessService.forecast(anyString(), anyString()))
-                .thenReturn(mockDataPair);
+        when(dataAccessService.forecast(anyString(), anyString())).thenReturn(mockDataPair);
 
         // Mocking process.forecast
         Map<String, List<Object>> mockFinalData = Map.of("mockKey", List.of(new Object()));
-        when(process.forecast(anyList(), anyList(), any()))
-                .thenReturn(mockFinalData);
+        when(process.forecast(anyList(), anyList(), any())).thenReturn(mockFinalData);
 
         // Calling the service method under test
         Map<String, List<Object>> result = dashboardService.forecast(pmpmObject);
 
-        //testing for null scenario
-        pmpmObject.setLob(null);
-        pmpmObject.setState(null);
-        Map<String, List<Object>> nullResult = dashboardService.forecast(pmpmObject);
+        // Assertions
+        assertEquals(mockFinalData, result);
+        verify(dataAccessService, times(1)).forecast("TestLOB", "TestState");
+        verify(process, times(1)).forecast(mockDataPair.getFirst(), mockDataPair.getSecond(), "2019-12");
+    }
+
+    @Test
+    void testForecast_NullValues() throws MyCustomException {
+        PMPMObject pmpmObject = new PMPMObject();
+        pmpmObject.setLob("");
+        pmpmObject.setState("");
+        pmpmObject.setStartMonth("");
+        pmpmObject.setEndMonth("");
+
+        // Mocking dataAccessService.forecast
+        DataPair<List<Forecast_PMPM>, List<Forecast_ActiveMembership>, Object> mockDataPair =
+                new DataPair<>(List.of(new Forecast_PMPM()), List.of(new Forecast_ActiveMembership()), new Object());
+        when(dataAccessService.forecast(any(), any())).thenReturn(mockDataPair);
+
+        // Mocking process.forecast
+        Map<String, List<Object>> mockFinalData = Map.of("mockKey", List.of(new Object()));
+        when(process.forecast(anyList(), anyList(), any())).thenReturn(mockFinalData);
+
+        // Calling the service method under test
+        Map<String, List<Object>> result = dashboardService.forecast(pmpmObject);
 
         // Assertions
         assertEquals(mockFinalData, result);
+        verify(dataAccessService, times(1)).forecast("All", "All");
     }
 
     @Test
@@ -307,69 +324,5 @@ public class DashboardServiceTest {
         assertEquals(2, result.size()); // Asserting size of the map
         assertEquals(5L, result.get("Jan")); // Asserting targetPercentage for January
         assertEquals(6L, result.get("Feb")); // Asserting targetPercentage for February
-    }
-
-    @Test
-    public void testValidatePMPMObject_Success() throws MyCustomException {
-        // Mock DateFormat behavior
-        when(dateFormat.convertStringtoIntegerDateFormat("2019-02")).thenReturn("2019-02");
-        when(dateFormat.convertStringtoIntegerDateFormat("2020-02")).thenReturn("2020-02");
-
-        // Prepare PMPMObject with test data
-        PMPMObject pmpmObject = new PMPMObject();
-        pmpmObject.setLob("Commercial");
-        pmpmObject.setState("LA");
-        pmpmObject.setStartMonth("2019-02");
-        pmpmObject.setEndMonth("2020-02");
-        pmpmObject.setGraphType("Current vs Prior");
-        pmpmObject.setViewType("PMPM");
-
-        // Call the method under test indirectly (through public methods)
-        PMPMObject validatedObject = invokeValidatePMPMObject(pmpmObject);
-
-        // Assert that validation has processed correctly
-        assertEquals("Commercial", validatedObject.getLob());
-        assertEquals("LA", validatedObject.getState());
-        assertEquals("2019-02", validatedObject.getStartMonth());
-        assertEquals("2020-02", validatedObject.getEndMonth());
-        assertEquals("Current vs Prior", validatedObject.getGraphType());
-        assertEquals("PMPM", validatedObject.getViewType());
-        // Add more assertions as needed for other fields
-    }
-
-    @Test
-    public void testValidatePMPMObject_NullPoint() throws MyCustomException {
-        // Prepare PMPMObject with test data
-        PMPMObject pmpmObject = new PMPMObject();
-        pmpmObject.setLob("");
-        pmpmObject.setState("");
-        pmpmObject.setStartMonth("");
-        pmpmObject.setEndMonth("");
-        pmpmObject.setGraphType("");
-        pmpmObject.setViewType("");
-
-        // Call the method under test indirectly (through public methods)
-        PMPMObject validatedObject = invokeValidatePMPMObject(pmpmObject);
-
-        // Assert that validation has processed correctly
-        assertEquals(null, validatedObject.getLob());
-        assertEquals(null, validatedObject.getState());
-        assertEquals(null, validatedObject.getStartMonth());
-        assertEquals(null, validatedObject.getEndMonth());
-        assertEquals("Target vs Actual", validatedObject.getGraphType());
-        assertEquals("Expense PMPM", validatedObject.getViewType());
-        // Add more assertions as needed for other fields
-    }
-
-    // Utility method to invoke private method validatePMPMObject using reflection
-    private PMPMObject invokeValidatePMPMObject(PMPMObject pmpmObject) throws MyCustomException {
-        try {
-            // Use reflection to access the private method
-            Method validateMethod = dashboardService.getClass().getDeclaredMethod("validatePMPMObject", PMPMObject.class);
-            validateMethod.setAccessible(true); // Ensure method is accessible
-            return (PMPMObject) validateMethod.invoke(dashboardService, pmpmObject); // Cast to PMPMObject
-        } catch (Exception e) {
-            throw new MyCustomException("Failed to invoke validatePMPMObject");
-        }
     }
 }

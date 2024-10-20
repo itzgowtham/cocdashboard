@@ -3,7 +3,7 @@ package com.coc.dashboard.service;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -20,24 +20,14 @@ import com.coc.dashboard.repository.ProviderSpecialityDetailsRepository;
 import com.coc.dashboard.repository.ServiceAreaRegionDetailsRepository;
 
 @Service
+@AllArgsConstructor
 public class MemberViewDataAccessService {
 
-	@Autowired
 	private MemberRepository memberRepository;
-
-	@Autowired
 	private ForecastMemberRepository forecastRepository;
-
-	@Autowired
 	private CareCategoryDetailsRepository careCategoryDetailsRepository;
-
-	@Autowired
 	private ServiceAreaRegionDetailsRepository serviceAreaRegionDetailsRepository;
-
-	@Autowired
 	private ProviderSpecialityDetailsRepository providerSpecialityDetailsRepository;
-
-	@Autowired
 	private PcpGroupDetailsRepository pcpGroupDetailsRepository;
 
 	@Async

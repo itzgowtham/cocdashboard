@@ -10,9 +10,9 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.coc.dashboard.constants.DataConstants;
@@ -26,12 +26,10 @@ import com.coc.dashboard.util.CalculationUtils;
 import com.coc.dashboard.util.DateFormat;
 
 @Service
+@AllArgsConstructor
 public class DataTransformationService {
 
-	@Autowired
 	private DateFormat dateFormat;
-
-	@Autowired
 	private CalculationUtils calculationUtils;
 
 	public Map<String, Map<String, MetricData>> inpatientOutpatientMetrics(List<PMPMDTO> pmpm,

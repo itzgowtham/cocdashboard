@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -29,18 +29,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class DataAccessService {
 
-	@Autowired
 	private DataModificationService dataModificationService;
-
-	@Autowired
 	private PMPMDataAccessService pmpm;
-
-	@Autowired
 	private MemberViewDataAccessService memberView;
-
-	@Autowired
 	private TargetPMPMRepository targetPMPMRepository;
 
 	public Map<String, List<String>> distinctLobStateMonths() throws MyCustomException {
