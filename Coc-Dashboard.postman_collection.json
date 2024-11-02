@@ -1,0 +1,381 @@
+{
+	"info": {
+		"_postman_id": "842ae342-b897-4c33-9f8b-6aa110999e55",
+		"name": "Coc-Dashboard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38974086"
+	},
+	"item": [
+		{
+			"name": "Summary",
+			"item": [
+				{
+					"name": "summary",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/summary",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"summary"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Care Category",
+			"item": [
+				{
+					"name": "careCategoryDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"careCategory\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/careCategoryDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"careCategoryDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "careCategory",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/careCategory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"careCategory"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service Region",
+			"item": [
+				{
+					"name": "serviceRegion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\",\r\n    \"viewType\": \"Expense PMPM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/serviceRegion",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"serviceRegion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "serviceRegionDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/serviceRegionDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"serviceRegionDetails"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provider Speciality",
+			"item": [
+				{
+					"name": "providerSpecialityDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/providerSpecialityDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"providerSpecialityDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "providerSpeciality",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/providerSpeciality",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"providerSpeciality"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Care Provider",
+			"item": [
+				{
+					"name": "careProvider",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Aug 2019\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/careProvider",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"careProvider"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "careProviderDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\",\r\n    \"providerName\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/careProviderDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"careProviderDetails"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PCP Group",
+			"item": [
+				{
+					"name": "pcpGroup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pcpGroup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pcpGroup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pcpGroupDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\",\r\n    \"providername\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pcpGroupDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pcpGroupDetails"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Forecast",
+			"item": [
+				{
+					"name": "forecast",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/forecast",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"forecast"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

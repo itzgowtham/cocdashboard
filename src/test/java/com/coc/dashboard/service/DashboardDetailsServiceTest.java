@@ -79,7 +79,6 @@ public class DashboardDetailsServiceTest {
         // Assert that the result matches the expected data
         assertEquals(expectedMapData, result);
         verify(dataAccessService, times(1)).serviceRegionDetails("TestLOB", "TestState", null, null);
-
     }
 
     @Test
