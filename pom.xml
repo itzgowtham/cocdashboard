@@ -67,6 +67,11 @@
             <groupId>org.springframework.boot</groupId> 
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -133,20 +138,14 @@
 				</dependencies>
 				<configuration>
 					<targetClasses>
-						<!--<param>com.coc.dashboard.constants.*</param>
 						<param>com.coc.dashboard.controller.*</param>
 						<param>com.coc.dashboard.service.*</param>
-						<param>com.coc.dashboard.util.*</param>-->
-						<param>com.coc.dashboard.service.DataProcessingService*</param>
-						<param>com.coc.dashboard.service.DataTransformationService*</param>
+						<param>com.coc.dashboard.util.*</param>
 					</targetClasses>
 					<targetTests>
-						<!--<param>com.coc.dashboard.constants.*</param>
 						<param>com.coc.dashboard.controller.*</param>
 						<param>com.coc.dashboard.service.*</param>
-						<param>com.coc.dashboard.util.*</param>-->
-						<param>com.coc.dashboard.service.DataProcessingService*</param>
-						<param>com.coc.dashboard.service.DataTransformationService*</param>
+						<param>com.coc.dashboard.util.*</param>
 					</targetTests>
 					<reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
 				</configuration>
