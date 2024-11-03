@@ -36,40 +36,70 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Care Category",
-			"item": [
+				},
 				{
-					"name": "careCategoryDetails",
+					"name": "landingPage",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"careCategory\": \"\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\r\n    landingPage {\r\n        memberMonths\r\n        endingMembers\r\n        pmpm\r\n        targetMemberMonths\r\n        targetEndingMembers\r\n        targetPmpm\r\n        memberMonthsPercentageChange\r\n        endingMembersPercentageChange\r\n        pmpmPercentageChange\r\n    }\r\n}",
+								"variables": ""
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/careCategoryDetails",
+							"raw": "http://localhost:8080/landingPage",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"careCategoryDetails"
+								"landingPage"
 							]
 						}
 					},
 					"response": []
 				},
+				{
+					"name": "filterOptions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\r\n    filterOptions {\r\n        lob\r\n        state\r\n        months\r\n    }\r\n}\r\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/filterOptions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"filterOptions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Care Category",
+			"item": [
 				{
 					"name": "careCategory",
 					"request": {
@@ -97,6 +127,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "careCategoryDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Jan 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"careCategory\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/careCategoryDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"careCategoryDetails"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -110,7 +168,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\",\r\n    \"viewType\": \"Expense PMPM\"\r\n}",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Jan 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\",\r\n    \"viewType\": \"Expense PMPM\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -138,7 +196,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Jan 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -164,34 +222,6 @@
 		{
 			"name": "Provider Speciality",
 			"item": [
-				{
-					"name": "providerSpecialityDetails",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/providerSpecialityDetails",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"providerSpecialityDetails"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "providerSpeciality",
 					"request": {
@@ -219,6 +249,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "providerSpecialityDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Jan 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/providerSpecialityDetails",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"providerSpecialityDetails"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -232,7 +290,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Aug 2019\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"LA\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2020\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -260,7 +318,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\",\r\n    \"providerName\": \"\"\r\n}",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Jan 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\",\r\n    \"providerName\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -293,7 +351,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Jan 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -321,7 +379,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\",\r\n    \"providername\": \"\"\r\n}",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"Paid\",\r\n    \"endMonth\": \"Jan 2021\",\r\n    \"graphType\": \"Target vs Actual\",\r\n    \"startMonth\": \"\",\r\n    \"speciality\": \"\",\r\n    \"providername\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -354,7 +412,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2021\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
+							"raw": "{\r\n    \"lob\": \"\",\r\n    \"state\": \"\",\r\n    \"product\": \"\",\r\n    \"amountType\": \"\",\r\n    \"endMonth\": \"Feb 2020\",\r\n    \"graphType\": \"\",\r\n    \"startMonth\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
